@@ -28,7 +28,6 @@ import MainScreen from "./scences/MainScreen";
     // Start our game
     // game.start(MainMenu, {});
     game.start(SplashScreen, {});
-    // game.start(MainScreen, {});
 })();
 
 function runTests(){};

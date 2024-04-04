@@ -1,6 +1,7 @@
 import Vec2 from "../Wolfie2D/DataTypes/Vec2";
 import Input from "../Wolfie2D/Input/Input";
 import Sprite from "../Wolfie2D/Nodes/Sprites/Sprite";
+import { UIElementType } from "../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Layer from "../Wolfie2D/Scene/Layer";
 import Scene from "../Wolfie2D/Scene/Scene";
 import MainScreen from "./MainScreen";
@@ -46,6 +47,8 @@ export default class SplashScreen extends Scene {
         this.logo.position = new Vec2(center.x*1.25, center.y*1.4)
         this.logo = this.add.sprite("Vector3", SplashScreenLayer.SPLASH_SCREEN)
         this.logo.position = new Vec2(center.x*1.25, center.y*1.3)
+
+        const textThing = this.add.uiElement(UIElementType.LABEL, SplashScreenLayer.SPLASH_SCREEN, {position: new Vec2(center.x * 1.4, center.y * 1.8), text: "Click To Start"});
     }
 
     public override updateScene(deltaT: number): void {
