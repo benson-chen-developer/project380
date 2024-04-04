@@ -13,15 +13,15 @@ export default class Level2 extends GameLevel {
      */
     loadScene(): void {
         // Load resources
-        this.load.tilemap("level2", "hw5_assets/tilemaps/level1.json");
-        this.load.spritesheet("player", "hw5_assets/spritesheets/spike.json");
-        this.load.spritesheet("green", "hw5_assets/spritesheets/greenBalloon.json");
-        this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
-        this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
-        this.load.audio("jump", "hw5_assets/sounds/jump.wav");
-        this.load.audio("switch", "hw5_assets/sounds/switch.wav");
-        this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
-        this.load.audio("level_music", "hw5_assets/music/menu.mp3");
+        this.load.tilemap("level2", "game_assets/tilemaps/level1.json");
+        this.load.spritesheet("player", "game_assets/spritesheets/spike.json");
+        this.load.spritesheet("green", "game_assets/spritesheets/greenBalloon.json");
+        this.load.spritesheet("red", "game_assets/spritesheets/redBalloon.json");
+        this.load.spritesheet("blue", "game_assets/spritesheets/blueBalloon.json");
+        this.load.audio("jump", "game_assets/sounds/jump.wav");
+        this.load.audio("switch", "game_assets/sounds/switch.wav");
+        this.load.audio("player_death", "game_assets/sounds/player_death.wav");
+        this.load.audio("level_music", "game_assets/music/menu.mp3");
     }
 
     startScene(): void {

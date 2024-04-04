@@ -7,6 +7,7 @@ import Layer from "../Wolfie2D/Scene/Layer";
 import GameEvent from "../Wolfie2D/Events/GameEvent";
 import Scene from "../Wolfie2D/Scene/Scene";
 import Color from "../Wolfie2D/Utils/Color";
+import Level1 from "../DishDashGame/Scenes/Level1";
 
 const MainScreenLayer = {
     MENU: "MENU",
@@ -41,9 +42,25 @@ export default class MainScreen extends Scene {
         this.load.image("Vector3", "assets/Splash/Vector3.png")
     }
 
-
     public override startScene(): void {
-        
+        this.addUILayer("Main");
+
+        // Center the viewport
+        let size = this.viewport.getHalfSize();
+        this.viewport.setFocus(size);
+
+        this.viewport.setZoomLevel(1);
+        let sceneOptions = {
+            physics: {
+                groupNames: ["ground", "player", "balloon"],
+                collisions:
+                [
+                    [0, 1, 1],
+                    [1, 0, 0],
+                    [1, 0, 0]
+                ]
+            }
+        }
         
         this.levelScreen = this.addUILayer(MainScreenLayer.LEVELS);
         this.helpScreen = this.addUILayer(MainScreenLayer.HELP);
@@ -128,10 +145,14 @@ export default class MainScreen extends Scene {
         title.borderWidth = 2;
         title.backgroundColor = new Color(252,182,2, 1);
 
+        // Level Buttons 
         const Btn1 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * .8, center.y * 1), text: "1"});
         Btn1.size.set(100, 100);
         Btn1.borderWidth = 2;
         Btn1.backgroundColor = new Color(65,77,204, 1);
+
+        Btn1.onClick = () => { this.sceneManager.changeToScene(Level1, {}, sceneOptions); }
+
         // Btn1.onClickEventId = MainScreenEvent.MENU;
         const Btn2 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1, center.y * 1), text: "2"});
         Btn2.size.set(100, 100);

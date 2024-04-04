@@ -19,7 +19,7 @@ import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
-import MainMenu from "./MainMenu";
+import MainScreen from "../../MainScreenScene/MainScreen";
 
 // HOMEWORK 5 - TODO
 /**
@@ -78,7 +78,7 @@ export default class GameLevel extends Scene {
         // Initialize the timers
         this.respawnTimer = new Timer(1000, () => {
             if(GameLevel.livesCount === 0){
-                this.sceneManager.changeToScene(MainMenu);
+                this.sceneManager.changeToScene(MainScreen);
             } else {
                 this.respawnPlayer();
                 this.player.enablePhysics();
@@ -384,6 +384,9 @@ export default class GameLevel extends Scene {
         balloon.position.set(tilePos.x*32, tilePos.y*32);
         balloon.scale.set(2, 2);
         balloon.addPhysics();
+
+        balloon.setTrigger("player", HW5_Events.PLAYER_HIT_BALLOON, HW5_Events.BALLOON_POPPED); // REVIEW THIS AGAIN
+
         balloon.addAI(BalloonController, aiOptions);
         balloon.setGroup("balloon");
 
@@ -416,6 +419,15 @@ export default class GameLevel extends Scene {
      * 
      */
     protected handlePlayerBalloonCollision(player: AnimatedSprite, balloon: AnimatedSprite) {
+        // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
+        if (balloon != null && player.collisionShape.overlaps(balloon.collisionShape)) {
+            this.emitter.fireEvent(HW5_Events.BALLOON_POPPED, {owner: balloon.id});
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
+
+            if ((<PlayerController>player._ai).suitColor != (<BalloonController>balloon._ai).color) {
+                this.incPlayerLife(-1);
+            }
+        }
     }
 
     /**
@@ -439,7 +451,7 @@ export default class GameLevel extends Scene {
     protected respawnPlayer(): void {
         GameLevel.livesCount = 3;
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
-        this.sceneManager.changeToScene(MainMenu, {});
+        this.sceneManager.changeToScene(MainScreen, {});
         Input.enableInput();
         this.system.stopSystem();
     }

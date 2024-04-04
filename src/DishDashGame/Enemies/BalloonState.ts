@@ -15,7 +15,7 @@ export default abstract class BalloonState extends State {
 
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);
-
+		
 		this.owner = owner;
 	}
 
