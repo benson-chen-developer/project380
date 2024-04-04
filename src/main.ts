@@ -1,5 +1,7 @@
 import Game from "./Wolfie2D/Loop/Game";
 import MainMenu from "./Homework5/Scenes/MainMenu";
+import SplashScreen from "./scences/SplashScreen";
+import MainScreen from "./scences/MainScreen";
 
 // The main function is your entrypoint into Wolfie2D. Specify your first scene and any options here.
 (function main(){
@@ -8,8 +10,8 @@ import MainMenu from "./Homework5/Scenes/MainMenu";
 
     // Set up options for our game
     let options = {
-        canvasSize: {x: 1200, y: 800},          // The size of the game
-        clearColor: {r: 34, g: 32, b: 52},   // The color the game clears to
+        canvasSize: {x: 1200, y: 700},          // The size of the game
+        clearColor: {r: 255, g: 255, b: 255},   // The color the game clears to
         inputs: [
             {name: "left", keys: ["a"]},
             {name: "right", keys: ["d"]},
@@ -24,7 +26,9 @@ import MainMenu from "./Homework5/Scenes/MainMenu";
     const game = new Game(options);
 
     // Start our game
-    game.start(MainMenu, {});
+    // game.start(MainMenu, {});
+    game.start(SplashScreen, {});
+    // game.start(MainScreen, {});
 })();
 
 function runTests(){};
