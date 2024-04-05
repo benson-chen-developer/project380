@@ -15,8 +15,11 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import BalloonController from "../Enemies/BalloonController";
+
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
+import { WorldStatus } from "../WorldEnums/WorldStatus";
+
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
@@ -59,6 +62,10 @@ export default class GameLevel extends Scene {
     protected balloonLabel: Label;
     protected balloonsPopped: number;
 
+    protected totalCustomers: number;
+    protected customersSatisfiedLabel: Label;
+    protected customersSatisfied: number;
+
     // Total switches and amount currently pressed
     protected totalSwitches: number;
     protected switchLabel: Label;
@@ -67,6 +74,8 @@ export default class GameLevel extends Scene {
     startScene(): void {
         this.balloonsPopped = 0;
         this.switchesPressed = 0;
+
+        this.customersSatisfied = 0;
 
         // Do the game level standard initializations
         this.initLayers();
@@ -77,7 +86,7 @@ export default class GameLevel extends Scene {
 
         // Initialize the timers
         this.respawnTimer = new Timer(1000, () => {
-            if(GameLevel.livesCount === 0){
+            if (GameLevel.livesCount === 0){
                 this.sceneManager.changeToScene(MainScreen);
             } else {
                 this.respawnPlayer();
@@ -109,6 +118,18 @@ export default class GameLevel extends Scene {
             let event = this.receiver.getNextEvent();
             
             switch(event.type){
+                case WorldStatus.PLAYER_SERVE:
+                    {
+                        this.customersSatisfied++;
+                        this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
+                    }
+                case WorldStatus.CUSTOMER_DELETE:
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("owner"));
+                        // this.system.startSystem(2000, 1, node.position.clone());
+                        node.destroy();
+                    }
+
                 case HW5_Events.PLAYER_HIT_SWITCH:
                     {
                         // Hit a switch block, so update the label and count
@@ -196,11 +217,11 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
+
                 case HW5_Events.PLAYER_KILLED:
                     {
                         this.respawnPlayer();
                     }
-
             }
         }
 
@@ -248,6 +269,11 @@ export default class GameLevel extends Scene {
      */
     protected subscribeToEvents(){
         this.receiver.subscribe([
+            WorldStatus.PLAYER_COLLECT,
+            WorldStatus.PLAYER_GIVE,
+            WorldStatus.CUSTOMER_DELETE,
+            WorldStatus.CUSTOMER_SPAWN,
+
             HW5_Events.PLAYER_HIT_SWITCH,
             HW5_Events.PLAYER_HIT_BALLOON,
             HW5_Events.BALLOON_POPPED,
@@ -263,17 +289,9 @@ export default class GameLevel extends Scene {
      */
     protected addUI(){
         // In-game labels
-        this.balloonLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(80, 30), text: "Balloons Left: " + (this.totalBalloons - this.balloonsPopped)});
-        this.balloonLabel.textColor = Color.BLACK
-        this.balloonLabel.font = "PixelSimple";
-
-        this.switchLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(80, 50), text: "Switches Left: " + (this.totalSwitches - this.switchesPressed)});
-        this.switchLabel.textColor = Color.BLACK;
-        this.switchLabel.font = "PixelSimple";
-
-        this.livesCountLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(500, 30), text: "Lives: " + GameLevel.livesCount});
-        this.livesCountLabel.textColor = Color.BLACK;
-        this.livesCountLabel.font = "PixelSimple";
+        this.customersSatisfiedLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(80, 30), text: "Customer Satisfied: " + (this.customersSatisfied)});
+        this.customersSatisfiedLabel.textColor = Color.BLACK
+        this.customersSatisfiedLabel.font = "PixelSimple";
 
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Complete"});
@@ -297,10 +315,6 @@ export default class GameLevel extends Scene {
                 }
             ]
         });
-
-        // Create our particle system and initialize the pool
-        this.system = new HW5_ParticleSystem(100, new Vec2((5 * 32), (10 * 32)), 2000, 3, 1, 100);
-        this.system.initializePool(this, "primary");
 
         this.levelTransitionScreen = <Rect>this.add.graphic(GraphicType.RECT, "UI", {position: new Vec2(300, 200), size: new Vec2(600, 400)});
         this.levelTransitionScreen.color = new Color(34, 32, 52);
@@ -366,13 +380,6 @@ export default class GameLevel extends Scene {
         this.levelEndArea.color = new Color(0, 0, 0, 0);
     }
 
-    // HOMEWORK 5 - TODO
-    /*
-        Make sure balloons are being set up properly to have triggers so that when they collide
-        with players, they send out a trigger event.
-
-        Look at the levelEndArea trigger for reference.
-    */
     /**
      * Adds an balloon into the game
      * @param spriteKey The key of the balloon sprite
@@ -385,39 +392,13 @@ export default class GameLevel extends Scene {
         balloon.scale.set(2, 2);
         balloon.addPhysics();
 
-        balloon.setTrigger("player", HW5_Events.PLAYER_HIT_BALLOON, HW5_Events.BALLOON_POPPED); // REVIEW THIS AGAIN
+        balloon.setTrigger("player", HW5_Events.PLAYER_HIT_BALLOON, HW5_Events.BALLOON_POPPED);
 
         balloon.addAI(BalloonController, aiOptions);
         balloon.setGroup("balloon");
 
     }
 
-    // HOMEWORK 5 - TODO
-    /**
-     * You must implement this method.
-     * There are 3 types of collisions:
-     * 
-     * 1) Collisions with red balloons
-     * 
-     * 2) Collisions with blue balloons
-     * 
-     * 3) Collisions with green balloons
-     *  
-     * When the player collides with a balloon, you should check the suit color and the balloon color, 
-     * and if they are not the same, damage the player. Otherwise the player is unharmed.
-     * 
-     * In either case you'll also need to pop the balloon and set up elements for the particle system, 
-     * specifically changing the particle system color to the color of the balloon being popped. You'll also
-     * have to use the balloon popping sound you've created and play it here as well.
-     * 
-     * Note that node destruction is handled for you.
-     * 
-     * For those who are curious, there is actually a node.destroy() method.
-     * You no longer have to make the nodes invisible and pretend they don't exist.
-     * You don't have to use this yourself, but you can see examples
-     * of it in this class.
-     * 
-     */
     protected handlePlayerBalloonCollision(player: AnimatedSprite, balloon: AnimatedSprite) {
         // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
         if (balloon != null && player.collisionShape.overlaps(balloon.collisionShape)) {

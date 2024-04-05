@@ -32,23 +32,11 @@ export default abstract class CustomerState extends State {
 		if (event.type == WorldStatus.PLAYER_GIVE) {
 			let food_given = event.data.get("food");
 			
-			if (this.wants == food_given){
+			if (this.wants == food_given) {
 				this.satisfied = true;
 			}
 		}
 	}
-
-	// updateExpression() {
-	// 	if (this.expression == CustomerStates.WAITING) {
-	// 		this.aniSprite.animation.playIfNotAlready("WAITING", true);
-	// 	} else if (this.expression == CustomerStates.CONCERN) {
-	// 		this.aniSprite.animation.playIfNotAlready("CONCERED", true);
-	// 	} else if (this.expression == CustomerStates.HAPPY) {
-	// 		this.aniSprite.animation.playIfNotAlready("HAPPY", true);
-	// 	} else if (this.expression == CustomerStates.ANGRY) {
-	// 		this.aniSprite.animation.playIfNotAlready("ANGRY", true);
-	// 	}
-	// }
 
 	update(deltaT: number): void {
 		if (this.waitTimer.isStopped()) {
