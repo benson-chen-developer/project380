@@ -14,7 +14,9 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
+
 import BalloonController from "../Enemies/BalloonController";
+import CustomerController from "../Customers/CustomerController";
 
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
@@ -225,11 +227,6 @@ export default class GameLevel extends Scene {
             }
         }
 
-        /**
-         * Pressing 1 switches our suit to RED
-         * Pressing 2 switches our suit to BLUE
-         * Pressing 3 switches our suit to GREEN
-         */
         if (this.suitChangeTimer.isStopped()) {
             if (Input.isKeyJustPressed("1")) {
                 this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
@@ -270,7 +267,7 @@ export default class GameLevel extends Scene {
     protected subscribeToEvents(){
         this.receiver.subscribe([
             WorldStatus.PLAYER_COLLECT,
-            WorldStatus.PLAYER_GIVE,
+            WorldStatus.PLAYER_SERVE,
             WorldStatus.CUSTOMER_DELETE,
             WorldStatus.CUSTOMER_SPAWN,
 
@@ -397,6 +394,28 @@ export default class GameLevel extends Scene {
         balloon.addAI(BalloonController, aiOptions);
         balloon.setGroup("balloon");
 
+    }
+
+    protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let customer = this.add.animatedSprite(spriteKey, "primary");
+        customer.position.set(tilePos.x*32, tilePos.y*32);
+        customer.scale.set(2, 2);
+        customer.addPhysics();
+
+        customer.addAI(CustomerController, aiOptions);
+        customer.setGroup("customer");
+
+    }
+
+    protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
+        // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
+        // Conditions to add:
+        // (<PlayerController>player._ai).hotbar) == (<CustomerController>customer._ai).foodWanted
+        // Input.keyPressed("space")
+        if (customer != null && player.collisionShape.overlaps(customer.collisionShape)) { 
+            this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, null);
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
+        }
     }
 
     protected handlePlayerBalloonCollision(player: AnimatedSprite, balloon: AnimatedSprite) {

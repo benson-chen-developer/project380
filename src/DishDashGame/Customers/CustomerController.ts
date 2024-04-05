@@ -8,6 +8,7 @@ import Waiting from "./Moods/Waiting";
 import Happy from "./Moods/Happy";
 import Angry from "./Moods/Angry";
 import Concern from "./Moods/Concern";
+import { Foods, getRandomFood } from "../WorldEnums/Foods";
 
 export enum CustomerStates {
 	WAITING = "waiting",
@@ -20,14 +21,14 @@ export default class CustomerController extends StateMachineAI {
 	owner: GameNode;
 	direction: Vec2 = Vec2.ZERO;
 	velocity: Vec2 = Vec2.ZERO;
+	foodWanted: Foods;
 	speed: number = 100;
-	color: HW5_Color;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
 		this.owner = owner;
 
 		this.receiver.subscribe(WorldStatus.PLAYER_MOVE);
-		this.receiver.subscribe(WorldStatus.PLAYER_GIVE);
+		this.receiver.subscribe(WorldStatus.PLAYER_SERVE);
 
 		let angry = new Angry(this, owner);
 		this.addState(CustomerStates.HAPPY, angry);
@@ -41,9 +42,8 @@ export default class CustomerController extends StateMachineAI {
 		let waiting = new Waiting(this, owner);
 		this.addState(CustomerStates.HAPPY, waiting);
 
-		this.color = options.color;
-		this.direction = new Vec2(-1, 0);
-
+		this.foodWanted = getRandomFood();
+		// this.direction = new Vec2(-1, 0);
 		this.initialize(CustomerStates.WAITING);
 	}
 

@@ -14,43 +14,54 @@ import { Foods, getRandomFood } from "../WorldEnums/Foods";
 export default abstract class CustomerState extends State {
 	owner: GameNode;
 	parent: CustomerController;
-	waitTimer: Timer;
-	expression: CustomerStates;
-	wants: Foods;
-	satisfied: boolean;
+	
+	enterTimer: Timer = new Timer(3000);	// 3 Seconds long
+	waitTimer: Timer = new Timer(15000); 	// 15 Seconds long
+	deleteTimer: Timer = new Timer(3000); 	// 3 Seconds long
+
+	entered: boolean = false;
+	leaving: boolean = false;
+	
+	expression: CustomerStates = CustomerStates.WAITING;
+	satisfied: boolean = false;
 
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);
 		this.owner = owner;
-		this.waitTimer = new Timer(15000); // 20 secs of waiting
-		this.expression = CustomerStates.WAITING
-		this.wants = getRandomFood()
-		this.satisfied = false
+		this.enterTimer.start();
 	}
 
 	handleInput(event: GameEvent): void {
-		if (event.type == WorldStatus.PLAYER_GIVE) {
-			let food_given = event.data.get("food");
-			
-			if (this.wants == food_given) {
-				this.satisfied = true;
-			}
+		if (event.type == WorldStatus.PLAYER_SERVE) {
+			this.satisfied = true;
 		}
 	}
 
 	update(deltaT: number): void {
-		if (this.waitTimer.isStopped()) {
+		if (!this.entered && this.enterTimer.isStopped()) { 
+			this.entered = true;
+			this.waitTimer.start(); 
+		}
+		
+		if (this.entered && !this.leaving && this.waitTimer.isStopped()) {
 			if (this.satisfied) {
 				this.expression = CustomerStates.HAPPY;
 				this.finished(CustomerStates.HAPPY);
+				this.leaving = true;
+				this.deleteTimer.start();
 			} else if (this.expression == CustomerStates.WAITING) {
 				this.expression = CustomerStates.CONCERN;
 				this.finished(CustomerStates.CONCERN);
-                this.waitTimer.start();
+                
+				this.waitTimer.start();
             } else if (this.expression == CustomerStates.CONCERN) {
 				this.expression = CustomerStates.ANGRY;
                 this.finished(CustomerStates.ANGRY);
+				this.leaving = true;
+				this.deleteTimer.start();
             }
         }
+
+
 	}
 }
