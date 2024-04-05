@@ -1,12 +1,17 @@
 import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import StateMachineAI from "../../Wolfie2D/AI/StateMachineAI";
-import { HW5_Events } from "../hw5_enums";
+import { WorldStatus } from "../WorldEnums/WorldStatus";
 import { HW5_Color } from "../hw5_color";
+
+import Waiting from "./Moods/Waiting";
+import Happy from "./Moods/Happy";
+import Angry from "./Moods/Angry";
+import Concern from "./Moods/Concern";
 
 export enum CustomerStates {
 	WAITING = "waiting",
-	CONCERN = "concerned",
+	CONCERN = "concern",
 	HAPPY = "happy",
 	ANGRY = "angry"
 }
@@ -16,27 +21,30 @@ export default class CustomerController extends StateMachineAI {
 	direction: Vec2 = Vec2.ZERO;
 	velocity: Vec2 = Vec2.ZERO;
 	speed: number = 100;
-	ySpeed: number = 700;
-	gravity: number = 1000;
 	color: HW5_Color;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
 		this.owner = owner;
 
-		this.receiver.subscribe(HW5_Events.PLAYER_MOVE);
-		this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
+		this.receiver.subscribe(WorldStatus.PLAYER_MOVE);
+		this.receiver.subscribe(WorldStatus.PLAYER_GIVE);
 
-		let sinking = new Sinking(this, owner);
-		this.addState(CustomerStates.SINKING, sinking);
-		let rising = new Rising(this, owner);
-		this.addState(CustomerStates.RISING, rising);
-		let zerogravity = new ZeroGravity(this, owner);
-		this.addState(CustomerStates.ZEROGRAVITY, zerogravity);
+		let angry = new Angry(this, owner);
+		this.addState(CustomerStates.HAPPY, angry);
+
+		let concern = new Concern(this, owner);
+		this.addState(CustomerStates.HAPPY, concern);
+
+		let happy = new Happy(this, owner);
+		this.addState(CustomerStates.HAPPY, happy);
+
+		let waiting = new Waiting(this, owner);
+		this.addState(CustomerStates.HAPPY, waiting);
 
 		this.color = options.color;
 		this.direction = new Vec2(-1, 0);
 
-		this.initialize(BalloonStates.SINKING);
+		this.initialize(CustomerStates.WAITING);
 	}
 
 	changeState(stateName: string): void {
