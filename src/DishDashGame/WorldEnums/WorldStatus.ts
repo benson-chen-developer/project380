@@ -6,6 +6,8 @@ export enum WorldStatus {
     PLAYER_DROP = "PlayerDrop",
     PLAYER_SERVE = "PlayerServe ",
 
+    PLAYER_AT_CUSTOMER = "PlayerAtCustomer",
+    
     CUSTOMER_SPAWN = "CustomerSpawn",
     CUSTOMER_DELETE = "CustomerDelete",
     

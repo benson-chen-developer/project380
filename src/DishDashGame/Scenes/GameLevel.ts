@@ -120,18 +120,34 @@ export default class GameLevel extends Scene {
             let event = this.receiver.getNextEvent();
             
             switch(event.type){
+                case WorldStatus.PLAYER_AT_CUSTOMER:
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        if(node === this.player){ // Node is player, other is balloon
+                            this.handlePlayerCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                        } else { // Other is player, node is balloon
+                            this.handlePlayerCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
+                        }
+                    }
+                    break;
                 case WorldStatus.PLAYER_SERVE:
                     {
                         this.customersSatisfied++;
                         this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
                     }
+                    break;
                 case WorldStatus.CUSTOMER_DELETE:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("owner"));
                         // this.system.startSystem(2000, 1, node.position.clone());
                         node.destroy();
                     }
+                    break;
 
+
+                    
                 case HW5_Events.PLAYER_HIT_SWITCH:
                     {
                         // Hit a switch block, so update the label and count
@@ -152,7 +168,6 @@ export default class GameLevel extends Scene {
                         } else {
                             // Other is player, node is balloon
                             this.handlePlayerBalloonCollision(<AnimatedSprite>other,<AnimatedSprite>node);
-
                         }
                     }
                     break;
@@ -396,28 +411,6 @@ export default class GameLevel extends Scene {
 
     }
 
-    protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
-        let customer = this.add.animatedSprite(spriteKey, "primary");
-        customer.position.set(tilePos.x*32, tilePos.y*32);
-        customer.scale.set(2, 2);
-        customer.addPhysics();
-
-        customer.addAI(CustomerController, aiOptions);
-        customer.setGroup("customer");
-
-    }
-
-    protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
-        // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
-        // Conditions to add:
-        // (<PlayerController>player._ai).hotbar) == (<CustomerController>customer._ai).foodWanted
-        // Input.keyPressed("space")
-        if (customer != null && player.collisionShape.overlaps(customer.collisionShape)) { 
-            this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, null);
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
-        }
-    }
-
     protected handlePlayerBalloonCollision(player: AnimatedSprite, balloon: AnimatedSprite) {
         // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
         if (balloon != null && player.collisionShape.overlaps(balloon.collisionShape)) {
@@ -427,6 +420,28 @@ export default class GameLevel extends Scene {
             if ((<PlayerController>player._ai).suitColor != (<BalloonController>balloon._ai).color) {
                 this.incPlayerLife(-1);
             }
+        }
+    }
+
+    protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let customer = this.add.animatedSprite(spriteKey, "primary");
+        customer.position.set(tilePos.x*32, tilePos.y*32);
+        customer.scale.set(2, 2);
+        customer.addPhysics();
+        customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, null);
+        customer.addAI(CustomerController, aiOptions);
+        customer.setGroup("customer");
+
+    }
+
+    protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
+        // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
+        // Conditions to add:
+        // (<PlayerController>player._ai).hotbar) == (<CustomerController>customer._ai).foodWanted
+        // Input.isJustPressed("e")
+        if (customer != null && player.collisionShape.overlaps(customer.collisionShape)) { 
+            this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, null);
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
         }
     }
 
@@ -455,4 +470,5 @@ export default class GameLevel extends Scene {
         Input.enableInput();
         this.system.stopSystem();
     }
+    
 }
