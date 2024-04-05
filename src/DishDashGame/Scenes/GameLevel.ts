@@ -175,8 +175,6 @@ export default class GameLevel extends Scene {
                 case HW5_Events.BALLOON_POPPED:
                     {
                         // An balloon collided with the player, destroy it and use the particle system
-                        this.balloonsPopped++;
-                        this.balloonLabel.text = "Balloons Left: " + (this.totalBalloons - this.balloonsPopped);
                         let node = this.sceneGraph.getNode(event.data.get("owner"));
                         
                         // Set mass based on color
