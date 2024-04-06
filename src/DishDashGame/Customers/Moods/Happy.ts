@@ -4,6 +4,8 @@ import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import CustomerState from "../CustomerState";
 
 export default class Happy extends CustomerState {
+	owner: AnimatedSprite;
+	
 	onEnter(): void {
 		(<AnimatedSprite>this.owner).animation.play("HAPPY", true);
 	}

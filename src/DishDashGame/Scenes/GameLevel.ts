@@ -134,12 +134,14 @@ export default class GameLevel extends Scene {
                     break;
                 case WorldStatus.PLAYER_SERVE:
                     {
-                        this.customersSatisfied++;
-                        this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
+                        
                     }
                     break;
                 case WorldStatus.CUSTOMER_DELETE:
                     {
+                        this.customersSatisfied++;
+                        this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
+                        
                         let node = this.sceneGraph.getNode(event.data.get("owner"));
                         // this.system.startSystem(2000, 1, node.position.clone());
                         node.destroy();
@@ -263,7 +265,8 @@ export default class GameLevel extends Scene {
         // Add a layer for UI
         this.addUILayer("UI");
 
-        // Add a layer for players and enemies
+        this.addLayer("secondary", 2);
+
         this.addLayer("primary", 1);
     }
 
@@ -279,6 +282,7 @@ export default class GameLevel extends Scene {
      */
     protected subscribeToEvents(){
         this.receiver.subscribe([
+            WorldStatus.PLAYER_AT_CUSTOMER,
             WorldStatus.PLAYER_COLLECT,
             WorldStatus.PLAYER_SERVE,
             WorldStatus.CUSTOMER_DELETE,
@@ -422,23 +426,24 @@ export default class GameLevel extends Scene {
     }
 
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
-        let customer = this.add.animatedSprite(spriteKey, "primary");
+        let customer = this.add.animatedSprite(spriteKey, "secondary");
         customer.position.set(tilePos.x*32, tilePos.y*32);
         customer.scale.set(2, 2);
+        
         customer.addPhysics();
-        customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, null);
+        customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, WorldStatus.PLAYER_SERVE);
+        
         customer.addAI(CustomerController, aiOptions);
         customer.setGroup("customer");
 
     }
 
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
-        // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
-        // Conditions to add:
         // (<PlayerController>player._ai).hotbar) == (<CustomerController>customer._ai).foodWanted
-        // Input.isJustPressed("e")
+        console.log("Checking");
         if (customer != null && player.collisionShape.overlaps(customer.collisionShape)) { 
-            this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, null);
+            console.log("Activiated");
+            this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
         }
     }

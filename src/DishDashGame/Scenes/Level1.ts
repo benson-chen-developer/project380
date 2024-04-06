@@ -16,7 +16,10 @@ export default class Level1 extends GameLevel {
         this.load.tilemap("level1", "game_assets/tilemaps/level1.json");
         this.load.spritesheet("player", "game_assets/spritesheets/spike.json");
         this.load.spritesheet("red", "game_assets/spritesheets/redBalloon.json");
-        this.load.spritesheet("blue", "game_assets/spritesheets/blueBalloon.json");
+        // this.load.spritesheet("blue", "game_assets/spritesheets/blueBalloon.json");
+        this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
+
+
         this.load.audio("jump", "game_assets/sounds/jump.wav");
         this.load.audio("switch", "game_assets/sounds/switch.wav");
         this.load.audio("player_death", "game_assets/sounds/player_death.wav");
@@ -52,6 +55,7 @@ export default class Level1 extends GameLevel {
         // Set the total switches and balloons in the level
         this.totalSwitches = 4;
         this.totalBalloons = 6;
+        this.totalCustomers = 1;
 
         // Do generic setup for a GameLevel
         super.startScene();
@@ -61,8 +65,13 @@ export default class Level1 extends GameLevel {
         this.nextLevel = Level2;
 
         // Add balloons of various types, just red and blue for the first level
-        for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
-            this.addBalloon("red", pos, {color: HW5_Color.RED});
+        // for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
+        //     this.addBalloon("red", pos, {color: HW5_Color.RED});
+        // }
+
+        for (let pos of [new Vec2(2, 15)]){
+            console.log("customer has been added");
+            this.addCustomer("customer", pos, null);
         }
 
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});

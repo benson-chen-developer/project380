@@ -31,16 +31,16 @@ export default class CustomerController extends StateMachineAI {
 		this.receiver.subscribe(WorldStatus.PLAYER_SERVE);
 
 		let angry = new Angry(this, owner);
-		this.addState(CustomerStates.HAPPY, angry);
+		this.addState(CustomerStates.ANGRY, angry);
 
 		let concern = new Concern(this, owner);
-		this.addState(CustomerStates.HAPPY, concern);
+		this.addState(CustomerStates.CONCERN, concern);
 
 		let happy = new Happy(this, owner);
 		this.addState(CustomerStates.HAPPY, happy);
 
 		let waiting = new Waiting(this, owner);
-		this.addState(CustomerStates.HAPPY, waiting);
+		this.addState(CustomerStates.WAITING, waiting);
 
 		this.foodWanted = getRandomFood();
 		// this.direction = new Vec2(-1, 0);
