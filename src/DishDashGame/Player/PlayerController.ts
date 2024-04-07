@@ -5,6 +5,8 @@ import GameNode, { TweenableProperties } from "../../Wolfie2D/Nodes/GameNode";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
+import { Foods, Ingredients } from "../WorldEnums/Foods";
+import { WorldStatus } from "../WorldEnums/WorldStatus";
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
 import Fall from "./PlayerStates/Fall";
@@ -35,7 +37,8 @@ export default class PlayerController extends StateMachineAI {
 	MIN_SPEED: number = 200;
     MAX_SPEED: number = 300;
     tilemap: OrthogonalTilemap;
-    suitColor: HW5_Color;
+    hotbar: any = null;
+    // suitColor: HW5_Color;
 
     // HOMEWORK 5 - TODO
     /**
@@ -53,10 +56,10 @@ export default class PlayerController extends StateMachineAI {
         this.initializePlatformer();
 
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
-
-        this.suitColor = options.color;
-
-        this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
+        
+        // this.suitColor = options.color;
+        this.hotbar = Ingredients.POTATO;
+        // this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
 
         owner.tweens.add("flip", {
             startDelay: 0,

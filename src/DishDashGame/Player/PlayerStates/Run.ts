@@ -1,7 +1,6 @@
 import Input from "../../../Wolfie2D/Input/Input";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import { HW5_Color } from "../../hw5_color";
-import { HW5_Events } from "../../hw5_enums";
+import { isIngredientsEnum, isFoodsEnum } from "../../WorldEnums/Foods";
 import { PlayerStates } from "../PlayerController";
 import OnGround from "./OnGround";
 
@@ -13,14 +12,12 @@ export default class Run extends OnGround {
 	}
 
 	updateSuit() {
-		if (this.parent.suitColor == HW5_Color.RED){ 
-			this.owner.animation.playIfNotAlready("RED_WALK", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.GREEN){
-			this.owner.animation.playIfNotAlready("GREEN_WALK", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.BLUE){
-			this.owner.animation.playIfNotAlready("BLUE_WALK", true);
+		if (this.parent.hotbar === null){ 
+			this.owner.animation.playIfNotAlready("WALK", true);
+		} else if (isIngredientsEnum(this.parent.hotbar)){
+			this.owner.animation.playIfNotAlready("CARRY_WALK", true);
+		} else if (isFoodsEnum(this.parent.hotbar)){
+			this.owner.animation.playIfNotAlready("SERVE_WALK", true);
 		}
 	}
 

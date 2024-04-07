@@ -110,7 +110,7 @@ export default class GameLevel extends Scene {
 
         // Initially disable player movement
         Input.disableInput();
-        this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
+        // this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
     }
 
 
@@ -156,21 +156,6 @@ export default class GameLevel extends Scene {
                         this.switchesPressed++;
                         this.switchLabel.text = "Switches Left: " + (this.totalSwitches - this.switchesPressed)
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false});
-                    }
-                    break;
-
-                case HW5_Events.PLAYER_HIT_BALLOON:
-                    {
-                        let node = this.sceneGraph.getNode(event.data.get("node"));
-                        let other = this.sceneGraph.getNode(event.data.get("other"));
-
-                        if(node === this.player){
-                            // Node is player, other is balloon
-                            this.handlePlayerBalloonCollision(<AnimatedSprite>node, <AnimatedSprite>other);
-                        } else {
-                            // Other is player, node is balloon
-                            this.handlePlayerBalloonCollision(<AnimatedSprite>other,<AnimatedSprite>node);
-                        }
                     }
                     break;
 
@@ -242,20 +227,20 @@ export default class GameLevel extends Scene {
             }
         }
 
-        if (this.suitChangeTimer.isStopped()) {
-            if (Input.isKeyJustPressed("1")) {
-                this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
-                this.suitChangeTimer.start();
-            }
-            if (Input.isKeyJustPressed("2")) {
-                this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.BLUE});
-                this.suitChangeTimer.start();
-            }
-            if (Input.isKeyJustPressed("3")) {
-                this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.GREEN});
-                this.suitChangeTimer.start();
-            }
-        }
+        // if (this.suitChangeTimer.isStopped()) {
+        //     if (Input.isKeyJustPressed("1")) {
+        //         this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
+        //         this.suitChangeTimer.start();
+        //     }
+        //     if (Input.isKeyJustPressed("2")) {
+        //         this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.BLUE});
+        //         this.suitChangeTimer.start();
+        //     }
+        //     if (Input.isKeyJustPressed("3")) {
+        //         this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.GREEN});
+        //         this.suitChangeTimer.start();
+        //     }
+        // }
     }
 
     /**
@@ -265,9 +250,9 @@ export default class GameLevel extends Scene {
         // Add a layer for UI
         this.addUILayer("UI");
 
-        this.addLayer("secondary", 2);
+        this.addLayer("secondary", 1);
 
-        this.addLayer("primary", 1);
+        this.addLayer("primary", 2);
     }
 
     /**
@@ -370,14 +355,14 @@ export default class GameLevel extends Scene {
         // Add the player
         this.player = this.add.animatedSprite("player", "primary");
         this.player.scale.set(2, 2);
-        if(!this.playerSpawn){
+        if (!this.playerSpawn) {
             console.warn("Player spawn was never set - setting spawn to (0, 0)");
             this.playerSpawn = Vec2.ZERO;
         }
         this.player.position.copy(this.playerSpawn);
-        this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
-        this.player.colliderOffset.set(0, 2);
-        this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Main", color: HW5_Color.RED});
+        this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 30)));
+        // this.player.colliderOffset.set(0, 2);
+        this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Main"});
 
         this.player.setGroup("player");
 
@@ -413,18 +398,6 @@ export default class GameLevel extends Scene {
 
     }
 
-    protected handlePlayerBalloonCollision(player: AnimatedSprite, balloon: AnimatedSprite) {
-        // There are three states named "sinking", "rising", and "zero_gravity" in BallonController Class
-        if (balloon != null && player.collisionShape.overlaps(balloon.collisionShape)) {
-            this.emitter.fireEvent(HW5_Events.BALLOON_POPPED, {owner: balloon.id});
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
-
-            if ((<PlayerController>player._ai).suitColor != (<BalloonController>balloon._ai).color) {
-                this.incPlayerLife(-1);
-            }
-        }
-    }
-
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let customer = this.add.animatedSprite(spriteKey, "secondary");
         customer.position.set(tilePos.x*32, tilePos.y*32);
@@ -439,10 +412,9 @@ export default class GameLevel extends Scene {
     }
 
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
-        // (<PlayerController>player._ai).hotbar) == (<CustomerController>customer._ai).foodWanted
-        console.log("Checking");
-        if (Input.isKeyPressed("enter") && customer != null && player.collisionShape.overlaps(customer.collisionShape)) { 
-            console.log("Activiated");
+        // 
+        if (Input.isKeyPressed("enter") && customer != null && player.collisionShape.overlaps(customer.collisionShape) 
+            && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted) { 
             this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
         }
@@ -473,5 +445,4 @@ export default class GameLevel extends Scene {
         Input.enableInput();
         this.system.stopSystem();
     }
-    
 }

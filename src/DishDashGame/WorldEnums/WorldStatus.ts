@@ -4,6 +4,7 @@ export enum WorldStatus {
 
     PLAYER_COLLECT = "PlayerCollect",
     PLAYER_DROP = "PlayerDrop",
+    PLAYER_DUMP = "PlayerDump",
     PLAYER_SERVE = "PlayerServe ",
 
     PLAYER_AT_CUSTOMER = "PlayerAtCustomer",

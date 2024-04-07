@@ -1,0 +1,64 @@
+{
+    "name": "Waiter",
+    "spriteSheetImage": "waiter.png",
+    "spriteWidth": 16,
+    "spriteHeight": 32,
+    "columns": 3,
+    "rows": 3,
+    "durationType": "time",
+    "animations": [
+        { 
+            "name": "IDLE",
+            "frames": [ {"index": 0, "duration": 540} ]
+        },
+        {
+            "name": "WALK",
+            "repeat": true,
+            "frames": [ {"index": 1, "duration": 3}, {"index": 2, "duration": 3}]
+        },
+        {
+            "name": "JUMP",
+            "frames":[ {"index": 1, "duration": 32}]
+        },
+        {
+            "name": "FALL",
+            "frames":[ {"index": 2, "duration": 32}]
+        },
+
+        { 
+            "name": "SERVE_IDLE",
+            "frames": [ {"index": 3, "duration": 540} ]
+        },
+        {
+            "name": "SERVE_WALK",
+            "repeat": true,
+            "frames": [ {"index": 4, "duration": 16}, {"index": 5, "duration": 16}]
+        },
+        {
+            "name": "SERVE_JUMP",
+            "frames":[ {"index": 4, "duration": 32}]
+        },
+        {
+            "name": "SERVE_FALL",
+            "frames":[ {"index": 5, "duration": 32}]
+        },
+
+        { 
+            "name": "CARRY_IDLE",
+            "frames": [ {"index": 6, "duration": 540} ]
+        },
+        {
+            "name": "CARRY_WALK",
+            "repeat": true,
+            "frames": [ {"index": 7, "duration": 16}, {"index": 8, "duration": 16}]
+        },
+        {
+            "name": "CARRY_JUMP",
+            "frames":[ {"index": 7, "duration": 32}]
+        },
+        {
+            "name": "CARRY_FALL",
+            "frames":[ {"index": 8, "duration": 32}]
+        }
+    ]
+}

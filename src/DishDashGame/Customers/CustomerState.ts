@@ -32,7 +32,7 @@ export default abstract class CustomerState extends State {
 	}
 
 	handleInput(event: GameEvent): void {
-		if (event.type == WorldStatus.PLAYER_SERVE) {
+		if (event.type == WorldStatus.PLAYER_SERVE && this.expression != CustomerStates.ANGRY) {
 			this.satisfied = true;
 		}
 	}

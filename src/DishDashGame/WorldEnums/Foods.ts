@@ -14,8 +14,17 @@ export const foodIngredients: {[key in Foods]: Ingredients[]} = {
     [Foods.FRIES]: [Ingredients.POTATO]
 };
 
-export function getRandomFood(): Foods {
-    const foodValues = Object.keys(Foods);
+function getRandomFood(): Foods {
+    const foodValues = Object.values(Foods);
     const randomIndex = Math.floor(Math.random() * foodValues.length);
-    return foodValues[randomIndex] as Foods;
+    return foodValues[randomIndex];
 }
+
+export function isFoodsEnum(value: any): boolean {
+    return Object.values(Foods).includes(value as Foods);
+}
+
+export function isIngredientsEnum(value: any): boolean {
+    return Object.values(Ingredients).includes(value as Ingredients);
+}
+

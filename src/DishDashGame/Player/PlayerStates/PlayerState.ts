@@ -5,6 +5,7 @@ import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import Input from "../../../Wolfie2D/Input/Input";
 import GameNode from "../../../Wolfie2D/Nodes/GameNode";
 import Timer from "../../../Wolfie2D/Timing/Timer";
+import { WorldStatus } from "../../WorldEnums/WorldStatus";
 import { HW5_Events } from "../../hw5_enums";
 import PlayerController from "../PlayerController";
 
@@ -24,9 +25,9 @@ export default abstract class PlayerState extends State {
 
 	// Change the suit color on receiving a suit color change event
 	handleInput(event: GameEvent): void {
-		if (event.type == HW5_Events.SUIT_COLOR_CHANGE) {
-			this.parent.suitColor = event.data.get("color");
-		}
+		// if (event.type == HW5_Events.SUIT_COLOR_CHANGE) {
+		// 	this.parent.suitColor = event.data.get("color");
+		// }
 	}
 
 	/** 
@@ -50,7 +51,7 @@ export default abstract class PlayerState extends State {
 		// Do gravity
 		this.updateSuit();
 		if (this.positionTimer.isStopped()){
-			this.emitter.fireEvent(HW5_Events.PLAYER_MOVE, {position: this.owner.position.clone()});
+			this.emitter.fireEvent(WorldStatus.PLAYER_MOVE, {position: this.owner.position.clone()});
 			this.positionTimer.start();
 		}
 		this.parent.velocity.y += this.gravity*deltaT;

@@ -1,7 +1,7 @@
 {
     "name": "Customer",
     "spriteSheetImage": "customer.png",
-    "spriteWidth": 32,
+    "spriteWidth": 16,
     "spriteHeight": 32,
     "columns": 4,
     "rows": 4,

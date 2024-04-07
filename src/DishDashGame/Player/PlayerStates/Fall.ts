@@ -1,20 +1,18 @@
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import { HW5_Color } from "../../hw5_color";
+import { isIngredientsEnum, isFoodsEnum } from "../../WorldEnums/Foods";
 import InAir from "./InAir";
 
 export default class Fall extends InAir {
     owner: AnimatedSprite;
 
 	onEnter(options: Record<string, any>): void {
-		if (this.parent.suitColor == HW5_Color.RED){ 
-			this.owner.animation.play("RED_FALL", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.GREEN){
-			this.owner.animation.play("GREEN_FALL", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.BLUE){
-			this.owner.animation.play("BLUE_FALL", true);
+		if (this.parent.hotbar === null){ 
+			this.owner.animation.playIfNotAlready("FALL", true);
+		} else if (isIngredientsEnum(this.parent.hotbar)){
+			this.owner.animation.playIfNotAlready("CARRY_FALL", true);
+		} else if (isFoodsEnum(this.parent.hotbar)){
+			this.owner.animation.playIfNotAlready("SERVE_FALL", true);
 		}
 	}
 

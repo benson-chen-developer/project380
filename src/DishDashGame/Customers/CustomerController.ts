@@ -8,7 +8,7 @@ import Waiting from "./Moods/Waiting";
 import Happy from "./Moods/Happy";
 import Angry from "./Moods/Angry";
 import Concern from "./Moods/Concern";
-import { Foods, getRandomFood } from "../WorldEnums/Foods";
+import { Foods } from "../WorldEnums/Foods";
 
 export enum CustomerStates {
 	WAITING = "waiting",
@@ -42,7 +42,8 @@ export default class CustomerController extends StateMachineAI {
 		let waiting = new Waiting(this, owner);
 		this.addState(CustomerStates.WAITING, waiting);
 
-		this.foodWanted = getRandomFood();
+		// this.foodWanted = getRandomFood();
+		this.foodWanted = Foods.FRIES;
 		// this.direction = new Vec2(-1, 0);
 		this.initialize(CustomerStates.WAITING);
 	}
