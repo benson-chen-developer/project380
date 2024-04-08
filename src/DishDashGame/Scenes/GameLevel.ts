@@ -412,9 +412,10 @@ export default class GameLevel extends Scene {
     }
 
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
-        // 
         if (Input.isKeyPressed("enter") && customer != null && player.collisionShape.overlaps(customer.collisionShape) 
-            && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted) { 
+        && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted) {
+            (<PlayerController>player._ai).hotbar = null;
+            
             this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
         }
