@@ -55,8 +55,6 @@ export default class Level1 extends GameLevel {
         this.playerSpawn = new Vec2(5*32, 14*32);
 
         // Set the total switches and balloons in the level
-        this.totalSwitches = 4;
-        this.totalBalloons = 6;
         this.totalCustomers = 1;
 
         // Do generic setup for a GameLevel
