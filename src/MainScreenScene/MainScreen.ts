@@ -157,29 +157,34 @@ export default class MainScreen extends Scene {
         const Btn2 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1, center.y * 1), text: "2"});
         Btn2.size.set(100, 100);
         Btn2.borderWidth = 2;
-        Btn2.backgroundColor = new Color(65,77,204, 1);
+        // Btn2.backgroundColor = new Color(65,77,204, 1);
+        Btn2.backgroundColor = new Color(198,198,198, 1);
         // Btn2.onClickEventId = MainScreenEvent.MENU;
 
         const Btn3 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1.2, center.y * 1), text: "3"});
         Btn3.size.set(100, 100);
         Btn3.borderWidth = 2;
-        Btn3.backgroundColor = new Color(65,205,98, 1);
+        // Btn3.backgroundColor = new Color(65,205,98, 1);
+        Btn3.backgroundColor = new Color(198,198,198, 1);
         // Btn3.onClickEventId = MainScreenEvent.MENU;
         const Btn4 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * .8, center.y * 1.5), text: "4"});
         Btn4.size.set(100, 100);
         Btn4.borderWidth = 2;
-        Btn4.backgroundColor = new Color(65,205,98, 1);
+        // Btn4.backgroundColor = new Color(65,205,98, 1);
+        Btn4.backgroundColor = new Color(198,198,198, 1);
         // Btn4.onClickEventId = MainScreenEvent.MENU;
 
         const Btn5= this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1, center.y * 1.5), text: "5"});
         Btn5.size.set(100, 100);
         Btn5.borderWidth = 2;
-        Btn5.backgroundColor = new Color(250,78,0, 1);
+        // Btn5.backgroundColor = new Color(250,78,0, 1);
+        Btn5.backgroundColor = new Color(198,198,198, 1);
         // Btn5.onClickEventId = MainScreenEvent.MENU;
         const Btn6 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1.2, center.y * 1.5), text: "6"});
         Btn6.size.set(100, 100);
         Btn6.borderWidth = 2;
-        Btn6.backgroundColor = new Color(250,78,0, 1);
+        // Btn6.backgroundColor = new Color(250,78,0, 1);
+        Btn6.backgroundColor = new Color(198,198,198, 1);
         // Btn6.onClickEventId = MainScreenEvent.MENU;
 
         //Controls Screen

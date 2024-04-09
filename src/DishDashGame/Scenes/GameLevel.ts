@@ -39,6 +39,11 @@ export default class GameLevel extends Scene {
     protected player: AnimatedSprite;
     protected respawnTimer: Timer;
 
+    // Food Label
+    protected foodSpawn: Vec2;
+    protected food: AnimatedSprite;
+    // protected respawnTimer: Timer;
+
     // Labels for the UI
     protected static livesCount: number = 3;
     protected livesCountLabel: Label;
@@ -73,6 +78,12 @@ export default class GameLevel extends Scene {
     protected switchLabel: Label;
     protected switchesPressed: number;
 
+    //Player Hot bar
+    protected playerHotBar: Label;
+    protected playerItem: string = "fries";
+
+    protected customerWantLabel: Label;
+
     startScene(): void {
         this.balloonsPopped = 0;
         this.switchesPressed = 0;
@@ -83,6 +94,7 @@ export default class GameLevel extends Scene {
         this.initLayers();
         this.initViewport();
         this.initPlayer();
+        this.initFood();
         this.subscribeToEvents();
         this.addUI();
 
@@ -134,7 +146,6 @@ export default class GameLevel extends Scene {
                     break;
                 case WorldStatus.PLAYER_SERVE:
                     {
-                        
                     }
                     break;
                 case WorldStatus.CUSTOMER_DELETE:
@@ -292,6 +303,16 @@ export default class GameLevel extends Scene {
         this.customersSatisfiedLabel.textColor = Color.BLACK
         this.customersSatisfiedLabel.font = "PixelSimple";
 
+        //Hotbar
+        this.playerHotBar = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(400, 30), text: "Player Is Holding " + (this.playerItem)});
+        this.playerHotBar.textColor = Color.BLACK
+        this.playerHotBar.font = "PixelSimple";
+
+        //Customer Want
+        this.customerWantLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(400, 50), text: "Serve Customer Fries (Press Enter To Serve)"});
+        this.customerWantLabel.textColor = Color.BLACK
+        this.customerWantLabel.font = "PixelSimple";
+
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Complete"});
         this.levelEndLabel.size.set(1200, 60);
@@ -370,6 +391,21 @@ export default class GameLevel extends Scene {
     }
 
     /**
+     * Init the food
+     */
+    protected initFood(): void{
+        //Add the food
+        this.food = this.add.animatedSprite("bun", "primary");
+        this.food.scale.set(2, 2);
+
+        if (!this.foodSpawn) {
+            console.warn("Food spawn was never set - setting spawn to (0, 0)");
+            this.foodSpawn = Vec2.ZERO;
+        }
+        this.food.position.copy(this.foodSpawn);
+    }
+
+    /**
      * Initializes the level end area
      */
     protected addLevelEnd(startingTile: Vec2, size: Vec2): void {
@@ -411,6 +447,19 @@ export default class GameLevel extends Scene {
 
     }
 
+    protected addFood(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let food = this.add.animatedSprite(spriteKey, "secondary");
+        food.position.set(tilePos.x*32, tilePos.y*32);
+        food.scale.set(2, 2);
+        
+        // food.addPhysics();
+        // food.setTrigger("player", WorldStatus.PLAYER_AT_FOOD, WorldStatus.PLAYER_SERVE);
+        
+        food.addAI(CustomerController, aiOptions);
+        food.setGroup("food");
+
+    }
+
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
         if (Input.isKeyPressed("enter") && customer != null && player.collisionShape.overlaps(customer.collisionShape) 
         && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted) {
@@ -418,6 +467,10 @@ export default class GameLevel extends Scene {
             
             this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
+            this.playerItem = "Nothing"
+            this.playerHotBar.text = "Player is Holding: " + this.playerItem;
+
+            this.customerWantLabel.text = "No Customers";
         }
     }
 
