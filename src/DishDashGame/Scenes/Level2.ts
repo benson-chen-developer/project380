@@ -31,7 +31,6 @@ export default class Level2 extends GameLevel {
 
         this.playerSpawn = new Vec2(4*32, 15*32);
         this.totalSwitches = 7;
-        this.totalBalloons = 7;
 
         // Do generic setup for a GameLevel
         super.startScene();

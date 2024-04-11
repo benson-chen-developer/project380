@@ -14,7 +14,7 @@ export const foodIngredients: {[key in Foods]: Ingredients[]} = {
     [Foods.FRIES]: [Ingredients.POTATO]
 };
 
-function getRandomFood(): Foods {
+export function getRandomFood(): Foods {
     const foodValues = Object.values(Foods);
     const randomIndex = Math.floor(Math.random() * foodValues.length);
     return foodValues[randomIndex];

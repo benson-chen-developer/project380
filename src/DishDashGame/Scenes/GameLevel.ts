@@ -128,18 +128,23 @@ export default class GameLevel extends Scene {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
                         let other = this.sceneGraph.getNode(event.data.get("other"));
 
-                        if(node === this.player){ // Node is player, other is balloon
+                        if (node === this.player){ 
+                            // Node is player, other is Customer
                             this.handlePlayerCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
-                        } else { // Other is player, node is balloon
+                        } else { 
+                            // Other is player, node is Customer
                             this.handlePlayerCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
                         }
                     }
                     break;
-                case WorldStatus.PLAYER_SERVE:
+
+                case WorldStatus.CUSTOMER_LEAVING:
                     {
-                        
+                        let node = this.sceneGraph.getNode(event.data.get("sprite"));
+                        node.destroy();
                     }
                     break;
+
                 case WorldStatus.CUSTOMER_DELETE:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("owner"));
@@ -147,8 +152,6 @@ export default class GameLevel extends Scene {
                         node.destroy();
                     }
                     break;
-
-
                     
                 case HW5_Events.PLAYER_HIT_SWITCH:
                     {
@@ -262,6 +265,7 @@ export default class GameLevel extends Scene {
             WorldStatus.PLAYER_AT_CUSTOMER,
             WorldStatus.PLAYER_COLLECT,
             WorldStatus.PLAYER_SERVE,
+            WorldStatus.CUSTOMER_LEAVING,
             WorldStatus.CUSTOMER_DELETE,
             WorldStatus.CUSTOMER_SPAWN,
 
@@ -409,16 +413,28 @@ export default class GameLevel extends Scene {
         customer.addPhysics();
         customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, WorldStatus.PLAYER_SERVE);
         
+        let foodWantedSprite = this.addFoodIndicator(aiOptions.indicatorKey, tilePos, aiOptions);
+        aiOptions["foodWantedSprite"] = foodWantedSprite;
+        
         customer.addAI(CustomerController, aiOptions);
         customer.setGroup("customer");
-
+    }
+    protected addFoodIndicator(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): AnimatedSprite {
+        let foodIndicator = this.add.animatedSprite(spriteKey, "secondary");
+        foodIndicator.position.set(tilePos.x*32, (tilePos.y-1)*32-16);
+        foodIndicator.scale.set(2, 2);
+        // foodIndicator.addPhysics();     
+        // foodIndicator.addAI(CustomerController, aiOptions);
+        foodIndicator.setGroup("foodIndicator");
+        return foodIndicator;
     }
 
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
         if (customer != null && player.collisionShape.overlaps(customer.collisionShape)) {
             this.customersWants = (<CustomerController>customer._ai).foodWanted;
 
-            if (Input.isKeyPressed("enter") && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted) {
+            if (Input.isKeyPressed("enter") && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted 
+            && (<CustomerController>customer._ai).foodWanted != null) {
                 (<PlayerController>player._ai).hotbar = null;
                 
                 this.customersSatisfied++;

@@ -11,6 +11,7 @@ export default class Angry extends CustomerState {
 		
 		this.leaving = true;
 		this.deleteTimer.start();
+		this.parent.foodWanted = null;
 	}
 
 	onExit(): Record<string, any> {

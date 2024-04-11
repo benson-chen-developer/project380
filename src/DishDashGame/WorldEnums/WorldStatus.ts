@@ -11,6 +11,7 @@ export enum WorldStatus {
     
     CUSTOMER_SPAWN = "CustomerSpawn",
     CUSTOMER_DELETE = "CustomerDelete",
+    CUSTOMER_LEAVING = "CustomerLeaving",
     
     PLAYER_ENTERED_LEVEL_END = "PlayerEnteredLevelEnd",
     

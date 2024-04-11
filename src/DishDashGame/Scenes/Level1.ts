@@ -1,7 +1,7 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import { HW5_Color } from "../hw5_color";
+import { getRandomFood } from "../WorldEnums/Foods";
 import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
 
@@ -18,7 +18,7 @@ export default class Level1 extends GameLevel {
         this.load.spritesheet("red", "game_assets/spritesheets/redBalloon.json");
         // this.load.spritesheet("blue", "game_assets/spritesheets/blueBalloon.json");
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
-
+        this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
 
         this.load.audio("jump", "game_assets/sounds/jump.wav");
         this.load.audio("switch", "game_assets/sounds/switch.wav");
@@ -71,7 +71,7 @@ export default class Level1 extends GameLevel {
 
         for (let pos of [new Vec2(2, 15)]){
             console.log("customer has been added");
-            this.addCustomer("customer", pos, null);
+            this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
         }
 
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});

@@ -9,6 +9,7 @@ import Happy from "./Moods/Happy";
 import Angry from "./Moods/Angry";
 import Concern from "./Moods/Concern";
 import { Foods } from "../WorldEnums/Foods";
+import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
 export enum CustomerStates {
 	WAITING = "waiting",
@@ -19,10 +20,11 @@ export enum CustomerStates {
 
 export default class CustomerController extends StateMachineAI {
 	owner: GameNode;
-	direction: Vec2 = Vec2.ZERO;
-	velocity: Vec2 = Vec2.ZERO;
-	foodWanted: Foods;
-	speed: number = 100;
+	foodWanted: Foods
+	foodWantedSprite: AnimatedSprite;
+	// direction: Vec2 = Vec2.ZERO;
+	// velocity: Vec2 = Vec2.ZERO;
+	// speed: number = 100;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
 		this.owner = owner;
@@ -42,13 +44,17 @@ export default class CustomerController extends StateMachineAI {
 		let waiting = new Waiting(this, owner);
 		this.addState(CustomerStates.WAITING, waiting);
 
-		// this.foodWanted = getRandomFood();
-		this.foodWanted = Foods.FRIES;
-		// this.direction = new Vec2(-1, 0);
+		this.foodWanted = options.foodWanted;
+		this.foodWantedSprite = options.foodWantedSprite;
+		this.foodWantedSprite.animation.play(this.foodWanted, true);
 		this.initialize(CustomerStates.WAITING);
 	}
 
 	changeState(stateName: string): void {
+		if ((stateName === CustomerStates.HAPPY || stateName === CustomerStates.ANGRY)){
+            this.emitter.fireEvent(WorldStatus.CUSTOMER_LEAVING, {sprite: this.foodWantedSprite.id});
+        }
+
         super.changeState(stateName);
 	}
 

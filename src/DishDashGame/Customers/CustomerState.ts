@@ -24,8 +24,6 @@ export default abstract class CustomerState extends State {
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);
 		this.owner = owner;
-		// this.enterTimer.start();
-		// this.waitTimer.start(); 
 	}
 
 	handleInput(event: GameEvent): void {
