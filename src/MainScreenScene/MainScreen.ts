@@ -52,12 +52,13 @@ export default class MainScreen extends Scene {
         this.viewport.setZoomLevel(1);
         let sceneOptions = {
             physics: {
-                groupNames: ["ground", "player", "balloon"],
+                groupNames: ["ground", "player", "customer", "flyingDish"],
                 collisions:
                 [
-                    [0, 1, 1],
-                    [1, 0, 0],
-                    [1, 0, 0]
+                    [0, 1, 1, 1],
+                    [1, 0, 0, 0],
+                    [1, 0, 0, 0],
+                    [1, 1, 0, 0]
                 ]
             }
         }

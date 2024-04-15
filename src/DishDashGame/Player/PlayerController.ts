@@ -33,6 +33,7 @@ export enum PlayerStates {
 export default class PlayerController extends StateMachineAI {
     protected owner: GameNode;
     velocity: Vec2 = Vec2.ZERO;
+    directPostiveX: boolean = true;
 	speed: number = 200;
 	MIN_SPEED: number = 200;
     MAX_SPEED: number = 300;
@@ -52,12 +53,8 @@ export default class PlayerController extends StateMachineAI {
      */
     initializeAI(owner: GameNode, options: Record<string, any>){
         this.owner = owner;
-
         this.initializePlatformer();
-
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
-        
-        // this.suitColor = options.color;
         this.hotbar = Foods.FRIES;
         // this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
 
@@ -115,8 +112,10 @@ export default class PlayerController extends StateMachineAI {
      */
     update(deltaT: number): void {
 		super.update(deltaT);
-
-		if(this.currentState instanceof Jump){
+        if (this.velocity.x != 0) {
+            this.directPostiveX = this.velocity.x > 0 ? true : false;
+        }
+		if (this.currentState instanceof Jump){
 			Debug.log("playerstate", "Player State: Jump");
 		} else if (this.currentState instanceof Walk){
 			Debug.log("playerstate", "Player State: Walk");

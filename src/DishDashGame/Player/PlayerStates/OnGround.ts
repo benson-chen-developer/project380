@@ -15,7 +15,7 @@ export default class OnGround extends PlayerState {
 
 		let direction = this.getInputDirection();
 
-		if(direction.x !== 0){
+		if (direction.x !== 0){
 			(<Sprite>this.owner).invertX = MathUtils.sign(direction.x) < 0;
 		}
 

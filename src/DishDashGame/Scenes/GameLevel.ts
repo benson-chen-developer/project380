@@ -25,6 +25,7 @@ import { WorldStatus } from "../WorldEnums/WorldStatus";
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
+import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishController";
 
 // HOMEWORK 5 - TODO
 /**
@@ -123,6 +124,21 @@ export default class GameLevel extends Scene {
             let event = this.receiver.getNextEvent();
             
             switch(event.type){
+                case WorldStatus.DISH_HIT_CUSTOMER:
+                    {
+                        console.log("Called Dish Customer")
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        if (node === this.player){ 
+                            // Node is dish, other is Customer
+                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                        } else { 
+                            // Other is dish, node is Customer
+                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
+                        }
+                    }
+                    break;
                 case WorldStatus.PLAYER_AT_CUSTOMER:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
@@ -229,11 +245,23 @@ export default class GameLevel extends Scene {
                     }
             }
         }
+        
 
         if ((<PlayerController>this.player._ai).hotbar == null) {
             this.playersHotbar = "Nothing";
         } else {
             this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+            if (Input.isKeyPressed("enter")) {
+                //console.log("Direction Postive X: " + (<PlayerController>this.player._ai).directPostiveX);
+                let options: Record<string, any> = {
+                    "postiveXDirection" : (<PlayerController>this.player._ai).directPostiveX,
+                    "foodThrown" : (<PlayerController>this.player._ai).hotbar
+                };
+
+                this.addFlyingDish("flyingDish", this.player.position.clone(), options);
+                (<PlayerController>this.player._ai).hotbar = null;
+                this.playersHotbar = "Nothing";
+            }
         }
         this.playersHotbarLabel.text = "Waiter's Holding: " + (this.playersHotbar);
     }
@@ -263,6 +291,7 @@ export default class GameLevel extends Scene {
     protected subscribeToEvents(){
         this.receiver.subscribe([
             WorldStatus.PLAYER_AT_CUSTOMER,
+            WorldStatus.DISH_HIT_CUSTOMER,
             WorldStatus.PLAYER_COLLECT,
             WorldStatus.PLAYER_SERVE,
             WorldStatus.CUSTOMER_LEAVING,
@@ -386,25 +415,6 @@ export default class GameLevel extends Scene {
         this.levelEndArea.color = new Color(0, 0, 0, 0);
     }
 
-    /**
-     * Adds an balloon into the game
-     * @param spriteKey The key of the balloon sprite
-     * @param tilePos The tilemap position to add the balloon to
-     * @param aiOptions The options for the balloon AI
-     */
-    protected addBalloon(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
-        let balloon = this.add.animatedSprite(spriteKey, "primary");
-        balloon.position.set(tilePos.x*32, tilePos.y*32);
-        balloon.scale.set(2, 2);
-        balloon.addPhysics();
-
-        balloon.setTrigger("player", HW5_Events.PLAYER_HIT_BALLOON, HW5_Events.BALLOON_POPPED);
-
-        balloon.addAI(BalloonController, aiOptions);
-        balloon.setGroup("balloon");
-
-    }
-
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let customer = this.add.animatedSprite(spriteKey, "secondary");
         customer.position.set(tilePos.x*32, tilePos.y*32);
@@ -423,17 +433,25 @@ export default class GameLevel extends Scene {
         let foodIndicator = this.add.animatedSprite(spriteKey, "secondary");
         foodIndicator.position.set(tilePos.x*32, (tilePos.y-1)*32-16);
         foodIndicator.scale.set(2, 2);
-        // foodIndicator.addPhysics();     
-        // foodIndicator.addAI(CustomerController, aiOptions);
         foodIndicator.setGroup("foodIndicator");
         return foodIndicator;
+    }
+
+    protected addFlyingDish(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let dish = this.add.animatedSprite(spriteKey, "primary");
+        dish.position.set(tilePos.x, tilePos.y);
+        dish.scale.set(2, 2);
+        dish.addPhysics();
+        dish.setTrigger("customer", WorldStatus.DISH_HIT_CUSTOMER, WorldStatus.PLAYER_SERVE);
+        dish.addAI(FlyingDishController, aiOptions);
+        dish.setGroup("flyingDish");
     }
 
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
         if (customer != null && player.collisionShape.overlaps(customer.collisionShape)) {
             this.customersWants = (<CustomerController>customer._ai).foodWanted;
 
-            if (Input.isKeyPressed("enter") && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted 
+            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted 
             && (<CustomerController>customer._ai).foodWanted != null) {
                 (<PlayerController>player._ai).hotbar = null;
                 
@@ -448,6 +466,24 @@ export default class GameLevel extends Scene {
         }
         this.customersWantsLabel.text = "Customer Wants: " + (this.customersWants);
     }
+
+    protected handleFlyingDishCustomerInteraction(dish: AnimatedSprite, customer: AnimatedSprite) {
+        if (customer != null && dish.collisionShape.overlaps(customer.collisionShape)) {
+            if ((<FlyingDishController>dish._ai).food === (<CustomerController>customer._ai).foodWanted 
+            && (<CustomerController>customer._ai).foodWanted != null) {
+                
+                this.customersSatisfied++;
+                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
+
+                this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
+            }
+            dish.destroy();
+        }
+    }
+
+
+
 
     /**
      * Increments the amount of life the player has

@@ -19,6 +19,7 @@ export default class Level1 extends GameLevel {
         // this.load.spritesheet("blue", "game_assets/spritesheets/blueBalloon.json");
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
+        this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
 
         this.load.audio("jump", "game_assets/sounds/jump.wav");
         this.load.audio("switch", "game_assets/sounds/switch.wav");

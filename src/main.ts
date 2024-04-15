@@ -15,7 +15,8 @@ import MainScreen from "./MainScreenScene/MainScreen";
             {name: "left", keys: ["a"]},
             {name: "right", keys: ["d"]},
             {name: "jump", keys: ["w", "space"]},
-            {name: "run", keys: ["shift"]}
+            {name: "run", keys: ["shift"]},
+            {name: "interact", keys: ["e"]}
         ],
         useWebGL: false,                        // Tell the game we want to use webgl
         showDebug: false                       // Whether to show debug messages. You can change this to true if you want

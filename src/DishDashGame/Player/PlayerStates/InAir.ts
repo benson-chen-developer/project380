@@ -1,4 +1,6 @@
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import Sprite from "../../../Wolfie2D/Nodes/Sprites/Sprite";
+import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
 import { PlayerStates } from "../PlayerController";
 import PlayerState from "./PlayerState";
 
@@ -15,6 +17,10 @@ export default abstract class InAir extends PlayerState {
 
         if (this.owner.onGround) {
 			this.finished(PlayerStates.PREVIOUS);
+		}
+
+        if (dir.x !== 0){
+			(<Sprite>this.owner).invertX = MathUtils.sign(dir.x) < 0;
 		}
     }
 }

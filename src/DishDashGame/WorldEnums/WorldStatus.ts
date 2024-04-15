@@ -8,6 +8,7 @@ export enum WorldStatus {
     PLAYER_SERVE = "PlayerServe ",
 
     PLAYER_AT_CUSTOMER = "PlayerAtCustomer",
+    DISH_HIT_CUSTOMER = "DishHitCustomer",
     
     CUSTOMER_SPAWN = "CustomerSpawn",
     CUSTOMER_DELETE = "CustomerDelete",
