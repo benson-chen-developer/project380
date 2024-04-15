@@ -130,7 +130,7 @@ export default class GameLevel extends Scene {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
                         let other = this.sceneGraph.getNode(event.data.get("other"));
 
-                        if (node === this.player){ 
+                        if ((<FlyingDishController>node._ai).food){ 
                             // Node is dish, other is Customer
                             this.handleFlyingDishCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
                         } else { 
@@ -422,6 +422,7 @@ export default class GameLevel extends Scene {
         
         customer.addPhysics();
         customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, WorldStatus.PLAYER_SERVE);
+        customer.setTrigger("flyingDish", WorldStatus.DISH_HIT_CUSTOMER, WorldStatus.PLAYER_SERVE);
         
         let foodWantedSprite = this.addFoodIndicator(aiOptions.indicatorKey, tilePos, aiOptions);
         aiOptions["foodWantedSprite"] = foodWantedSprite;
@@ -442,7 +443,7 @@ export default class GameLevel extends Scene {
         dish.position.set(tilePos.x, tilePos.y);
         dish.scale.set(2, 2);
         dish.addPhysics();
-        dish.setTrigger("customer", WorldStatus.DISH_HIT_CUSTOMER, WorldStatus.PLAYER_SERVE);
+        // dish.setTrigger("customer", WorldStatus.DISH_HIT_CUSTOMER, WorldStatus.PLAYER_SERVE);
         dish.addAI(FlyingDishController, aiOptions);
         dish.setGroup("flyingDish");
     }
@@ -477,6 +478,8 @@ export default class GameLevel extends Scene {
 
                 this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
+            } else {
+                (<CustomerController>customer._ai).changeState("angry");
             }
             dish.destroy();
         }
