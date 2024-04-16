@@ -317,7 +317,7 @@ export default class GameLevel extends Scene {
         this.customersSatisfiedLabel.textColor = Color.BLACK;
         // this.customersSatisfiedLabel.font = "PixelSimple";
 
-        this.testLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(400, 30), text: "Go to Customer and Interact (Press Enter)"});
+        this.testLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(400, 30), text: "[E] to Interact, [Enter] to Throw"});
         this.testLabel.textColor = Color.BLACK;
 
         this.customersWantsLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(100, 330), text: "Customer Wants: " + (this.customersWants)});
