@@ -26,6 +26,8 @@ import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
 import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishController";
+import CookingStationController from "../CookingStation/CookingStationController";
+import { DishDashEvents } from "../DishDashEvents";
 
 // HOMEWORK 5 - TODO
 /**
@@ -75,6 +77,8 @@ export default class GameLevel extends Scene {
     protected totalSwitches: number;
     protected switchLabel: Label;
     protected switchesPressed: number;
+
+    protected oven: CookingStationController
 
     startScene(): void {
         this.switchesPressed = 0;
@@ -139,6 +143,38 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
+                case DishDashEvents.NEXT_TO_COOKNGSTATION: 
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        //This is check if player is collding with oven
+                        if (node === this.player){ 
+                            // Node is player, other is oven
+                            const isNextTo = this.handleIsPlayerCollidingWithSprite(<AnimatedSprite>node, <AnimatedSprite>other)
+                        
+                            if(isNextTo){
+                                this.oven.nextToOven = true;
+                            } else {
+                                this.oven.nextToOven = false;
+                            }
+                        } else { 
+                            // Other is player, node is oven
+                            const isNextTo = this.handleIsPlayerCollidingWithSprite(<AnimatedSprite>other,<AnimatedSprite>node);
+                        
+                            if(isNextTo){
+                                this.oven.nextToOven = true;
+                            } else {
+                                this.oven.nextToOven = false;
+                            }
+                        }
+                    }
+                    break;
+                case DishDashEvents.LEAVE_COOKINGSTATION: 
+                    {
+                        this.oven.nextToOven = false;
+                    }
+                    break;
                 case WorldStatus.PLAYER_AT_CUSTOMER:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
@@ -146,7 +182,9 @@ export default class GameLevel extends Scene {
 
                         if (node === this.player){ 
                             // Node is player, other is Customer
+                            
                             this.handlePlayerCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                            
                         } else { 
                             // Other is player, node is Customer
                             this.handlePlayerCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
@@ -225,12 +263,13 @@ export default class GameLevel extends Scene {
                         if(this.nextLevel){
                             let sceneOptions = {
                                 physics: {
-                                    groupNames: ["ground", "player", "balloon"],
+                                    groupNames: ["ground", "player", "balloon", "interactableObj"],
                                     collisions:
                                     [
-                                        [0, 1, 1],
-                                        [1, 0, 0],
-                                        [1, 0, 0]
+                                        [0, 1, 1, 1],
+                                        [1, 0, 0, 1],
+                                        [1, 0, 0, 1],
+                                        [1, 1, 1, 1]
                                     ]
                                 }
                             }
@@ -297,6 +336,8 @@ export default class GameLevel extends Scene {
             WorldStatus.CUSTOMER_LEAVING,
             WorldStatus.CUSTOMER_DELETE,
             WorldStatus.CUSTOMER_SPAWN,
+            
+            DishDashEvents.NEXT_TO_COOKNGSTATION,
 
             HW5_Events.PLAYER_HIT_SWITCH,
             HW5_Events.PLAYER_HIT_BALLOON,
@@ -415,6 +456,20 @@ export default class GameLevel extends Scene {
         this.levelEndArea.color = new Color(0, 0, 0, 0);
     }
 
+    protected addOven(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let oven = this.add.animatedSprite(spriteKey, "secondary");
+        oven.position.set(tilePos.x*32, tilePos.y*32);
+        oven.scale.set(.7, .7);
+        
+        oven.addPhysics();
+        oven.setTrigger("player", DishDashEvents.NEXT_TO_COOKNGSTATION, null);
+        
+        oven.addAI(CookingStationController, aiOptions);
+        oven.setGroup("interactableObj");
+
+        this.oven = <CookingStationController>oven.ai;
+    }
+
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let customer = this.add.animatedSprite(spriteKey, "secondary");
         customer.position.set(tilePos.x*32, tilePos.y*32);
@@ -466,6 +521,14 @@ export default class GameLevel extends Scene {
             this.customersWants = "???";
         }
         this.customersWantsLabel.text = "Customer Wants: " + (this.customersWants);
+    }
+
+    protected handleIsPlayerCollidingWithSprite(player: AnimatedSprite, otherSprite: AnimatedSprite){
+        if(otherSprite !== null && player.collisionShape.overlaps(otherSprite.collisionShape)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     protected handleFlyingDishCustomerInteraction(dish: AnimatedSprite, customer: AnimatedSprite) {

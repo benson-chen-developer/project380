@@ -18,6 +18,7 @@ export default class Level1 extends GameLevel {
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
         this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
+        this.load.spritesheet("blueBalloon", "game_assets/spritesheets/blueBalloon.json");
 
         this.load.audio("jump", "game_assets/sounds/jump.wav");
         this.load.audio("switch", "game_assets/sounds/switch.wav");
@@ -68,10 +69,13 @@ export default class Level1 extends GameLevel {
         //     this.addBalloon("red", pos, {color: HW5_Color.RED});
         // }
 
+        this.addOven('blueBalloon', new Vec2(4,15), null);
+
         for (let pos of [new Vec2(2, 15)]){
             console.log("customer has been added");
             this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
         }
+
 
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }

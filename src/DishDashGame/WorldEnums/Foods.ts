@@ -7,6 +7,8 @@ export enum Ingredients {
     PATTY = "patty",
     BUNS = "buns",
     POTATO = "potato",
+    NONE = "none",
+    COOKEDPATTY = "cookedPatty"
 }
 
 export const foodIngredients: {[key in Foods]: Ingredients[]} = {
