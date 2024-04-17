@@ -30,7 +30,7 @@ export default class Level2 extends GameLevel {
         this.viewport.setBounds(0, 0, 64*32, 20*32);
 
         this.playerSpawn = new Vec2(4*32, 15*32);
-        this.totalSwitches = 7;
+        //this.totalSwitches = 7;
 
         // Do generic setup for a GameLevel
         super.startScene();

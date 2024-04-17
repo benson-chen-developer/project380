@@ -1,6 +1,7 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import Timer from "../../Wolfie2D/Timing/Timer";
 import { getRandomFood } from "../WorldEnums/Foods";
 import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
@@ -15,7 +16,9 @@ export default class Level1 extends GameLevel {
         // Load resources
         this.load.tilemap("level1", "game_assets/tilemaps/level1.json");
         this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
+        
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
+
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
         this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
 
@@ -54,7 +57,8 @@ export default class Level1 extends GameLevel {
         this.playerSpawn = new Vec2(5*32, 14*32);
 
         // Set the total switches and balloons in the level
-        this.totalCustomers = 1;
+        this.totalCustomers = 10;
+        this.totalCustomersLeft = 0;
 
         // Do generic setup for a GameLevel
         super.startScene();
@@ -67,16 +71,33 @@ export default class Level1 extends GameLevel {
         // for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
         //     this.addBalloon("red", pos, {color: HW5_Color.RED});
         // }
+        let spawnCustomer = (pos: Vec2) => {
+            return () => this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
+        };
 
-        for (let pos of [new Vec2(2, 15)]){
-            console.log("customer has been added");
-            this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
-        }
+        this.customerSpawnPoints = [
+            { position: new Vec2(5, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(5, 15))) },
+            { position: new Vec2(10, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(10, 15))) },
+        ];
+        this.spawnDelay.start();
+        // for (let pos of [new Vec2(2, 15)]){
+        //     console.log("customer has been added");
+        //     this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
+        // }
 
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
+        if (this.totalCustomersLeft == this.totalCustomers) {}
+
+        for (let i = 0; i < this.customerSpawnPoints.length; i++) {
+            if (!this.customerSpawnPoints[i]["spaceOccupied"]) {
+                this.customerSpawnPoints[i]["spawnTimer"].start();
+                this.customerSpawnPoints[i]["spaceOccupied"] = true;
+            }
+        }
+
     }
 }

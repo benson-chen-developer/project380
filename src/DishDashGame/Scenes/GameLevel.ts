@@ -26,6 +26,7 @@ import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
 import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishController";
+import { getRandomFood } from "../WorldEnums/Foods";
 
 // HOMEWORK 5 - TODO
 /**
@@ -57,13 +58,16 @@ export default class GameLevel extends Scene {
     // Custom particle sysyem
     protected system: HW5_ParticleSystem;
 
-    // Cooldown timer for changing suits
-    protected suitChangeTimer: Timer;
-
+    // Customer Fields
     protected totalCustomers: number;
-    protected customersSatisfiedLabel: Label;
+    protected totalCustomersLeft: number;
+    protected customerSpawnPoints: { position: Vec2; spaceOccupied: boolean; spawnTimer: Timer;}[]
+    protected spawnDelay: Timer = new Timer(2000);
+
+    // Global Labels
     protected customersSatisfied: number;
-    
+    protected customersSatisfiedLabel: Label;
+
     protected customersWants: string;
     protected customersWantsLabel: Label;
    
@@ -71,13 +75,15 @@ export default class GameLevel extends Scene {
     protected playersHotbarLabel: Label;
 
     protected testLabel: Label;
+    
+    
     // Total switches and amount currently pressed
-    protected totalSwitches: number;
-    protected switchLabel: Label;
-    protected switchesPressed: number;
+    // protected totalSwitches: number;
+    // protected switchLabel: Label;
+    // protected switchesPressed: number;
 
     startScene(): void {
-        this.switchesPressed = 0;
+        // this.switchesPressed = 0;
         this.customersSatisfied = 0;
 
         this.customersWants = "???";
@@ -107,7 +113,7 @@ export default class GameLevel extends Scene {
         });
 
         // 3 second cooldown for changing suits
-        this.suitChangeTimer = new Timer(3000);
+        // this.suitChangeTimer = new Timer(3000);
 
         // Start the black screen fade out
         this.levelTransitionScreen.tweens.play("fadeOut");
@@ -139,6 +145,7 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
+
                 case WorldStatus.PLAYER_AT_CUSTOMER:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
@@ -156,25 +163,33 @@ export default class GameLevel extends Scene {
 
                 case WorldStatus.CUSTOMER_LEAVING:
                     {
-                        let node = this.sceneGraph.getNode(event.data.get("sprite"));
-                        node.destroy();
+                        let foodIndicator = this.sceneGraph.getNode(event.data.get("sprite"));
+                        foodIndicator.destroy();
                     }
                     break;
 
                 case WorldStatus.CUSTOMER_DELETE:
                     {
-                        let node = this.sceneGraph.getNode(event.data.get("owner"));
+                        let customer = this.sceneGraph.getNode(event.data.get("owner"));
                         // this.system.startSystem(2000, 1, node.position.clone());
-                        node.destroy();
+                        for (let i = 0; i < this.customerSpawnPoints.length; i++) {
+                            if (this.customerSpawnPoints[i]["position"].x*32 == customer.position.x && 
+                            this.customerSpawnPoints[i]["position"].y*32 == customer.position.y) {
+                                this.customerSpawnPoints[i]["spaceOccupied"] = false;
+                            }
+                        }
+                        customer.destroy();
+                        this.totalCustomersLeft++;
                     }
                     break;
                     
+
                 case HW5_Events.PLAYER_HIT_SWITCH:
                     {
                         // Hit a switch block, so update the label and count
-                        this.switchesPressed++;
-                        this.switchLabel.text = "Switches Left: " + (this.totalSwitches - this.switchesPressed)
-                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false});
+                        // this.switchesPressed++;
+                        // this.switchLabel.text = "Switches Left: " + (this.totalSwitches - this.switchesPressed)
+                        // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false});
                     }
                     break;
 
@@ -274,7 +289,6 @@ export default class GameLevel extends Scene {
         this.addUILayer("UI");
 
         this.addLayer("secondary", 1);
-
         this.addLayer("primary", 2);
     }
 
@@ -437,6 +451,10 @@ export default class GameLevel extends Scene {
         foodIndicator.setGroup("foodIndicator");
         return foodIndicator;
     }
+    protected spawnCustomer(tilePos: Vec2) {
+        this.addCustomer("customer", tilePos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
+    }
+
 
     protected addFlyingDish(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let dish = this.add.animatedSprite(spriteKey, "primary");
@@ -459,6 +477,7 @@ export default class GameLevel extends Scene {
                 this.customersSatisfied++;
                 this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
 
+                (<CustomerController>customer._ai).changeState("happy");
                 this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
             }
@@ -476,6 +495,7 @@ export default class GameLevel extends Scene {
                 this.customersSatisfied++;
                 this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
 
+                (<CustomerController>customer._ai).changeState("happy");
                 this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
             } else {
