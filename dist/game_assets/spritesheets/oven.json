@@ -1,0 +1,27 @@
+{
+    "name": "oven",
+    "spriteSheetImage": "oven.png",
+    "spriteWidth": 368,
+    "spriteHeight": 368,
+    "columns": 2,
+    "rows": 3,
+    "durationType": "time",
+    "animations": [
+        { 
+            "name": "notCooking",
+            "frames": [ {"index": 0, "duration": 70} ]
+        },
+        {
+            "name": "cooking",
+            "frames": [ {"index": 1, "duration": 70}, {"index": 2, "duration": 70} ]
+        },
+        {
+            "name": "cooked",
+            "frames": [ {"index": 3, "duration": 10} ]
+        },
+        {
+            "name": "overcooked",
+            "frames":[ {"index": 4, "duration": 70}, {"index": 5, "duration": 70}]
+        }
+    ]
+}

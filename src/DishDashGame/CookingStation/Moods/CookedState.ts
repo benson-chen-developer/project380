@@ -12,10 +12,9 @@ export default class CookedState extends CookingStationState {
             this.parent.foodInOven = Ingredients.COOKEDPATTY;
             this.parent.cookingState = CookingStationStates.COOKED; 
         }
-		// (<AnimatedSprite>this.owner).animation.play("ANGRY", true);
+		(<AnimatedSprite>this.owner).animation.play("cooked", true);
 		
-        console.log("Food in the oven is COOKED ", this.parent.foodInOven)
-		// this.deleteTimer.start();
+		this.waitTimer.start();
 	}
 
 	update(deltaT: number): void {
@@ -23,10 +22,15 @@ export default class CookedState extends CookingStationState {
         if(this.parent.foodInOven === Ingredients.NONE){
             this.finished(CookingStationStates.NOTCOOKING)
         }
+
+		else if(this.waitTimer.isStopped() && this.parent.foodInOven !== Ingredients.NONE){
+			console.log("We overcooked 11");
+			this.finished(CookingStationStates.OVERCOOKED);
+        }
 	}
 
 	onExit(): Record<string, any> {
-		// (<AnimatedSprite>this.owner).animation.stop();
+		(<AnimatedSprite>this.owner).animation.stop();
 		return {};
 	}
 }

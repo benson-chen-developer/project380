@@ -1,23 +1,24 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import { Ingredients } from "../../WorldEnums/Foods";
+import { Foods, Ingredients } from "../../WorldEnums/Foods";
 import { CookingStationStates, ItemInOvenState } from "../CookingStationController";
 import CookingStationState from "../CookingStationState";
-import CookingState from "./CookingState";
 
-export default class NotCooking extends CookingStationState {
+export default class OverCookedState extends CookingStationState {
 	onEnter(): void {
-		this.parent.foodInOven = Ingredients.NONE;
-		(<AnimatedSprite>this.owner).animation.play("notCooking", true);
+        console.log("We overcooked 22");
+		(<AnimatedSprite>this.owner).animation.play("overcooked", true);
 	}
 
-	update(deltaT: number): void {
-		// super.update(deltaT)
+    update(deltaT: number) : void {
+        super.update(deltaT);
 
-		if(this.parent.foodInOven != Ingredients.NONE)
-			this.finished(CookingStationStates.COOKING);
-	}
+        // if(this.waitTimer.isStopped()){
+		// 	this.finished(CookingStationStates.COOKED);
+        // }
+
+    }
 
 	onExit(): Record<string, any> {
 		(<AnimatedSprite>this.owner).animation.stop();

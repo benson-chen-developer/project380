@@ -169,8 +169,13 @@ export default class GameLevel extends Scene {
                                         this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
                                     }
                                     else if(currentOven.foodInOven !== Ingredients.NONE && currentOven.cookingState === CookingStationStates.COOKED){
-                                        console.log("we grabbed the food ovenId");
                                         (<PlayerController>this.player._ai).hotbar = currentOven.foodInOven;
+                                        this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+                                        currentOven.foodInOven = Ingredients.NONE;
+                                    }
+                                    else if(currentOven.cookingState === CookingStationStates.OVERCOOKED){
+                                        // console.log("");
+                                        (<PlayerController>this.player._ai).hotbar = Ingredients.NONE;
                                         this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
                                         currentOven.foodInOven = Ingredients.NONE;
                                     }
@@ -484,7 +489,7 @@ export default class GameLevel extends Scene {
     protected addOven(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let oven = this.add.animatedSprite(spriteKey, "secondary");
         oven.position.set(tilePos.x*32, tilePos.y*32);
-        oven.scale.set(.7, .7);
+        oven.scale.set(.2, .2);
         
         oven.addPhysics();
         oven.setTrigger("player", DishDashEvents.NEXT_TO_COOKNGSTATION, null);

@@ -60,6 +60,9 @@ export default class CookingStationController extends StateMachineAI {
 		let cooked = new CookedState(this, owner);
 		this.addState(CookingStationStates.COOKED, cooked);
 
+		let overcooked = new CookedState(this, owner);
+		this.addState(CookingStationStates.OVERCOOKED, overcooked);
+
 		this.initialize(CookingStationStates.NOTCOOKING);
 	}
 

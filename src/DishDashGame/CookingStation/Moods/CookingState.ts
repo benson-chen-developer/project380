@@ -7,7 +7,7 @@ import CookingStationState from "../CookingStationState";
 export default class CookingState extends CookingStationState {
 	onEnter(): void {
 		// this.foodInOven = ItemInOvenState.NONE;
-		// (<AnimatedSprite>this.owner).animation.play("ANGRY", true);
+		(<AnimatedSprite>this.owner).animation.play("cooking", true);
 		
 		this.waitTimer.start();
 	}
@@ -22,7 +22,7 @@ export default class CookingState extends CookingStationState {
     }
 
 	onExit(): Record<string, any> {
-		// (<AnimatedSprite>this.owner).animation.stop();
+		(<AnimatedSprite>this.owner).animation.stop();
 		return {};
 	}
 }
