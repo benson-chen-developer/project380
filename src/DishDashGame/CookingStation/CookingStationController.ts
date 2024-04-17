@@ -8,7 +8,8 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import { DishDashEvents } from "../DishDashEvents";
 import EmptyOven from "./Moods/EmptyOven";
 import NotCooking from "./Moods/NotCooking";
-import Cooking from "./Moods/CookingState";
+import CookingState from "./Moods/CookingState";
+import CookedState from "./Moods/CookedState";
 
 export enum CookingStationStates {
 	NOTCOOKING = "notCooking",
@@ -32,6 +33,8 @@ export default class CookingStationController extends StateMachineAI {
 	foodInOven: string;
     overCooked: boolean;
 	nextToOven: boolean;
+	ovenId: number;
+	cookingState: string;
 	speed: number = 100;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
@@ -42,6 +45,8 @@ export default class CookingStationController extends StateMachineAI {
 
         this.foodInOven = Ingredients.NONE;
 		this.nextToOven = false;
+		this.cookingState = CookingStationStates.NOTCOOKING;
+		this.ovenId = null;
 
 		// let emptyOven = new EmptyOven(this, owner);
 		// this.addState(ItemInOvenState.NONE, emptyOven);
@@ -49,8 +54,11 @@ export default class CookingStationController extends StateMachineAI {
 		let notCooking = new NotCooking(this, owner);
 		this.addState(CookingStationStates.NOTCOOKING, notCooking);
 
-		let cooking = new Cooking(this, owner);
+		let cooking = new CookingState(this, owner);
 		this.addState(CookingStationStates.COOKING, cooking);
+
+		let cooked = new CookedState(this, owner);
+		this.addState(CookingStationStates.COOKED, cooked);
 
 		this.initialize(CookingStationStates.NOTCOOKING);
 	}

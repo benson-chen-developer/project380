@@ -70,6 +70,7 @@ export default class Level1 extends GameLevel {
         // }
 
         this.addOven('blueBalloon', new Vec2(4,15), null);
+        this.addOven('blueBalloon', new Vec2(6,15), null);
 
         for (let pos of [new Vec2(2, 15)]){
             console.log("customer has been added");

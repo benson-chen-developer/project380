@@ -6,19 +6,23 @@ import { CookingStationStates, ItemInOvenState } from "../CookingStationControll
 import CookingStationState from "../CookingStationState";
 import CookingState from "./CookingState";
 
-export default class NotCooking extends CookingStationState {
+export default class CookedState extends CookingStationState {
 	onEnter(): void {
-		this.parent.foodInOven = Ingredients.NONE;
+        if(this.parent.foodInOven === Ingredients.PATTY){
+            this.parent.foodInOven = Ingredients.COOKEDPATTY;
+            this.parent.cookingState = CookingStationStates.COOKED; 
+        }
 		// (<AnimatedSprite>this.owner).animation.play("ANGRY", true);
-
-		console.log("In not cooking state benon")
+		
+        console.log("Food in the oven is COOKED ", this.parent.foodInOven)
+		// this.deleteTimer.start();
 	}
 
 	update(deltaT: number): void {
 		// super.update(deltaT)
-
-		if(this.parent.foodInOven != Ingredients.NONE)
-			this.finished(CookingStationStates.COOKING);
+        if(this.parent.foodInOven === Ingredients.NONE){
+            this.finished(CookingStationStates.NOTCOOKING)
+        }
 	}
 
 	onExit(): Record<string, any> {

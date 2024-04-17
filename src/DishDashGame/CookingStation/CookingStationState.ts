@@ -5,7 +5,7 @@ import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
-import { Foods } from "../WorldEnums/Foods";
+import { Foods, Ingredients } from "../WorldEnums/Foods";
 import { WorldStatus } from "../WorldEnums/WorldStatus";
 import CookingStationController, { CookingStationStates, ItemInOvenState } from "./CookingStationController";
 import { DishDashEvents } from "../DishDashEvents";
@@ -16,7 +16,7 @@ export default abstract class CookingStationState extends State {
 	
 	waitTimer: Timer = new Timer(1000); 	// 10 Seconds long
 
-    foodInOven: ItemInOvenState = ItemInOvenState.NONE
+    foodInOven: string = Ingredients.NONE
     cookingProgess: CookingStationStates = CookingStationStates.NOTCOOKING
 
 	constructor(parent: StateMachine, owner: GameNode) {
@@ -27,10 +27,13 @@ export default abstract class CookingStationState extends State {
 	handleInput(event: GameEvent): void {
 		if (event.type == WorldStatus.PLAYER_PUTS_FOOD_IN_OVEN) {
 			this.finished(CookingStationStates.COOKING);
-		}
+		} 
+		// else if(event.type == WorldStatus.PLAYER_PUTS_FOOD_IN_OVEN)
 	}
 
 	update(deltaT: number): void {
+		// super.update(deltaT)
+		
 		// console.log("Expression " + this.expression + "\tLeaving: " + this.leaving);
 		// if (this.leaving) {
 		// 	if (this.deleteTimer.isStopped()) {

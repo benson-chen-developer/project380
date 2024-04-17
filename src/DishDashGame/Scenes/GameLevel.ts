@@ -26,8 +26,9 @@ import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
 import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishController";
-import CookingStationController from "../CookingStation/CookingStationController";
+import CookingStationController, { CookingStationStates } from "../CookingStation/CookingStationController";
 import { DishDashEvents } from "../DishDashEvents";
+import { Foods, Ingredients } from "../WorldEnums/Foods";
 
 // HOMEWORK 5 - TODO
 /**
@@ -78,7 +79,9 @@ export default class GameLevel extends Scene {
     protected switchLabel: Label;
     protected switchesPressed: number;
 
-    protected oven: CookingStationController
+    protected oven: CookingStationController;
+    protected ovens: CookingStationController[];
+    protected ovenIdLabel: Label;
 
     startScene(): void {
         this.switchesPressed = 0;
@@ -86,6 +89,7 @@ export default class GameLevel extends Scene {
 
         this.customersWants = "???";
         this.playersHotbar = "Nothing";
+        this.ovens = [];
 
         // Do the game level standard initializations
         this.initLayers();
@@ -155,15 +159,36 @@ export default class GameLevel extends Scene {
                         
                             if(isNextTo){
                                 this.oven.nextToOven = true;
+                                const currentOven = this.ovens.find(o => o.ovenId === other.id);
+                                const foodInPlayerHand = (<PlayerController>this.player._ai).hotbar;
+
+                                if (Input.isPressed("interact")){
+                                    if(foodInPlayerHand === Ingredients.PATTY && currentOven.cookingState === CookingStationStates.NOTCOOKING){
+                                        currentOven.foodInOven = Ingredients.PATTY;
+                                        (<PlayerController>this.player._ai).hotbar = Ingredients.NONE;
+                                        this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+                                    }
+                                    else if(currentOven.foodInOven !== Ingredients.NONE && currentOven.cookingState === CookingStationStates.COOKED){
+                                        console.log("we grabbed the food ovenId");
+                                        (<PlayerController>this.player._ai).hotbar = currentOven.foodInOven;
+                                        this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+                                        currentOven.foodInOven = Ingredients.NONE;
+                                    }
+                                }
                             } else {
                                 this.oven.nextToOven = false;
                             }
-                        } else { 
+                        } 
+                        else { 
                             // Other is player, node is oven
                             const isNextTo = this.handleIsPlayerCollidingWithSprite(<AnimatedSprite>other,<AnimatedSprite>node);
                         
                             if(isNextTo){
                                 this.oven.nextToOven = true;
+
+                                if (Input.isPressed("interact")){
+
+                                }
                             } else {
                                 this.oven.nextToOven = false;
                             }
@@ -468,6 +493,12 @@ export default class GameLevel extends Scene {
         oven.setGroup("interactableObj");
 
         this.oven = <CookingStationController>oven.ai;
+        if(this.ovens.length === 0){
+            this.oven.ovenId = oven.id;
+        } else {
+            this.oven.ovenId = this.ovens[this.ovens.length-1].ovenId + 1;
+        }
+        this.ovens.push(this.oven);
     }
 
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
@@ -522,6 +553,23 @@ export default class GameLevel extends Scene {
         }
         this.customersWantsLabel.text = "Customer Wants: " + (this.customersWants);
     }
+
+    // protected handleIsPlayerCollidingWithOven(player: AnimatedSprite, otherSprite: AnimatedSprite){
+    //     if(otherSprite !== null && player.collisionShape.overlaps(otherSprite.collisionShape)){
+    //         this.oven.nextToOven = true;
+    //         // console.log(this.oven.owner.id);
+
+    //         if (Input.isPressed("interact")){
+    //             // console.log(this.oven.ovenId);
+    //             // console.log("all the ovenIds", this.ovens)
+    //             // console.log("these two ovens have the same id", this.ovens.find(o => o.ovenId === this.oven.ovenId).ovenId, this.oven.ovenId)
+                
+    //             console.log("In the players hand is", <PlayerController>this,player._ai))
+    //         }
+    //     } else {
+    //         this.oven.nextToOven = false;
+    //     }
+    // }
 
     protected handleIsPlayerCollidingWithSprite(player: AnimatedSprite, otherSprite: AnimatedSprite){
         if(otherSprite !== null && player.collisionShape.overlaps(otherSprite.collisionShape)){
