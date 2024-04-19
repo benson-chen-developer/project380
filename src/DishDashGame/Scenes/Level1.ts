@@ -3,6 +3,7 @@ import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { getRandomFood } from "../WorldEnums/Foods";
+import { WorldStatus } from "../WorldEnums/WorldStatus";
 import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
 
@@ -57,13 +58,14 @@ export default class Level1 extends GameLevel {
         this.playerSpawn = new Vec2(5*32, 14*32);
 
         // Set the total switches and balloons in the level
-        this.totalCustomers = 10;
-        this.totalCustomersLeft = 0;
+        this.totalCustomers = 1;
+        this.totalCustomersLeft = this.totalCustomers;
+        this.totalSpawnsLeft = this.totalCustomers;
 
         // Do generic setup for a GameLevel
         super.startScene();
 
-        this.addLevelEnd(new Vec2(60, 13), new Vec2(5, 5));
+        // this.addLevelEnd(new Vec2(60, 13), new Vec2(5, 5));
 
         this.nextLevel = Level2;
 
@@ -79,25 +81,11 @@ export default class Level1 extends GameLevel {
             { position: new Vec2(5, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(5, 15))) },
             { position: new Vec2(10, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(10, 15))) },
         ];
-        this.spawnDelay.start();
-        // for (let pos of [new Vec2(2, 15)]){
-        //     console.log("customer has been added");
-        //     this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
-        // }
-
+        // this.spawnDelay.start();
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
-        if (this.totalCustomersLeft == this.totalCustomers) {}
-
-        for (let i = 0; i < this.customerSpawnPoints.length; i++) {
-            if (!this.customerSpawnPoints[i]["spaceOccupied"]) {
-                this.customerSpawnPoints[i]["spawnTimer"].start();
-                this.customerSpawnPoints[i]["spaceOccupied"] = true;
-            }
-        }
-
     }
 }

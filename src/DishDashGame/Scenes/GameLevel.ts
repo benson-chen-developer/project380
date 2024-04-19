@@ -27,6 +27,7 @@ import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
 import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishController";
 import { getRandomFood } from "../WorldEnums/Foods";
+import SplashScreen from "../../MainScreenScene/SplashScreen";
 
 // HOMEWORK 5 - TODO
 /**
@@ -46,23 +47,27 @@ export default class GameLevel extends Scene {
     protected livesCountLabel: Label;
 
     // Stuff to end the level and go to the next level
-    protected levelEndArea: Rect;
+    // protected levelEndArea: Rect;
     protected nextLevel: new (...args: any) => GameLevel;
     protected levelEndTimer: Timer;
     protected levelEndLabel: Label;
     
+    protected levelFailTimer: Timer;
+    protected levelFailLabel: Label;
+    
     // Screen fade in/out for level start and end
-    protected levelTransitionTimer: Timer;
+    // protected levelTransitionTimer: Timer;
     protected levelTransitionScreen: Rect;
     
     // Custom particle sysyem
-    protected system: HW5_ParticleSystem;
+    // protected system: HW5_ParticleSystem;
 
     // Customer Fields
     protected totalCustomers: number;
     protected totalCustomersLeft: number;
+    protected totalSpawnsLeft: number;
     protected customerSpawnPoints: { position: Vec2; spaceOccupied: boolean; spawnTimer: Timer;}[]
-    protected spawnDelay: Timer = new Timer(2000);
+    // protected spawnDelay: Timer = new Timer(2000);
 
     // Global Labels
     protected customersSatisfied: number;
@@ -97,23 +102,14 @@ export default class GameLevel extends Scene {
         this.addUI();
 
         // Initialize the timers
-        this.respawnTimer = new Timer(1000, () => {
-            if (GameLevel.livesCount === 0){
-                this.sceneManager.changeToScene(MainScreen);
-            } else {
-                this.respawnPlayer();
-                this.player.enablePhysics();
-                this.player.unfreeze();
-            }
-        });
-        this.levelTransitionTimer = new Timer(500);
-        this.levelEndTimer = new Timer(3000, () => {
-            // After the level end timer ends, fade to black and then go to the next scene
-            this.levelTransitionScreen.tweens.play("fadeIn");
-        });
+       
+        this.respawnTimer = new Timer(10000, () => { this.respawnPlayer(); }); 
 
-        // 3 second cooldown for changing suits
-        // this.suitChangeTimer = new Timer(3000);
+        // After the level end timer ends, fade to black and then go to the next scene
+        this.levelEndTimer = new Timer(3000, () => { this.levelTransitionScreen.tweens.play("fadeIn"); });
+         // After the level end timer ends, fade to black and then goes back to main menu
+        this.levelFailTimer = new Timer(3000, () => { this.levelFailLabel.tweens.play("slideIn"); });
+        
 
         // Start the black screen fade out
         this.levelTransitionScreen.tweens.play("fadeOut");
@@ -179,10 +175,57 @@ export default class GameLevel extends Scene {
                             }
                         }
                         customer.destroy();
-                        this.totalCustomersLeft++;
+                        this.totalCustomersLeft--;
                     }
                     break;
-                    
+                   
+                case WorldStatus.PLAYER_ENTERED_LEVEL_END:
+                    {
+                        console.log("End Called");
+                        if (this.customersSatisfied / this.totalCustomers > 0.5) {
+                            if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
+                                // The player has reached the end of the level
+                                this.levelEndTimer.start();
+                                
+                            }
+                        } else {
+                            this.levelFailTimer.start();
+                            this.respawnTimer.start();
+                        }
+                    }
+                    break;
+                
+                case WorldStatus.LEVEL_END:
+                    {
+                        // Go to the next level
+                        if (this.nextLevel) {
+                            let sceneOptions = {
+                                physics: {
+                                    groupNames: ["ground", "player", "customer", "flyingDish"],
+                                    collisions:
+                                    [
+                                        [0, 1, 1, 1],
+                                        [1, 0, 0, 0],
+                                        [1, 0, 0, 0],
+                                        [1, 1, 0, 0]
+                                    ]
+                                }
+                            }
+                            this.sceneManager.changeToScene(this.nextLevel, {}, sceneOptions);
+                        }
+                    }
+                    break;
+
+                case WorldStatus.LEVEL_START:
+                    {
+                        // Re-enable controls
+                        Input.enableInput();
+                    }
+                    break;
+
+
+
+
 
                 case HW5_Events.PLAYER_HIT_SWITCH:
                     {
@@ -192,7 +235,6 @@ export default class GameLevel extends Scene {
                         // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false});
                     }
                     break;
-
                 case HW5_Events.BALLOON_POPPED:
                     {
                         // An balloon collided with the player, destroy it and use the particle system
@@ -209,51 +251,10 @@ export default class GameLevel extends Scene {
                         else {
                             particleMass = 3;
                         }
-                        this.system.startSystem(2000, particleMass, node.position.clone());
+                        // this.system.startSystem(2000, particleMass, node.position.clone());
                         node.destroy();
                     }
                     break;
-                    
-                case HW5_Events.PLAYER_ENTERED_LEVEL_END:
-                    {
-                        // //Check if the player has pressed all the switches and popped all of the balloons
-                        // if (this.switchesPressed >= this.totalSwitches && this.balloonsPopped >= this.totalBalloons){
-                        //     if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
-                        //         // The player has reached the end of the level
-                        //         this.levelEndTimer.start();
-                        //         this.levelEndLabel.tweens.play("slideIn");
-                        //     }
-                        // }
-                    }
-                    break;
-
-                case HW5_Events.LEVEL_START:
-                    {
-                        // Re-enable controls
-                        Input.enableInput();
-                    }
-                    break;
-                
-                case HW5_Events.LEVEL_END:
-                    {
-                        // Go to the next level
-                        if(this.nextLevel){
-                            let sceneOptions = {
-                                physics: {
-                                    groupNames: ["ground", "player", "balloon"],
-                                    collisions:
-                                    [
-                                        [0, 1, 1],
-                                        [1, 0, 0],
-                                        [1, 0, 0]
-                                    ]
-                                }
-                            }
-                            this.sceneManager.changeToScene(this.nextLevel, {}, sceneOptions);
-                        }
-                    }
-                    break;
-
                 case HW5_Events.PLAYER_KILLED:
                     {
                         this.respawnPlayer();
@@ -261,7 +262,7 @@ export default class GameLevel extends Scene {
             }
         }
         
-
+        // UI Updates and Control features
         if ((<PlayerController>this.player._ai).hotbar == null) {
             this.playersHotbar = "Nothing";
         } else {
@@ -279,6 +280,20 @@ export default class GameLevel extends Scene {
             }
         }
         this.playersHotbarLabel.text = "Waiter's Holding: " + (this.playersHotbar);
+
+        // Customers Spawning Mecahanic
+        if (this.totalCustomersLeft > 0) {
+            for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
+                if (!this.customerSpawnPoints[i]["spaceOccupied"]) {
+                    this.customerSpawnPoints[i]["spawnTimer"].start();
+                    this.customerSpawnPoints[i]["spaceOccupied"] = true;
+                    this.totalSpawnsLeft--;
+                }
+            }
+        } else if (this.totalCustomersLeft == 0) {
+            this.emitter.fireEvent(WorldStatus.PLAYER_ENTERED_LEVEL_END);
+            this.totalCustomersLeft--; // Puts totalCustomersLeft in the negatives so it doesn't fire this event again
+        }
     }
 
     /**
@@ -287,7 +302,6 @@ export default class GameLevel extends Scene {
     protected initLayers(): void {
         // Add a layer for UI
         this.addUILayer("UI");
-
         this.addLayer("secondary", 1);
         this.addLayer("primary", 2);
     }
@@ -311,6 +325,9 @@ export default class GameLevel extends Scene {
             WorldStatus.CUSTOMER_LEAVING,
             WorldStatus.CUSTOMER_DELETE,
             WorldStatus.CUSTOMER_SPAWN,
+            WorldStatus.LEVEL_START,
+            WorldStatus.LEVEL_END,
+            WorldStatus.PLAYER_ENTERED_LEVEL_END,
 
             HW5_Events.PLAYER_HIT_SWITCH,
             HW5_Events.PLAYER_HIT_BALLOON,
@@ -343,7 +360,7 @@ export default class GameLevel extends Scene {
         // this.playersHotbarLabel.font = "PixelSimple";
         
         // End of level label (start off screen)
-        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Complete"});
+        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Passed"});
         this.levelEndLabel.size.set(1200, 60);
         this.levelEndLabel.borderRadius = 0;
         this.levelEndLabel.backgroundColor = new Color(34, 32, 52);
@@ -353,6 +370,28 @@ export default class GameLevel extends Scene {
 
         // Add a tween to move the label on screen
         this.levelEndLabel.tweens.add("slideIn", {
+            startDelay: 0,
+            duration: 1000,
+            effects: [
+                {
+                    property: TweenableProperties.posX,
+                    start: -300,
+                    end: 300,
+                    ease: EaseFunctionType.OUT_SINE
+                }
+            ]
+        });
+
+        this.levelFailLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Failed"});
+        this.levelFailLabel.size.set(1200, 60);
+        this.levelFailLabel.borderRadius = 0;
+        this.levelFailLabel.backgroundColor = new Color(34, 32, 52);
+        this.levelFailLabel.textColor = Color.RED;
+        this.levelFailLabel.fontSize = 48;
+        this.levelFailLabel.font = "PixelSimple";
+
+
+        this.levelFailLabel.tweens.add("slideIn", {
             startDelay: 0,
             duration: 1000,
             effects: [
@@ -380,7 +419,7 @@ export default class GameLevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: HW5_Events.LEVEL_END
+            onEnd: WorldStatus.LEVEL_END
         });
 
         this.levelTransitionScreen.tweens.add("fadeOut", {
@@ -394,7 +433,7 @@ export default class GameLevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: HW5_Events.LEVEL_START
+            onEnd: WorldStatus.LEVEL_START
         });
     }
 
@@ -422,12 +461,12 @@ export default class GameLevel extends Scene {
     /**
      * Initializes the level end area
      */
-    protected addLevelEnd(startingTile: Vec2, size: Vec2): void {
-        this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, "primary", {position: startingTile.scale(32), size: size.scale(32)});
-        this.levelEndArea.addPhysics(undefined, undefined, false, true);
-        this.levelEndArea.setTrigger("player", HW5_Events.PLAYER_ENTERED_LEVEL_END, null);
-        this.levelEndArea.color = new Color(0, 0, 0, 0);
-    }
+    // protected addLevelEnd(startingTile: Vec2, size: Vec2): void {
+    //     this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, "primary", {position: startingTile.scale(32), size: size.scale(32)});
+    //     this.levelEndArea.addPhysics(undefined, undefined, false, true);
+    //     this.levelEndArea.setTrigger("player", HW5_Events.PLAYER_ENTERED_LEVEL_END, null);
+    //     this.levelEndArea.color = new Color(0, 0, 0, 0);
+    // }
 
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let customer = this.add.animatedSprite(spriteKey, "secondary");
@@ -527,10 +566,9 @@ export default class GameLevel extends Scene {
      * Returns the player to spawn
      */
     protected respawnPlayer(): void {
-        GameLevel.livesCount = 3;
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
-        this.sceneManager.changeToScene(MainScreen, {});
+        this.sceneManager.changeToScene(SplashScreen, {});
         Input.enableInput();
-        this.system.stopSystem();
+        // this.system.stopSystem();
     }
 }

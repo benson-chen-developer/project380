@@ -35,7 +35,7 @@ export default class Level2 extends GameLevel {
         // Do generic setup for a GameLevel
         super.startScene();
 
-        this.addLevelEnd(new Vec2(60, 12), new Vec2(2, 2));
+        // this.addLevelEnd(new Vec2(60, 12), new Vec2(2, 2));
 
         // Add in our green balloons to the enemies
         // for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
