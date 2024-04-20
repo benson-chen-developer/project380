@@ -25,9 +25,10 @@ export default class Level1 extends GameLevel {
         this.load.audio("player_death", "game_assets/sounds/player_death.wav");
         this.load.audio("pop", "game_assets/sounds/pop.wav");
 
-        this.load.spritesheet("bun", "game_assets/spritesheets/Bun.json");
+        this.load.spritesheet("bunCrate", "game_assets/spritesheets/bunCrate.json");
 
         this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
+        this.load.spritesheet("station", "game_assets/spritesheets/station.json");
 
         // HOMEWORK 5 - TODO
         // You'll want to change this to your level music
@@ -80,6 +81,10 @@ export default class Level1 extends GameLevel {
             this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
         }
 
+        this.addStation("station", new Vec2(12,15), null) 
+        this.addStation("station", new Vec2(14,15), null)
+
+        this.addBunCrate("bunCrate",  new Vec2(16,15), null)
 
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }

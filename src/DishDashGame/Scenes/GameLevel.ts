@@ -29,6 +29,8 @@ import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishControlle
 import CookingStationController, { CookingStationStates } from "../CookingStation/CookingStationController";
 import { DishDashEvents } from "../DishDashEvents";
 import { Foods, Ingredients } from "../WorldEnums/Foods";
+import StationController from "../Station/StationController";
+import BunCrateController from "../BunCrate/BunCrateController";
 
 // HOMEWORK 5 - TODO
 /**
@@ -83,6 +85,12 @@ export default class GameLevel extends Scene {
     protected ovens: CookingStationController[];
     protected ovenIdLabel: Label;
 
+    protected station: StationController;
+    protected stations: StationController[];
+
+    protected bunCrate: BunCrateController;
+    protected bunCrates: BunCrateController[];
+
     startScene(): void {
         this.switchesPressed = 0;
         this.customersSatisfied = 0;
@@ -90,6 +98,7 @@ export default class GameLevel extends Scene {
         this.customersWants = "???";
         this.playersHotbar = "Nothing";
         this.ovens = [];
+        this.stations = [];
 
         // Do the game level standard initializations
         this.initLayers();
@@ -147,6 +156,46 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
+                case DishDashEvents.NEXT_TO_STATION:
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        //This is check if player is collding with oven
+                        if (node === this.player){ 
+                            const isNextTo = this.handleIsPlayerCollidingWithSprite(<AnimatedSprite>node, <AnimatedSprite>other)
+                        
+                            if(isNextTo){
+                                this.station.nextToStation = true;
+                                const currentStation = this.stations.find(o => o.stationId === other.id);
+                                const foodInPlayerHand = (<PlayerController>this.player._ai).hotbar;
+
+                                if (Input.isPressed("interact")){
+                                    if(foodInPlayerHand === Ingredients.COOKEDPATTY && !this.station.isCookedPatty){
+                                        currentStation.isCookedPatty = true;
+                                        (<PlayerController>this.player._ai).hotbar = Ingredients.NONE;
+                                        this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+                                    }
+                                    else if(foodInPlayerHand === Ingredients.BUNS&& !this.station.isBun){
+                                        currentStation.isBun = true;
+                                        (<PlayerController>this.player._ai).hotbar = Ingredients.NONE;
+                                        this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+                                    }
+                                    else if(currentStation.isBun && currentStation.isCookedPatty){
+                                        console.log("is burger");
+                                        (<PlayerController>this.player._ai).hotbar = Foods.BURGER;
+                                        this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+                                        currentStation.isBun = false;
+                                        currentStation.isBurger = false;
+                                        currentStation.isCookedPatty = false;
+                                    }
+                                }
+                            } else {
+                                this.station.nextToStation = false;
+                            }
+                        }
+                    }
+                    break;
                 case DishDashEvents.NEXT_TO_COOKNGSTATION: 
                     {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
@@ -199,6 +248,29 @@ export default class GameLevel extends Scene {
                             }
                         }
                     }
+                    break;
+                case DishDashEvents.NEXT_TO_BUNCRATE:
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        if (node === this.player){ 
+                            // Node is player, other is oven
+                            const isNextTo = this.handleIsPlayerCollidingWithSprite(<AnimatedSprite>node, <AnimatedSprite>other)
+                        
+                            if(isNextTo){
+                                console.log("next to bun crate")
+                                // this.bunCrate.nextTo = true;
+
+                                if (Input.isPressed("interact")){
+                                    (<PlayerController>this.player._ai).hotbar = Ingredients.BUNS;
+                                    this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+                                }
+                            } else {
+                                // this.bunCrate.nextTo = false;
+                            }
+                        } 
+                    }   
                     break;
                 case DishDashEvents.LEAVE_COOKINGSTATION: 
                     {
@@ -368,6 +440,8 @@ export default class GameLevel extends Scene {
             WorldStatus.CUSTOMER_SPAWN,
             
             DishDashEvents.NEXT_TO_COOKNGSTATION,
+            DishDashEvents.NEXT_TO_STATION,
+            DishDashEvents.NEXT_TO_BUNCRATE,
 
             HW5_Events.PLAYER_HIT_SWITCH,
             HW5_Events.PLAYER_HIT_BALLOON,
@@ -504,6 +578,38 @@ export default class GameLevel extends Scene {
             this.oven.ovenId = this.ovens[this.ovens.length-1].ovenId + 1;
         }
         this.ovens.push(this.oven);
+    }
+
+    protected addBunCrate(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let bunCrate = this.add.animatedSprite(spriteKey, "secondary");
+        bunCrate.position.set(tilePos.x*32, tilePos.y*32);
+        bunCrate.scale.set(.6, .6);
+        
+        bunCrate.addPhysics();
+        bunCrate.setTrigger("player", DishDashEvents.NEXT_TO_BUNCRATE, null);
+        
+        bunCrate.addAI(BunCrateController, aiOptions);
+        bunCrate.setGroup("interactableObj");
+    }
+
+    protected addStation(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let station = this.add.animatedSprite(spriteKey, "secondary");
+        station.position.set(tilePos.x*32, tilePos.y*32);
+        station.scale.set(.5, .5);
+        
+        station.addPhysics();
+        station.setTrigger("player", DishDashEvents.NEXT_TO_STATION, null);
+        
+        station.addAI(StationController, aiOptions);
+        station.setGroup("interactableObj");
+
+        this.station = <StationController>station.ai;
+        if(this.stations.length === 0){
+            this.station.stationId = station.id;
+        } else {
+            this.station.stationId = this.stations[this.stations.length-1].stationId + 1;
+        }
+        this.stations.push(this.station);
     }
 
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
