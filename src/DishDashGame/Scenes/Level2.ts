@@ -30,25 +30,25 @@ export default class Level2 extends GameLevel {
         this.viewport.setBounds(0, 0, 64*32, 20*32);
 
         this.playerSpawn = new Vec2(4*32, 15*32);
-        this.totalSwitches = 7;
+        //this.totalSwitches = 7;
 
         // Do generic setup for a GameLevel
         super.startScene();
 
-        this.addLevelEnd(new Vec2(60, 12), new Vec2(2, 2));
+        // this.addLevelEnd(new Vec2(60, 12), new Vec2(2, 2));
 
         // Add in our green balloons to the enemies
-        for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
-            this.addBalloon("red", pos, {color: HW5_Color.RED});
-        }
+        // for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
+        //     this.addBalloon("red", pos, {color: HW5_Color.RED});
+        // }
 
-        for(let pos of [new Vec2(3, 4), new Vec2(33, 10)]){
-            this.addBalloon("green", pos, {color: HW5_Color.GREEN});
-        }
+        // for(let pos of [new Vec2(3, 4), new Vec2(33, 10)]){
+        //     this.addBalloon("green", pos, {color: HW5_Color.GREEN});
+        // }
 
-        for(let pos of [new Vec2(20, 3), new Vec2(41,4)]){
-            this.addBalloon("blue", pos, {color: HW5_Color.BLUE});
-        }
+        // for(let pos of [new Vec2(20, 3), new Vec2(41,4)]){
+        //     this.addBalloon("blue", pos, {color: HW5_Color.BLUE});
+        // }
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 

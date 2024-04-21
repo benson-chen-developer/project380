@@ -26,9 +26,8 @@ export default abstract class FlyingDishState extends State {
 	}
 
 	update(deltaT: number): void {
-        // if (this.owner.onWall) {
-        //     console.log("ON WALL");
-		// 	this.owner.destroy();
-		// }
+        if (this.owner.onWall) {
+			this.owner.destroy();
+		}
 	}
 }

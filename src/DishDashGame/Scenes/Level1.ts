@@ -1,7 +1,9 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import Timer from "../../Wolfie2D/Timing/Timer";
 import { getRandomFood } from "../WorldEnums/Foods";
+import { WorldStatus } from "../WorldEnums/WorldStatus";
 import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
 
@@ -15,7 +17,9 @@ export default class Level1 extends GameLevel {
         // Load resources
         this.load.tilemap("level1", "game_assets/tilemaps/level1.json");
         this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
+        
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
+
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
         this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
         // this.load.spritesheet("blueBalloon", "game_assets/spritesheets/blueBalloon.json");
@@ -59,11 +63,13 @@ export default class Level1 extends GameLevel {
 
         // Set the total switches and balloons in the level
         this.totalCustomers = 1;
+        this.totalCustomersLeft = this.totalCustomers;
+        this.totalSpawnsLeft = this.totalCustomers;
 
         // Do generic setup for a GameLevel
         super.startScene();
 
-        this.addLevelEnd(new Vec2(60, 13), new Vec2(5, 5));
+        // this.addLevelEnd(new Vec2(60, 13), new Vec2(5, 5));
 
         this.nextLevel = Level2;
 
@@ -71,16 +77,18 @@ export default class Level1 extends GameLevel {
         // for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
         //     this.addBalloon("red", pos, {color: HW5_Color.RED});
         // }
+        let spawnCustomer = (pos: Vec2) => {
+            return () => this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
+        };
+
+        this.customerSpawnPoints = [
+            { position: new Vec2(5, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(5, 15))) },
+            { position: new Vec2(10, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(10, 15))) },
+        ];
 
         this.addOven('oven', new Vec2(4,15), null);
         this.addOven('oven', new Vec2(8,15), null);
-
-        for (let pos of [new Vec2(2, 15)]){
-            console.log("customer has been added");
-            this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
-        }
-
-
+        // this.spawnDelay.start();
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
