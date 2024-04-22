@@ -4,6 +4,7 @@ import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { Foods, Ingredients, getRandomFood } from "../WorldEnums/Foods";
 import GameLevel from "./GameLevel";
+import Level3 from "./Level3";
 
 export default class Level2 extends GameLevel {
     // HOMEWORK 5 - TODO
@@ -21,11 +22,9 @@ export default class Level2 extends GameLevel {
         this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
         this.load.spritesheet("fridge", "game_assets/spritesheets/fridge.json");
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
-        this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
+        this.load.spritesheet("throwable", "game_assets/spritesheets/throwables.json");
         
         this.load.audio("jump", "game_assets/sounds/jump.wav");
-        this.load.audio("switch", "game_assets/sounds/switch.wav");
-        this.load.audio("player_death", "game_assets/sounds/player_death.wav");
         this.load.audio("pop", "game_assets/sounds/pop.wav");
         this.load.audio("level_music", "game_assets/music/level_music.mp3");
     }
@@ -45,7 +44,7 @@ export default class Level2 extends GameLevel {
         // Do generic setup for a GameLevel
         super.startScene();
 
-        //this.nextLevel = Level2;
+        this.nextLevel = Level3;
 
         // Customer Spawning Initialization
         let spawnCustomer = (pos: Vec2) => {

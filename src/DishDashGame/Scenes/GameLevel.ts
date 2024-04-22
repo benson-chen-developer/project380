@@ -21,9 +21,9 @@ import { WorldStatus } from "../WorldEnums/WorldStatus";
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
-import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishController";
+import ThrowableController from "../Player/Throwable/ThrowableController";
 import CookingStationController, { CookingStationStates } from "../CookingStation/CookingStationController";
-import { Foods, Ingredients, isFoodsEnum } from "../WorldEnums/Foods";
+import { Foods, Ingredients, isFoodsEnum, isIngredientsEnum } from "../WorldEnums/Foods";
 import { getRandomFood } from "../WorldEnums/Foods";
 import SplashScreen from "../../MainScreenScene/SplashScreen";
 import StorageStationController from "../StorageStation/StorageStationController";
@@ -154,15 +154,27 @@ export default class GameLevel extends Scene {
                     }
                     break;
 
-                case WorldStatus.DISH_HIT_CUSTOMER:
+                case WorldStatus.ITEM_HIT_CUSTOMER:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
                         let other = this.sceneGraph.getNode(event.data.get("other"));
 
-                        if ((<FlyingDishController>node._ai).food){ // Node is dish, other is Customer
-                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                        if ((<ThrowableController>node._ai).item){ // Node is dish, other is Customer
+                            this.handleThrowableCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
                         } else { // Other is dish, node is Customer
-                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
+                            this.handleThrowableCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
+                        }
+                    }
+                    break;
+                case WorldStatus.ITEM_HIT_STATION:
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        if ((<ThrowableController>node._ai).item){ // Node is dish, other is Customer
+                            this.handleThrowableStationInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                        } else { // Other is dish, node is Customer
+                            this.handleThrowableStationInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
                         }
                     }
                     break;
@@ -208,13 +220,14 @@ export default class GameLevel extends Scene {
                         if (this.nextLevel) {
                             let sceneOptions = {
                                 physics: {
-                                    groupNames: ["ground", "player", "customer", "flyingDish"],
+                                    groupNames: ["ground", "player", "customer", "throwable", "station"],
                                     collisions:
                                     [
-                                        [0, 1, 1, 1],
-                                        [1, 0, 0, 0],
-                                        [1, 0, 0, 0],
-                                        [1, 1, 0, 0]
+                                        [0, 1, 1, 1, 1],
+                                        [1, 0, 0, 1, 0],
+                                        [1, 0, 0, 0, 0],
+                                        [1, 1, 0, 0, 0],
+                                        [1, 0, 0, 0, 0],
                                     ]
                                 }
                             }
@@ -236,14 +249,14 @@ export default class GameLevel extends Scene {
             this.playersHotbar = "Nothing";
         } else {
             this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
-            if (Input.isKeyPressed("enter") && isFoodsEnum(this.playersHotbar)) {
+            if (Input.isKeyPressed("enter")) {
                 //console.log("Direction Postive X: " + (<PlayerController>this.player._ai).directPostiveX);
                 let options: Record<string, any> = {
                     "postiveXDirection" : (<PlayerController>this.player._ai).directPostiveX,
-                    "foodThrown" : (<PlayerController>this.player._ai).hotbar
+                    "itemThrown" : (<PlayerController>this.player._ai).hotbar
                 };
 
-                this.addFlyingDish("flyingDish", this.player.position.clone(), options);
+                this.addThrowable("throwable", this.player.position.clone(), options);
                 (<PlayerController>this.player._ai).hotbar = null;
                 this.playersHotbar = "Nothing";
             }
@@ -287,18 +300,20 @@ export default class GameLevel extends Scene {
      */
     protected subscribeToEvents(){
         this.receiver.subscribe([
+            WorldStatus.PLAYER_AT_STATION,
+            WorldStatus.PLAYER_AT_STORAGE,
             WorldStatus.PLAYER_AT_CUSTOMER,
-            WorldStatus.DISH_HIT_CUSTOMER,
-            WorldStatus.PLAYER_COLLECT,
-            WorldStatus.PLAYER_SERVE,
+            WorldStatus.ITEM_HIT_CUSTOMER,
+            WorldStatus.ITEM_HIT_STATION,
+            WorldStatus.CUSTOMER_SPAWN,
             WorldStatus.CUSTOMER_LEAVING,
             WorldStatus.CUSTOMER_DELETE,
-            WorldStatus.CUSTOMER_SPAWN,
             WorldStatus.LEVEL_START,
             WorldStatus.LEVEL_END,
             WorldStatus.PLAYER_ENTERED_LEVEL_END,
-            WorldStatus.PLAYER_AT_STATION,
-            WorldStatus.PLAYER_AT_STORAGE,
+
+            WorldStatus.PLAYER_COLLECT,
+            WorldStatus.PLAYER_SERVE,
         ]);
     }
 
@@ -426,7 +441,8 @@ export default class GameLevel extends Scene {
         station.addPhysics();
 
         station.setTrigger("player", WorldStatus.PLAYER_AT_STATION, null);
-        
+        station.setTrigger("throwable", WorldStatus.ITEM_HIT_STATION, null);
+
         let foodWantedSprite = this.addFoodIndicator(aiOptions.indicatorKey, tilePos, aiOptions);
         aiOptions["foodWantedSprite"] = foodWantedSprite;
 
@@ -456,7 +472,7 @@ export default class GameLevel extends Scene {
         
         customer.addPhysics();
         customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, WorldStatus.PLAYER_SERVE);
-        customer.setTrigger("flyingDish", WorldStatus.DISH_HIT_CUSTOMER, WorldStatus.PLAYER_SERVE);
+        customer.setTrigger("throwable", WorldStatus.ITEM_HIT_CUSTOMER, WorldStatus.PLAYER_SERVE);
         
         let foodWantedSprite = this.addFoodIndicator(aiOptions.indicatorKey, tilePos, aiOptions);
         aiOptions["foodWantedSprite"] = foodWantedSprite;
@@ -473,13 +489,13 @@ export default class GameLevel extends Scene {
         return foodIndicator;
     }
 
-    protected addFlyingDish(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+    protected addThrowable(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let dish = this.add.animatedSprite(spriteKey, "primary");
         dish.position.set(tilePos.x, tilePos.y);
-        dish.scale.set(2, 2);
+        dish.scale.set(2.3, 2.3);
         dish.addPhysics();
-        dish.addAI(FlyingDishController, aiOptions);
-        dish.setGroup("flyingDish");
+        dish.addAI(ThrowableController, aiOptions);
+        dish.setGroup("throwable");
     }
 
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
@@ -532,9 +548,9 @@ export default class GameLevel extends Scene {
         }
     }
 
-    protected handleFlyingDishCustomerInteraction(dish: AnimatedSprite, customer: AnimatedSprite) {
+    protected handleThrowableCustomerInteraction(dish: AnimatedSprite, customer: AnimatedSprite) {
         if (customer != null && dish.collisionShape.overlaps(customer.collisionShape)) {
-            if ((<FlyingDishController>dish._ai).food === (<CustomerController>customer._ai).foodWanted 
+            if ((<ThrowableController>dish._ai).item === (<CustomerController>customer._ai).foodWanted 
             && (<CustomerController>customer._ai).foodWanted != null) {
                 
                 this.customersSatisfied++;
@@ -546,6 +562,17 @@ export default class GameLevel extends Scene {
             } else {
                 (<CustomerController>customer._ai).changeState("angry");
             }
+            dish.destroy();
+        }
+    }
+
+    protected handleThrowableStationInteraction(dish: AnimatedSprite, station: AnimatedSprite) {
+        if (isIngredientsEnum((<ThrowableController>dish._ai).item) && station != null 
+        && dish.collisionShape.overlaps(station.collisionShape)) {
+            let stationAI = (<CookingStationController>station._ai);
+            const index = stationAI.IngredientsNeeded.findIndex(item => item === (<ThrowableController>dish._ai).item);
+            if (index != -1) { stationAI.IngredientsNeeded.splice(index, 1); }
+            // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
             dish.destroy();
         }
     }
