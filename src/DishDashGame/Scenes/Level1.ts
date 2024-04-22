@@ -110,6 +110,8 @@ export default class Level1 extends GameLevel {
         
         this.load.audio("jump", "game_assets/sounds/jump.wav");
         this.load.audio("pop", "game_assets/sounds/pop.wav");
+
+        this.load.audio("fridgeOpen", "game_assets/sounds/fridgeOpen.wav");
         this.load.audio("level_music", "game_assets/music/level_music.mp3");
         // this.load.audio("switch", "game_assets/sounds/switch.wav");
         // this.load.audio("player_death", "game_assets/sounds/player_death.wav");
