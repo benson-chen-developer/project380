@@ -6,7 +6,7 @@ export enum Foods {
     FISH_AND_CHIPS = "Fish and Chips",
     SCRAMBLE_EGGS = "Scramble Eggs",
     APPLE_PIE = "Apple Pie",
-    PANCAKE = "Pancake",
+    PANCAKES = "Pancakes",
 }
 
 // Inputs for Cooking Stations
@@ -34,7 +34,7 @@ export const foodIngredients: {[key in Foods]: Ingredients[]} = {
     // Level 4 Foods
     [Foods.APPLE_PIE]: [Ingredients.APPLE, Ingredients.FLOUR_MIX],
     // Level 5 Foods
-    [Foods.PANCAKE]: [Ingredients.FLOUR_MIX, Ingredients.SYRUP],  
+    [Foods.PANCAKES]: [Ingredients.FLOUR_MIX, Ingredients.SYRUP],  
     // Level 6 Foods
     [Foods.FISH_AND_CHIPS]: [Ingredients.FISH, Ingredients.POTATOS, Ingredients.LETTUCES],
 };
@@ -87,7 +87,7 @@ export function getRandomFood(diffculty: number): Foods {
         } else if (randomIndex < 0.6) {
             return Foods.APPLE_PIE;
         } else if (randomIndex < 0.75) {
-            return Foods.PANCAKE;
+            return Foods.PANCAKES;
         } else {
             return Foods.FRIES;
         }
@@ -101,7 +101,7 @@ export function getRandomFood(diffculty: number): Foods {
         } else if (randomIndex < 0.55) {
             return Foods.APPLE_PIE;
         } else if (randomIndex < 0.7) {
-            return Foods.PANCAKE;
+            return Foods.PANCAKES;
         } else if (randomIndex < 0.85) {
             return Foods.FISH_AND_CHIPS;
         } else {

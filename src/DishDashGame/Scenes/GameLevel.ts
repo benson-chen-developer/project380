@@ -23,7 +23,7 @@ import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
 import FlyingDishController from "../Player/Throwable/Dishes/FlyingDishController";
 import CookingStationController, { CookingStationStates } from "../CookingStation/CookingStationController";
-import { Foods, Ingredients } from "../WorldEnums/Foods";
+import { Foods, Ingredients, isFoodsEnum } from "../WorldEnums/Foods";
 import { getRandomFood } from "../WorldEnums/Foods";
 import SplashScreen from "../../MainScreenScene/SplashScreen";
 
@@ -238,7 +238,7 @@ export default class GameLevel extends Scene {
             this.playersHotbar = "Nothing";
         } else {
             this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
-            if (Input.isKeyPressed("enter")) {
+            if (Input.isKeyPressed("enter") && isFoodsEnum(this.playersHotbar)) {
                 //console.log("Direction Postive X: " + (<PlayerController>this.player._ai).directPostiveX);
                 let options: Record<string, any> = {
                     "postiveXDirection" : (<PlayerController>this.player._ai).directPostiveX,
@@ -453,7 +453,7 @@ export default class GameLevel extends Scene {
 
     protected addFoodIndicator(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): AnimatedSprite {
         let foodIndicator = this.add.animatedSprite(spriteKey, "secondary");
-        foodIndicator.position.set(tilePos.x*32, (tilePos.y-1)*32);
+        foodIndicator.position.set(tilePos.x*32, (tilePos.y-1.5)*32);
         foodIndicator.scale.set(2, 2);
         foodIndicator.setGroup("foodIndicator");
         return foodIndicator;

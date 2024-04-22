@@ -19,6 +19,4 @@ export enum WorldStatus {
     
     LEVEL_START = "LevelStart",
     LEVEL_END = "LevelEnd",
-    
-    PLAYER_PUTS_FOOD_IN_OVEN = "PLAYER_PUTS_FOOD_IN_OVEN",
 }
