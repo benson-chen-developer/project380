@@ -56,14 +56,15 @@ export default class Level2 extends GameLevel {
         ];
 
         // Station Initialization
-        this.addStation('oven', new Vec2(15,15), {indicatorKey: "foodIndicator", foodToCook: Foods.BURGER});
-        this.addStation('oven', new Vec2(20,15), {indicatorKey: "foodIndicator", foodToCook: Foods.FRIES});
+        this.addStation('oven', new Vec2(24,15), {indicatorKey: "foodIndicator", foodToCook: Foods.BURGER});
+        this.addStation('oven', new Vec2(27,15), {indicatorKey: "foodIndicator", foodToCook: Foods.FRIES});
         
         // Storage Initialization
-        this.addStorage('fridge', new Vec2(25,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.PATTY});
-        this.addStorage('fridge', new Vec2(27,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.BUNS});
-        this.addStorage('fridge', new Vec2(29,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.LETTUCES});
-        this.addStorage('fridge', new Vec2(31,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.POTATOS});
+        this.addStorage('fridge', new Vec2(32,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.PATTY});
+        this.addStorage('fridge', new Vec2(36,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.BUNS});
+        this.addStorage('fridge', new Vec2(40,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.LETTUCES});
+        this.addStorage('fridge', new Vec2(44,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.POTATOS});
+
 
         // this.spawnDelay.start();
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
