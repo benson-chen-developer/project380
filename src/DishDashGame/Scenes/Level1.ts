@@ -2,53 +2,31 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import { Foods, getRandomFood } from "../WorldEnums/Foods";
+import { Foods, Ingredients, getRandomFood, isIngredientsEnum } from "../WorldEnums/Foods";
 import { WorldStatus } from "../WorldEnums/WorldStatus";
 import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
 
 export default class Level1 extends GameLevel {
     
-    // HOMEWORK 5 - TODO
-    /**
-     * Add your balloon pop sound here and use it throughout the code
-     */
     loadScene(): void {
         // Load resources
         this.load.tilemap("level1", "game_assets/tilemaps/level1.json");
-        this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
         
+        this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
-
+        this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
+        this.load.spritesheet("fridge", "game_assets/spritesheets/fridge.json");
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
         this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
-
+        
         this.load.audio("jump", "game_assets/sounds/jump.wav");
         this.load.audio("switch", "game_assets/sounds/switch.wav");
         this.load.audio("player_death", "game_assets/sounds/player_death.wav");
         this.load.audio("pop", "game_assets/sounds/pop.wav");
-
-        this.load.spritesheet("bun", "game_assets/spritesheets/Bun.json");
-
-        this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
-
-        // HOMEWORK 5 - TODO
-        // You'll want to change this to your level music
         this.load.audio("level_music", "game_assets/music/level_music.mp3");
     }
 
-    // HOMEWORK 5 - TODO
-    /**
-     * Decide which resource to keep and which to cull.
-     * 
-     * Check out the resource manager class.
-     * 
-     * Figure out how to save resources from being unloaded, and save the ones that are needed
-     * for level 2.
-     * 
-     * This will let us cut down on load time for the game (although there is admittedly
-     * not a lot of load time for such a small project).
-     */
     unloadScene(){
         // Keep resources - this is up to you
     }
@@ -68,26 +46,27 @@ export default class Level1 extends GameLevel {
         // Do generic setup for a GameLevel
         super.startScene();
 
-        // this.addLevelEnd(new Vec2(60, 13), new Vec2(5, 5));
-
         this.nextLevel = Level2;
 
-        // Add balloons of various types, just red and blue for the first level
-        // for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
-        //     this.addBalloon("red", pos, {color: HW5_Color.RED});
-        // }
+        // Customer Spawning Initialization
         let spawnCustomer = (pos: Vec2) => {
             return () => this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood(1)});
         };
-
         this.customerSpawnPoints = [
             { position: new Vec2(5, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(5, 15))) },
             { position: new Vec2(10, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(10, 15))) },
         ];
 
+        // Station Initialization
         this.addStation('oven', new Vec2(15,15), {indicatorKey: "foodIndicator", foodToCook: Foods.BURGER});
         this.addStation('oven', new Vec2(20,15), {indicatorKey: "foodIndicator", foodToCook: Foods.FRIES});
         
+        // Storage Initialization
+        this.addStorage('fridge', new Vec2(25,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.PATTY});
+        this.addStorage('fridge', new Vec2(27,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.BUNS});
+        this.addStorage('fridge', new Vec2(29,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.LETTUCES});
+        this.addStorage('fridge', new Vec2(31,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.POTATOS});
+
         // this.spawnDelay.start();
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }

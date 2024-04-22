@@ -18,15 +18,8 @@ export default class CookedState extends CookingStationState {
 		super.update(deltaT)
 
         if (this.parent.foodInOven == null) {
-			// this.parent.IngrediantsNeeded = foodIngredients[this.parent.foodTheStationProduce];
-			// this.parent.cookingState = CookingStationStates.NOTCOOKING; 
             this.finished(CookingStationStates.NOTCOOKING);
         }
-
-		// else if (this.waitTimer.isStopped() && this.parent.foodInOven !== Ingredients.NONE){
-		// 	console.log("We overcooked 11");
-		// 	this.finished(CookingStationStates.OVERCOOKED);
-        // }
 	}
 
 	onExit(): Record<string, any> {

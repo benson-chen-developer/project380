@@ -31,17 +31,11 @@ export enum CookingStationStates {
 export default class CookingStationController extends StateMachineAI {
 	owner: GameNode;
 	foodTheStationProduce: Foods;
-	IngrediantList: Ingredients[];
-	IngrediantsNeeded: Ingredients[] = [];
+	IngredientList: Ingredients[];
+	IngredientsNeeded: Ingredients[] = [];
 	foodOutputSprite: AnimatedSprite;
-
 	foodInOven: Foods;
 	cookingState: string;
-
-    // overCooked: boolean;
-	// nextToOven: boolean;
-	// ovenId: number;
-	// speed: number = 100;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
 		this.owner = owner;
@@ -50,13 +44,8 @@ export default class CookingStationController extends StateMachineAI {
 		this.receiver.subscribe(WorldStatus.PLAYER_SERVE);
 
 		this.foodTheStationProduce = options.foodToCook;
-		this.IngrediantList = foodIngredients[this.foodTheStationProduce];
+		this.IngredientList = foodIngredients[this.foodTheStationProduce];
 		this.foodInOven = null;
-		// this.nextToOven = false;
-		// this.ovenId = null;
-
-		// let emptyOven = new EmptyOven(this, owner);
-		// this.addState(ItemInOvenState.NONE, emptyOven);
 
 		let notCooking = new NotCooking(this, owner);
 		this.addState(CookingStationStates.NOTCOOKING, notCooking);
@@ -67,14 +56,11 @@ export default class CookingStationController extends StateMachineAI {
 		let cooked = new CookedState(this, owner);
 		this.addState(CookingStationStates.COOKED, cooked);
 
-		// let overcooked = new CookedState(this, owner);
-		// this.addState(CookingStationStates.OVERCOOKED, overcooked);
-
 		this.initialize(CookingStationStates.NOTCOOKING);
 
 		this.foodOutputSprite = options.foodWantedSprite;
 		this.foodOutputSprite.animation.play(this.foodTheStationProduce, true);
-		console.log("Indicator: " + this.foodOutputSprite)
+		// console.log("Indicator: " + this.foodOutputSprite)
 	}
 
 	changeState(stateName: string): void {
@@ -83,11 +69,5 @@ export default class CookingStationController extends StateMachineAI {
 
 	update(deltaT: number): void {
 		super.update(deltaT);
-
-		// if(this.nextToOven){
-		// 	console.log("Im next to oven")
-		// } else {
-		// 	console.log("Im not next to oven")
-		// }
 	}
 }

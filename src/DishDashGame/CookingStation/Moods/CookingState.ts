@@ -6,7 +6,6 @@ import CookingStationState from "../CookingStationState";
 
 export default class CookingState extends CookingStationState {
 	onEnter(): void {
-		// this.foodInOven = ItemInOvenState.NONE;
 		this.parent.cookingState = CookingStationStates.COOKING; 
 		(<AnimatedSprite>this.owner).animation.play("cooking", true);
 		this.waitTimer.start();

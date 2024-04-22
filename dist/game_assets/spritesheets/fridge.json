@@ -1,0 +1,15 @@
+{
+    "name": "Fridge",
+    "spriteSheetImage": "fridge.png",
+    "spriteWidth": 16,
+    "spriteHeight": 32,
+    "columns": 1,
+    "rows": 1,
+    "durationType": "time",
+    "animations": [
+        { 
+            "name": "FRIDGE",
+            "frames": [ {"index": 0, "duration": 1000} ]
+        }
+    ]
+}

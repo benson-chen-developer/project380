@@ -26,6 +26,7 @@ import CookingStationController, { CookingStationStates } from "../CookingStatio
 import { Foods, Ingredients, isFoodsEnum } from "../WorldEnums/Foods";
 import { getRandomFood } from "../WorldEnums/Foods";
 import SplashScreen from "../../MainScreenScene/SplashScreen";
+import StorageStationController from "../StorageStation/StorageStationController";
 
 // HOMEWORK 5 - TODO
 /**
@@ -75,17 +76,15 @@ export default class GameLevel extends Scene {
 
     protected testLabel: Label;
 
-    protected oven: CookingStationController;
-    protected ovens: CookingStationController[];
-    protected ovenIdLabel: Label;
+    // protected oven: CookingStationController;
+    // protected ovens: CookingStationController[];
+    // protected ovenIdLabel: Label;
 
     startScene(): void {
-        // this.switchesPressed = 0;
         this.customersSatisfied = 0;
 
         this.customersWants = "???";
         this.playersHotbar = "Nothing";
-        this.ovens = [];
 
         // Do the game level standard initializations
         this.initLayers();
@@ -109,7 +108,6 @@ export default class GameLevel extends Scene {
 
         // Initially disable player movement
         Input.disableInput();
-        // this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
     }
 
 
@@ -118,34 +116,28 @@ export default class GameLevel extends Scene {
         while(this.receiver.hasNextEvent()){
             let event = this.receiver.getNextEvent();
             
-            switch(event.type){
-                case WorldStatus.DISH_HIT_CUSTOMER:
-                    {
-                        console.log("Called Dish Customer")
-                        let node = this.sceneGraph.getNode(event.data.get("node"));
-                        let other = this.sceneGraph.getNode(event.data.get("other"));
-
-                        if ((<FlyingDishController>node._ai).food){ 
-                            // Node is dish, other is Customer
-                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
-                        } else { 
-                            // Other is dish, node is Customer
-                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
-                        }
-                    }
-                    break;
-
+            switch(event.type) {
                 case WorldStatus.PLAYER_AT_STATION:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
                         let other = this.sceneGraph.getNode(event.data.get("other"));
 
-                        if (node === this.player){ 
-                            // Node is player, other is Station
-                            this.handleIsPlayerStationInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
-                        } else { 
-                            // Other is player, node is Station
-                            this.handleIsPlayerStationInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
+                        if (node === this.player){ // Node is player, other is Station
+                            this.handlePlayerStationInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                        } else { // Other is player, node is Station
+                            this.handlePlayerStationInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
+                        }
+                    }
+                    break;
+                case WorldStatus.PLAYER_AT_STORAGE:
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        if (node === this.player) { // Node is player, other is Storage
+                            this.handlePlayerStorageInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                        } else { // Other is player, node is Storage
+                            this.handlePlayerStorageInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
                         }
                     }
                     break;
@@ -154,24 +146,32 @@ export default class GameLevel extends Scene {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
                         let other = this.sceneGraph.getNode(event.data.get("other"));
 
-                        if (node === this.player){ 
-                            // Node is player, other is Customer
+                        if (node === this.player) { // Node is player, other is Customer
                             this.handlePlayerCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
-                            
-                        } else { 
-                            // Other is player, node is Customer
+                        } else { // Other is player, node is Customer
                             this.handlePlayerCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
                         }
                     }
                     break;
 
+                case WorldStatus.DISH_HIT_CUSTOMER:
+                    {
+                        let node = this.sceneGraph.getNode(event.data.get("node"));
+                        let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                        if ((<FlyingDishController>node._ai).food){ // Node is dish, other is Customer
+                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>node, <AnimatedSprite>other);
+                        } else { // Other is dish, node is Customer
+                            this.handleFlyingDishCustomerInteraction(<AnimatedSprite>other,<AnimatedSprite>node);
+                        }
+                    }
+                    break;
                 case WorldStatus.CUSTOMER_LEAVING:
                     {
                         let foodIndicator = this.sceneGraph.getNode(event.data.get("sprite"));
                         if (foodIndicator) foodIndicator.destroy();
                     }
                     break;
-
                 case WorldStatus.CUSTOMER_DELETE:
                     {
                         let customer = this.sceneGraph.getNode(event.data.get("owner"));
@@ -202,7 +202,6 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
-                
                 case WorldStatus.LEVEL_END:
                     {
                         // Go to the next level
@@ -223,7 +222,6 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
-
                 case WorldStatus.LEVEL_START:
                     {
                         // Re-enable controls
@@ -300,6 +298,7 @@ export default class GameLevel extends Scene {
             WorldStatus.LEVEL_END,
             WorldStatus.PLAYER_ENTERED_LEVEL_END,
             WorldStatus.PLAYER_AT_STATION,
+            WorldStatus.PLAYER_AT_STORAGE,
         ]);
     }
 
@@ -435,6 +434,21 @@ export default class GameLevel extends Scene {
         station.setGroup("station");
     }
 
+    protected addStorage(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let station = this.add.animatedSprite(spriteKey, "secondary");
+        station.position.set(tilePos.x*32, tilePos.y*32);
+        station.scale.set(2, 2);
+        station.addPhysics();
+
+        station.setTrigger("player", WorldStatus.PLAYER_AT_STORAGE, null);
+        
+        let ingredientIndicatorSprite = this.addFoodIndicator(aiOptions.indicatorKey, tilePos, aiOptions);
+        aiOptions["ingredientIndicatorSprite"] = ingredientIndicatorSprite;
+
+        station.addAI(StorageStationController, aiOptions);
+        station.setGroup("storage");
+    }
+
     protected addCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let customer = this.add.animatedSprite(spriteKey, "secondary");
         customer.position.set(tilePos.x*32, tilePos.y*32);
@@ -489,15 +503,15 @@ export default class GameLevel extends Scene {
         this.customersWantsLabel.text = "Customer Wants: " + (this.customersWants);
     }
 
-    protected handleIsPlayerStationInteraction(player: AnimatedSprite, station: AnimatedSprite){
+    protected handlePlayerStationInteraction(player: AnimatedSprite, station: AnimatedSprite){
         // console.log("CHECKING");
         if (station !== null && player.collisionShape.overlaps(station.collisionShape)) {
             let stationAI = (<CookingStationController>station._ai);
             if (Input.isPressed("interact") && stationAI.cookingState !== CookingStationStates.COOKING) {
                 if ((<PlayerController>player._ai).hotbar && stationAI.cookingState == CookingStationStates.NOTCOOKING) {
-                    const index = stationAI.IngrediantsNeeded.findIndex(item => item === (<PlayerController>player._ai).hotbar);
+                    const index = stationAI.IngredientsNeeded.findIndex(item => item === (<PlayerController>player._ai).hotbar);
                     if (index != -1) {          
-                        stationAI.IngrediantsNeeded.splice(index, 1);
+                        stationAI.IngredientsNeeded.splice(index, 1);
                         (<PlayerController>player._ai).hotbar = null;
                     }
                 } else {
@@ -507,6 +521,14 @@ export default class GameLevel extends Scene {
                     }
                 }
             }
+        }
+    }
+
+    protected handlePlayerStorageInteraction(player: AnimatedSprite, storage: AnimatedSprite){
+        // console.log("CHECKING");
+        if (storage !== null && player.collisionShape.overlaps(storage.collisionShape) 
+        && Input.isPressed("interact") && (<PlayerController>player._ai).hotbar == null) {
+            (<PlayerController>player._ai).hotbar = (<StorageStationController>storage._ai).ingredients;
         }
     }
 
