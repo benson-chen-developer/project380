@@ -7,7 +7,7 @@ import GameLevel from "./GameLevel";
 export default class Level6 extends GameLevel {
     loadScene(): void {
         // Load resources
-        this.load.tilemap("level1", "game_assets/tilemaps/level1.json");
+        this.load.tilemap("level6", "game_assets/tilemaps/level1.json");
         
         this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
@@ -23,13 +23,13 @@ export default class Level6 extends GameLevel {
 
     startScene(): void {
         // Add the level 2 tilemap
-        this.add.tilemap("level2", new Vec2(2, 2));
+        this.add.tilemap("level6", new Vec2(2, 2));
         this.viewport.setBounds(0, 0, 64*32, 20*32);
 
         this.playerSpawn = new Vec2(5*32, 14*32);
 
         // Set the total switches and balloons in the level
-        this.totalCustomers = 1;
+        this.totalCustomers = 8;
         this.totalCustomersLeft = this.totalCustomers;
         this.totalSpawnsLeft = this.totalCustomers;
 
@@ -40,7 +40,7 @@ export default class Level6 extends GameLevel {
 
         // Customer Spawning Initialization
         let spawnCustomer = (pos: Vec2) => {
-            return () => this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood(2)});
+            return () => this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood(6)});
         };
         this.customerSpawnPoints = [
             { position: new Vec2(5, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(5, 15))) },

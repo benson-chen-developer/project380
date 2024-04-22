@@ -15,7 +15,7 @@ export default class Level2 extends GameLevel {
      */
     loadScene(): void {
         // Load resources
-        this.load.tilemap("level1", "game_assets/tilemaps/level1.json");
+        this.load.tilemap("level2", "game_assets/tilemaps/level1.json");
         
         this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
@@ -37,7 +37,7 @@ export default class Level2 extends GameLevel {
         this.playerSpawn = new Vec2(5*32, 14*32);
 
         // Set the total switches and balloons in the level
-        this.totalCustomers = 1;
+        this.totalCustomers = 4;
         this.totalCustomersLeft = this.totalCustomers;
         this.totalSpawnsLeft = this.totalCustomers;
 
