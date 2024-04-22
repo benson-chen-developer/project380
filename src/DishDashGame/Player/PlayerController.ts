@@ -55,8 +55,8 @@ export default class PlayerController extends StateMachineAI {
         this.owner = owner;
         this.initializePlatformer();
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
-        // this.hotbar = Foods.FRIES;
-        this.hotbar = Ingredients.PATTY;
+        this.hotbar = Foods.FRIES;
+        // this.hotbar = Ingredients.PATTY;
         // this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
 
         owner.tweens.add("flip", {
