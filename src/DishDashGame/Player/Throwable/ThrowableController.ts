@@ -18,8 +18,7 @@ export default class ThrowableController extends StateMachineAI {
 	velocity: Vec2 = Vec2.ZERO;
     item: any;
 	speed: number = 300;
-
-	
+	freeze: boolean = false;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
 		owner.tweens.add("spin", {
@@ -38,6 +37,8 @@ export default class ThrowableController extends StateMachineAI {
 		this.owner = owner;
 
 		this.receiver.subscribe(WorldStatus.PLAYER_MOVE);
+		this.receiver.subscribe(WorldStatus.PAUSE_TIME);
+		this.receiver.subscribe(WorldStatus.RESUME_TIME);
 
 		let food = new FoodThrown(this, owner);
 		this.addState(ThrowableStates.FOOD_THROWN, food);

@@ -22,6 +22,7 @@ export default class Run extends OnGround {
 	}
 
 	update(deltaT: number): void {
+		if (this.parent.freeze) return;
 		super.update(deltaT);
 
 		let dir = this.getInputDirection();

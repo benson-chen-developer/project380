@@ -10,6 +10,7 @@ export default class FoodThrown extends ThrowableState {
 	}
 
 	update(deltaT: number): void {
+		if (this.parent.freeze) return;
 		super.update(deltaT);
 		this.parent.velocity.x = this.parent.directionX * this.parent.speed;
 		this.owner.move(this.parent.velocity.scaled(deltaT));

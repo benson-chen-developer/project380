@@ -20,7 +20,14 @@ export default abstract class CookingStationState extends State {
 	}
 
 	handleInput(event: GameEvent): void {
-
+		if (event.type == WorldStatus.PAUSE_TIME && this.waitTimer.hasRun() && !this.waitTimer.isStopped()) {
+			this.waitTimer.isPaused();
+			(<AnimatedSprite>this.owner).animation.pause();
+		} 
+		else if (event.type == WorldStatus.RESUME_TIME && this.waitTimer.hasRun() && !this.waitTimer.isPaused()) {
+			this.waitTimer.start();
+			(<AnimatedSprite>this.owner).animation.resume();
+		}
 	}
 
 	update(deltaT: number): void {

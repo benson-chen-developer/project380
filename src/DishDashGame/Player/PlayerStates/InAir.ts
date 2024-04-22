@@ -7,6 +7,7 @@ import PlayerState from "./PlayerState";
 export default abstract class InAir extends PlayerState {
     
     update(deltaT: number): void {
+        if (this.parent.freeze) return;
         super.update(deltaT);
 
         let dir = this.getInputDirection();

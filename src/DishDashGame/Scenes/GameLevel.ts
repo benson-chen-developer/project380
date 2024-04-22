@@ -40,10 +40,8 @@ export default class GameLevel extends Scene {
     protected playerSpawn: Vec2;
     protected player: AnimatedSprite;
     protected respawnTimer: Timer;
-
-    // Labels for the UI
-    // protected static livesCount: number = 3;
-    // protected livesCountLabel: Label;
+    protected timePaused: boolean = false;
+    protected timePauseDelay: Timer = new Timer(5000);
 
     // Stuff to end the level and go to the next level
     protected nextLevel: new (...args: any) => GameLevel;
@@ -243,6 +241,34 @@ export default class GameLevel extends Scene {
                     break;
             }
         }
+
+        // Pausing Feature
+        if (Input.isPressed("pause") && this.timePauseDelay.isStopped) {
+            console.log("PAUSED");
+            if (!this.timePaused) {
+                this.emitter.fireEvent(WorldStatus.PAUSE_TIME);
+                this.timePaused = true;
+                this.timePauseDelay.start();
+
+                for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
+                    if (!this.customerSpawnPoints[i]["spawnTimer"].isStopped()) {
+                        this.customerSpawnPoints[i]["spawnTimer"].pause();
+                    }
+                }
+
+            } else {
+                this.emitter.fireEvent(WorldStatus.RESUME_TIME);
+                this.timePaused = false;
+                this.timePauseDelay.start();
+
+                for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
+                    if (this.customerSpawnPoints[i]["spawnTimer"].isPaused()) {
+                        this.customerSpawnPoints[i]["spawnTimer"].start();
+                    }
+                }
+            }
+        }
+        if (this.timePaused) return;
         
         // UI Updates and Control features
         if ((<PlayerController>this.player._ai).hotbar == null) {
@@ -311,9 +337,8 @@ export default class GameLevel extends Scene {
             WorldStatus.LEVEL_START,
             WorldStatus.LEVEL_END,
             WorldStatus.PLAYER_ENTERED_LEVEL_END,
-
-            WorldStatus.PLAYER_COLLECT,
-            WorldStatus.PLAYER_SERVE,
+            WorldStatus.PAUSE_TIME,
+            WorldStatus.RESUME_TIME,
         ]);
     }
 
@@ -471,8 +496,8 @@ export default class GameLevel extends Scene {
         customer.scale.set(2, 2);
         
         customer.addPhysics();
-        customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, WorldStatus.PLAYER_SERVE);
-        customer.setTrigger("throwable", WorldStatus.ITEM_HIT_CUSTOMER, WorldStatus.PLAYER_SERVE);
+        customer.setTrigger("player", WorldStatus.PLAYER_AT_CUSTOMER, null);
+        customer.setTrigger("throwable", WorldStatus.ITEM_HIT_CUSTOMER, null);
         
         let foodWantedSprite = this.addFoodIndicator(aiOptions.indicatorKey, tilePos, aiOptions);
         aiOptions["foodWantedSprite"] = foodWantedSprite;
@@ -510,7 +535,7 @@ export default class GameLevel extends Scene {
                 this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
 
                 (<CustomerController>customer._ai).changeState("happy");
-                this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
+                // this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
             }
         } else {
@@ -557,7 +582,7 @@ export default class GameLevel extends Scene {
                 this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
 
                 (<CustomerController>customer._ai).changeState("happy");
-                this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
+                // this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
             } else {
                 (<CustomerController>customer._ai).changeState("angry");

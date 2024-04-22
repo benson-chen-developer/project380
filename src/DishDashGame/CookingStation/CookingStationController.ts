@@ -41,7 +41,8 @@ export default class CookingStationController extends StateMachineAI {
 		this.owner = owner;
 
 		this.receiver.subscribe(WorldStatus.PLAYER_MOVE);
-		this.receiver.subscribe(WorldStatus.PLAYER_SERVE);
+		this.receiver.subscribe(WorldStatus.PAUSE_TIME);
+		this.receiver.subscribe(WorldStatus.RESUME_TIME);
 
 		this.foodTheStationProduce = options.foodToCook;
 		this.IngredientList = foodIngredients[this.foodTheStationProduce];

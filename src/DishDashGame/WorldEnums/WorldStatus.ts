@@ -21,4 +21,6 @@ export enum WorldStatus {
     PLAYER_ENTERED_LEVEL_END = "PlayerEnteredLevelEnd",
     LEVEL_START = "LevelStart",
     LEVEL_END = "LevelEnd",
+    PAUSE_TIME = "PauseTime",
+    RESUME_TIME = "ResumeTime",
 }
