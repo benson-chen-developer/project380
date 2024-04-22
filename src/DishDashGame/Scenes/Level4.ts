@@ -5,7 +5,7 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import { Foods, Ingredients, getRandomFood } from "../WorldEnums/Foods";
 import GameLevel from "./GameLevel";
 
-export default class Level2 extends GameLevel {
+export default class Level4 extends GameLevel {
     // HOMEWORK 5 - TODO
     /**
      * Decide which resource to keep and which to cull.
