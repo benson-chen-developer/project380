@@ -7,17 +7,15 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { Foods, Ingredients } from "../WorldEnums/Foods";
 import { WorldStatus } from "../WorldEnums/WorldStatus";
-import CookingStationController, { CookingStationStates, ItemInOvenState } from "./CookingStationController";
-import { DishDashEvents } from "../DishDashEvents";
+import CookingStationController, { CookingStationStates } from "./CookingStationController";
 
 export default abstract class CookingStationState extends State {
 	owner: GameNode;
 	parent: CookingStationController;
+	waitTimer: Timer = new Timer(3000); // 3 seconds long
 	
-	waitTimer: Timer = new Timer(1000); 	// 10 Seconds long
-
-    foodInOven: string = Ingredients.NONE
-    cookingProgess: CookingStationStates = CookingStationStates.NOTCOOKING
+    // foodInOven: string = Ingredients.NONE
+    // cookingProgess: CookingStationStates = CookingStationStates.NOTCOOKING
 
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);
@@ -25,29 +23,12 @@ export default abstract class CookingStationState extends State {
 	}
 
 	handleInput(event: GameEvent): void {
-		if (event.type == WorldStatus.PLAYER_PUTS_FOOD_IN_OVEN) {
-			this.finished(CookingStationStates.COOKING);
-		} 
-		// else if(event.type == WorldStatus.PLAYER_PUTS_FOOD_IN_OVEN)
+		// if (event.type == WorldStatus.PLAYER_PUTS_FOOD_IN_OVEN) {
+		// 	this.finished(CookingStationStates.COOKING);
+		// } 
 	}
 
 	update(deltaT: number): void {
-		// super.update(deltaT)
-		
-		// console.log("Expression " + this.expression + "\tLeaving: " + this.leaving);
-		// if (this.leaving) {
-		// 	if (this.deleteTimer.isStopped()) {
-		// 		// console.log("Delete State: " + this.expression);
-		// 		this.emitter.fireEvent(WorldStatus.CUSTOMER_DELETE, {owner: this.owner.id});
-		// 	} 
-		// } else {
-		// 	if (this.waitTimer.isStopped()) {
-		// 		if (this.expression == CustomerStates.WAITING) {
-		// 			this.finished(CustomerStates.CONCERN); // Changes animation texture to concern
-		// 		} else if (this.expression == CustomerStates.CONCERN) {
-		// 			this.finished(CustomerStates.ANGRY); // Changes animation texture to Angry
-		// 		}
-		// 	}
-		// }
+
 	}
 }

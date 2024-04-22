@@ -2,8 +2,6 @@ import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import StateMachineAI from "../../Wolfie2D/AI/StateMachineAI";
 import { WorldStatus } from "../WorldEnums/WorldStatus";
-import { HW5_Color } from "../hw5_color";
-
 import Waiting from "./Moods/Waiting";
 import Happy from "./Moods/Happy";
 import Angry from "./Moods/Angry";
@@ -22,9 +20,6 @@ export default class CustomerController extends StateMachineAI {
 	owner: GameNode;
 	foodWanted: Foods
 	foodWantedSprite: AnimatedSprite;
-	// direction: Vec2 = Vec2.ZERO;
-	// velocity: Vec2 = Vec2.ZERO;
-	// speed: number = 100;
 
 	initializeAI(owner: GameNode, options: Record<string, any>){
 		this.owner = owner;

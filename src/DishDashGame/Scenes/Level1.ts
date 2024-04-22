@@ -2,7 +2,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import { getRandomFood } from "../WorldEnums/Foods";
+import { Foods, getRandomFood } from "../WorldEnums/Foods";
 import { WorldStatus } from "../WorldEnums/WorldStatus";
 import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
@@ -22,7 +22,6 @@ export default class Level1 extends GameLevel {
 
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
         this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
-        // this.load.spritesheet("blueBalloon", "game_assets/spritesheets/blueBalloon.json");
 
         this.load.audio("jump", "game_assets/sounds/jump.wav");
         this.load.audio("switch", "game_assets/sounds/switch.wav");
@@ -78,7 +77,7 @@ export default class Level1 extends GameLevel {
         //     this.addBalloon("red", pos, {color: HW5_Color.RED});
         // }
         let spawnCustomer = (pos: Vec2) => {
-            return () => this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood()});
+            return () => this.addCustomer("customer", pos, {indicatorKey: "foodIndicator", foodWanted: getRandomFood(1)});
         };
 
         this.customerSpawnPoints = [
@@ -86,8 +85,9 @@ export default class Level1 extends GameLevel {
             { position: new Vec2(10, 15), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(10, 15))) },
         ];
 
-        this.addOven('oven', new Vec2(4,15), null);
-        this.addOven('oven', new Vec2(8,15), null);
+        this.addStation('oven', new Vec2(15,15), {indicatorKey: "foodIndicator", foodToCook: Foods.BURGER});
+        this.addStation('oven', new Vec2(20,15), {indicatorKey: "foodIndicator", foodToCook: Foods.FRIES});
+        
         // this.spawnDelay.start();
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }

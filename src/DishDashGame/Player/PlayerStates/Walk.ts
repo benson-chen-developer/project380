@@ -1,8 +1,6 @@
 import Input from "../../../Wolfie2D/Input/Input";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { isFoodsEnum, isIngredientsEnum } from "../../WorldEnums/Foods";
-import { HW5_Color } from "../../hw5_color";
-import { HW5_Events } from "../../hw5_enums";
 import { PlayerStates } from "../PlayerController";
 import OnGround from "./OnGround";
 

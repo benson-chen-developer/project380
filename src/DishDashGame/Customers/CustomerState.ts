@@ -27,9 +27,7 @@ export default abstract class CustomerState extends State {
 	}
 
 	handleInput(event: GameEvent): void {
-		// if (event.type == WorldStatus.PLAYER_SERVE && this.expression != CustomerStates.ANGRY) {
-		// 	this.finished(CustomerStates.HAPPY); // Changes animation texture to happy
-		// }
+
 	}
 
 	update(deltaT: number): void {

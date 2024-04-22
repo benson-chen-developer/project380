@@ -6,7 +6,6 @@ import Input from "../../../Wolfie2D/Input/Input";
 import GameNode from "../../../Wolfie2D/Nodes/GameNode";
 import Timer from "../../../Wolfie2D/Timing/Timer";
 import { WorldStatus } from "../../WorldEnums/WorldStatus";
-import { HW5_Events } from "../../hw5_enums";
 import PlayerController from "../PlayerController";
 
 

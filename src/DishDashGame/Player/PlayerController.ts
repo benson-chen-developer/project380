@@ -7,8 +7,6 @@ import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { Foods, Ingredients } from "../WorldEnums/Foods";
 import { WorldStatus } from "../WorldEnums/WorldStatus";
-import { HW5_Color } from "../hw5_color";
-import { HW5_Events } from "../hw5_enums";
 import Fall from "./PlayerStates/Fall";
 import Idle from "./PlayerStates/Idle";
 import InAir from "./PlayerStates/InAir";
@@ -56,8 +54,7 @@ export default class PlayerController extends StateMachineAI {
         this.initializePlatformer();
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
         // this.hotbar = Foods.FRIES;
-        this.hotbar = Ingredients.PATTY;
-        // this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
+        this.hotbar = Ingredients.POTATOS;
 
         owner.tweens.add("flip", {
             startDelay: 0,

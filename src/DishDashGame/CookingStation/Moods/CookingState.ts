@@ -1,24 +1,20 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import { CookingStationStates, ItemInOvenState } from "../CookingStationController";
+import { CookingStationStates } from "../CookingStationController";
 import CookingStationState from "../CookingStationState";
 
 export default class CookingState extends CookingStationState {
 	onEnter(): void {
 		// this.foodInOven = ItemInOvenState.NONE;
+		this.parent.cookingState = CookingStationStates.COOKING; 
 		(<AnimatedSprite>this.owner).animation.play("cooking", true);
-		
 		this.waitTimer.start();
 	}
 
     update(deltaT: number) : void {
         super.update(deltaT);
-
-        if(this.waitTimer.isStopped()){
-			this.finished(CookingStationStates.COOKED);
-        }
-
+        if (this.waitTimer.isStopped()) this.finished(CookingStationStates.COOKED);
     }
 
 	onExit(): Record<string, any> {
