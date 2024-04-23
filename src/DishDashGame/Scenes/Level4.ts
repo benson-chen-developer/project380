@@ -8,7 +8,7 @@ import Level5 from "./Level5";
 export default class Level4 extends GameLevel {
     loadScene(): void {
         super.loadScene();
-        this.load.tilemap("level4", "game_assets/tilemaps/level1.json");
+        this.load.tilemap("level4", "game_assets/tilemaps/level4.json");
     }
 
     startScene(): void {

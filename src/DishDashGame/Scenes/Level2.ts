@@ -9,7 +9,7 @@ export default class Level2 extends GameLevel {
     
     loadScene(): void {
         super.loadScene();
-        this.load.tilemap("level2", "game_assets/tilemaps/level1.json");
+        this.load.tilemap("level2", "game_assets/tilemaps/level2.json");
     }
 
     startScene(): void {
