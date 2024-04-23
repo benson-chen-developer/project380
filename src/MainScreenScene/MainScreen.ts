@@ -53,8 +53,8 @@ export default class MainScreen extends Scene {
         // Center the viewport
         let size = this.viewport.getHalfSize();
         this.viewport.setFocus(size);
-
         this.viewport.setZoomLevel(1);
+        
         let sceneOptions = {
             physics: {
                 groupNames: ["ground", "player", "customer", "throwable", "station"],
