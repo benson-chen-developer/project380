@@ -1,5 +1,6 @@
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Ingredients, foodIngredients } from "../../WorldEnums/Foods";
 import { CookingStationStates } from "../CookingStationController";
@@ -11,6 +12,7 @@ export default class CookedState extends CookingStationState {
 		this.parent.foodInOven = this.parent.foodTheStationProduce;
         this.parent.cookingState = CookingStationStates.COOKED; 
 		(<AnimatedSprite>this.owner).animation.play("cooked", true);
+		this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "ding", loop: false, holdReference: true});
 		// this.waitTimer.start();
 	}
 

@@ -79,6 +79,12 @@ export default class GameLevel extends Scene {
         this.load.audio("pop", "game_assets/sounds/pop.wav");
         this.load.audio("fridgeOpen", "game_assets/sounds/fridgeOpen.mp3");
         this.load.audio("frying", "game_assets/sounds/fryingSound.mp3");
+
+        this.load.audio("angry", "game_assets/sounds/customerAngry.mp3");
+        this.load.audio("entering", "game_assets/sounds/customerBell.mp3");
+        this.load.audio("happy", "game_assets/sounds/customerHappy.mp3");
+        this.load.audio("ding", "game_assets/sounds/doneCookingDing.mp3");
+
         this.load.audio("level_music", "game_assets/music/level_music.mp3");
     }
 
