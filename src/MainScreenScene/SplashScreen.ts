@@ -29,10 +29,7 @@ export default class SplashScreen extends Scene {
 
     public override startScene(): void {
         this.splashScreen = this.addUILayer(SplashScreenLayer.SPLASH_SCREEN);
-        // Center the viewport
-        let size = this.viewport.getHalfSize();
-        this.viewport.setFocus(size);
-        this.viewport.setZoomLevel(1);
+        
         const center = this.viewport.getCenter();
 
         this.logo = this.add.sprite("Dish", SplashScreenLayer.SPLASH_SCREEN)
