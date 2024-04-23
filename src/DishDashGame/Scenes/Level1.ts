@@ -9,27 +9,11 @@ import Level2 from "./Level2";
 export default class Level1 extends GameLevel {
     
     loadScene(): void {
-        // Load resources
-        //this.load.tilemap("level1", "game_assets/tilemaps/DishDashlvl1.json");
+        super.loadScene();
         this.load.tilemap("level1", "game_assets/tilemaps/level1.json");
-        
-        this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
-        this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
-        this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
-        this.load.spritesheet("fridge", "game_assets/spritesheets/fridge.json");
-        this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
-        this.load.spritesheet("throwable", "game_assets/spritesheets/throwables.json");
-        
-        this.load.audio("jump", "game_assets/sounds/jump.wav");
-        this.load.audio("pop", "game_assets/sounds/pop.wav");
-        this.load.audio("fridgeOpen", "game_assets/sounds/fridgeOpen.mp3");
-        this.load.audio("frying", "game_assets/sounds/fryingSound.mp3");
-        this.load.audio("level_music", "game_assets/music/level_music.mp3");
-        // this.load.audio("switch", "game_assets/sounds/switch.wav");
-        // this.load.audio("player_death", "game_assets/sounds/player_death.wav");
     }
 
-    unloadScene(){
+    unloadScene() {
         // Keep resources - this is up to you
     }
 

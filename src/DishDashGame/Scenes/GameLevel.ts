@@ -28,13 +28,6 @@ import { getRandomFood } from "../WorldEnums/Foods";
 import SplashScreen from "../../MainScreenScene/SplashScreen";
 import StorageStationController from "../StorageStation/StorageStationController";
 
-// HOMEWORK 5 - TODO
-/**
- * Add in some level music.
- * 
- * This can be done here in the base GameLevel class, or in Level1 and Level2,
- * it's up to you.
- */
 export default class GameLevel extends Scene {
     // Every level will have a player, which will be an animated sprite
     protected playerSpawn: Vec2;
@@ -52,7 +45,6 @@ export default class GameLevel extends Scene {
     protected levelFailLabel: Label;
     
     // Screen fade in/out for level start and end
-    // protected levelTransitionTimer: Timer;
     protected levelTransitionScreen: Rect;
 
     // Customer Fields
@@ -74,13 +66,24 @@ export default class GameLevel extends Scene {
 
     protected testLabel: Label;
 
-    // protected oven: CookingStationController;
-    // protected ovens: CookingStationController[];
-    // protected ovenIdLabel: Label;
+    loadScene(): void {
+        // Load resources   
+        this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
+        this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
+        this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
+        this.load.spritesheet("fridge", "game_assets/spritesheets/fridge.json");
+        this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
+        this.load.spritesheet("throwable", "game_assets/spritesheets/throwables.json");
+        
+        this.load.audio("jump", "game_assets/sounds/jump.wav");
+        this.load.audio("pop", "game_assets/sounds/pop.wav");
+        this.load.audio("fridgeOpen", "game_assets/sounds/fridgeOpen.mp3");
+        this.load.audio("frying", "game_assets/sounds/fryingSound.mp3");
+        this.load.audio("level_music", "game_assets/music/level_music.mp3");
+    }
 
     startScene(): void {
         this.customersSatisfied = 0;
-
         this.customersWants = "???";
         this.playersHotbar = "Nothing";
 
@@ -92,14 +95,12 @@ export default class GameLevel extends Scene {
         this.addUI();
 
         // Initialize the timers
-       
         this.respawnTimer = new Timer(10000, () => { this.respawnPlayer(); }); 
 
         // After the level end timer ends, fade to black and then go to the next scene
         this.levelEndTimer = new Timer(3000, () => { this.levelTransitionScreen.tweens.play("fadeIn"); });
-         // After the level end timer ends, fade to black and then goes back to main menu
+        // After the level end timer ends, fade to black and then goes back to main menu
         this.levelFailTimer = new Timer(3000, () => { this.levelFailLabel.tweens.play("slideIn"); });
-        
 
         // Start the black screen fade out
         this.levelTransitionScreen.tweens.play("fadeOut");
@@ -199,7 +200,6 @@ export default class GameLevel extends Scene {
                    
                 case WorldStatus.PLAYER_ENTERED_LEVEL_END:
                     {
-                        console.log("End Called");
                         if (this.customersSatisfied / this.totalCustomers > 0.5) {
                             if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
                                 // The player has reached the end of the level
@@ -276,7 +276,6 @@ export default class GameLevel extends Scene {
         } else {
             this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
             if (Input.isKeyPressed("enter")) {
-                //console.log("Direction Postive X: " + (<PlayerController>this.player._ai).directPostiveX);
                 let options: Record<string, any> = {
                     "postiveXDirection" : (<PlayerController>this.player._ai).directPostiveX,
                     "itemThrown" : (<PlayerController>this.player._ai).hotbar
@@ -545,7 +544,6 @@ export default class GameLevel extends Scene {
     }
 
     protected handlePlayerStationInteraction(player: AnimatedSprite, station: AnimatedSprite){
-        // console.log("CHECKING");
         if (station !== null && player.collisionShape.overlaps(station.collisionShape)) {
             let stationAI = (<CookingStationController>station._ai);
             if (Input.isPressed("interact") && stationAI.cookingState !== CookingStationStates.COOKING) {
@@ -566,7 +564,6 @@ export default class GameLevel extends Scene {
     }
 
     protected handlePlayerStorageInteraction(player: AnimatedSprite, storage: AnimatedSprite){
-        // console.log("CHECKING");
         if (storage !== null && player.collisionShape.overlaps(storage.collisionShape) 
         && Input.isPressed("interact") && (<PlayerController>player._ai).hotbar == null) {
             (<PlayerController>player._ai).hotbar = (<StorageStationController>storage._ai).ingredients;

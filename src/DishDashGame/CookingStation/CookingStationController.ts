@@ -61,7 +61,6 @@ export default class CookingStationController extends StateMachineAI {
 
 		this.foodOutputSprite = options.foodWantedSprite;
 		this.foodOutputSprite.animation.play(this.foodTheStationProduce, true);
-		// console.log("Indicator: " + this.foodOutputSprite)
 	}
 
 	changeState(stateName: string): void {

@@ -31,7 +31,6 @@ export default class StorageStationController extends StateMachineAI {
         this.ingredients = options.ingredient;
 		this.ingredientIndicatorSprite = options.ingredientIndicatorSprite;
 		this.ingredientIndicatorSprite.animation.play(this.ingredients, true);
-		// console.log("Indicator: " + this.ingredients);
 	}
 
 	changeState(stateName: string): void {

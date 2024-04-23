@@ -7,19 +7,8 @@ import Level4 from "./Level4";
 
 export default class Level3 extends GameLevel {
     loadScene(): void {
-        // Load resources
+        super.loadScene();
         this.load.tilemap("level3", "game_assets/tilemaps/level1.json");
-        
-        this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
-        this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
-        this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
-        this.load.spritesheet("fridge", "game_assets/spritesheets/fridge.json");
-        this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
-        this.load.spritesheet("throwable", "game_assets/spritesheets/throwables.json");
-        
-        this.load.audio("jump", "game_assets/sounds/jump.wav");
-        this.load.audio("pop", "game_assets/sounds/pop.wav");
-        this.load.audio("level_music", "game_assets/music/level_music.mp3");
     }
 
     startScene(): void {

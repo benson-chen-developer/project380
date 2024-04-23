@@ -40,10 +40,8 @@ export default abstract class CustomerState extends State {
 	}
 
 	update(deltaT: number): void {
-		// console.log("Expression " + this.expression + "\tLeaving: " + this.leaving);
 		if (this.leaving) {
 			if (this.deleteTimer.isStopped()) {
-				// console.log("Delete State: " + this.expression);
 				this.emitter.fireEvent(WorldStatus.CUSTOMER_DELETE, {owner: this.owner.id});
 			} 
 		} else {
