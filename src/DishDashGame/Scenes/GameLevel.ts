@@ -605,7 +605,7 @@ export default class GameLevel extends Scene {
      */
     protected respawnPlayer(): void {
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
-        this.sceneManager.changeToScene(SplashScreen, {});
+        this.sceneManager.changeToScene(MainScreen, {});
         Input.enableInput();
         // this.system.stopSystem();
     }
