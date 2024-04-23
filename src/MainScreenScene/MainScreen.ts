@@ -260,7 +260,7 @@ export default class MainScreen extends Scene {
         movement.borderWidth = 2;
         movement.backgroundColor = new Color(240,240,240, 1);
 
-        const btnESC = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y * 1.2), text: "ESC"});
+        const btnESC = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y * 1.2), text: "BackSpace"});
         btnESC.size.set(80, 80);
         btnESC.borderWidth = 2;
         btnESC.backgroundColor = new Color(120,125,250, 1);
@@ -269,11 +269,20 @@ export default class MainScreen extends Scene {
         esc.borderWidth = 2;
         esc.backgroundColor = new Color(240,240,240, 1);
 
-        const btnEnter = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.6), text: "Enter"});
+        const btnEnter = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.5), text: "Enter"});
         btnEnter.size.set(80, 80);
         btnEnter.borderWidth = 2;
         btnEnter.backgroundColor = new Color(120,125,250, 1);
-        const ineteract = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.6), text: "Interact"});
+        const throwThing = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.5), text: "Throw"});
+        throwThing.size.set(150, 80);
+        throwThing.borderWidth = 2;
+        throwThing.backgroundColor = new Color(240,240,240, 1);
+
+        const btnE = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.8), text: "E"});
+        btnE.size.set(80, 80);
+        btnE.borderWidth = 2;
+        btnE.backgroundColor = new Color(120,125,250, 1);
+        const ineteract = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.8 ), text: "Interact"});
         ineteract.size.set(150, 80);
         ineteract.borderWidth = 2;
         ineteract.backgroundColor = new Color(240,240,240, 1);
@@ -322,6 +331,8 @@ export default class MainScreen extends Scene {
         text3.backgroundColor = new Color(255,255,255,1);
         const text33 = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.HELP, {position: new Vec2(center.x*.8, center.y* 1.3), text:"the foods or else the hungry customers will get mad!"});
         text33.backgroundColor = new Color(255,255,255,1);
+
+
     }
 
     public override updateScene(deltaT: number): void {

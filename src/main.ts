@@ -9,7 +9,7 @@ import MainScreen from "./MainScreenScene/MainScreen";
 
     // Set up options for our game
     let options = {
-        canvasSize: {x: 1200, y: 700},          // The size of the game
+        canvasSize: {x: 1200, y: 800},          // The size of the game
         clearColor: {r: 255, g: 255, b: 255},   // The color the game clears to
         inputs: [
             {name: "left", keys: ["a"]},
