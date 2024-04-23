@@ -27,7 +27,7 @@ export default class Level1 extends GameLevel {
         this.playerSpawn = new Vec2(5*32, 15*32);
 
         // Set the total number customers in the level
-        this.totalCustomers = 3;
+        this.totalCustomers = 1;
         this.totalCustomersLeft = this.totalCustomers;
         this.totalSpawnsLeft = this.totalCustomers;
 

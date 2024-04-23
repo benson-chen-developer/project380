@@ -605,6 +605,9 @@ export default class GameLevel extends Scene {
      */
     protected respawnPlayer(): void {
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+        let size = this.viewport.getHalfSize();
+        this.viewport.setFocus(size);
+        this.viewport.setZoomLevel(1);
         this.sceneManager.changeToScene(SplashScreen, {});
         Input.enableInput();
         // this.system.stopSystem();
