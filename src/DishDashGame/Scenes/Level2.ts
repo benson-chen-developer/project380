@@ -1,5 +1,4 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { Foods, Ingredients, getRandomFood } from "../WorldEnums/Foods";
@@ -7,12 +6,7 @@ import GameLevel from "./GameLevel";
 import Level3 from "./Level3";
 
 export default class Level2 extends GameLevel {
-    // HOMEWORK 5 - TODO
-    /**
-     * Decide which resource to keep and which to cull.
-     * 
-     * Not all of these loads are needed. Decide which to remove and handle keeping resources in Level1
-     */
+    
     loadScene(): void {
         // Load resources
         this.load.tilemap("level2", "game_assets/tilemaps/level1.json");

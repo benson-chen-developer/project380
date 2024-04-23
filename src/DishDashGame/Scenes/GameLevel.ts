@@ -570,6 +570,7 @@ export default class GameLevel extends Scene {
         if (storage !== null && player.collisionShape.overlaps(storage.collisionShape) 
         && Input.isPressed("interact") && (<PlayerController>player._ai).hotbar == null) {
             (<PlayerController>player._ai).hotbar = (<StorageStationController>storage._ai).ingredients;
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "fridgeOpen", loop: false, holdReference: false});
         }
     }
 
