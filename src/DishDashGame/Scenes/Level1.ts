@@ -20,14 +20,14 @@ export default class Level1 extends GameLevel {
     startScene(): void {
         // Add the level 1 tilemap
         this.add.tilemap("level1", new Vec2(2, 2));
-        this.viewport.setBounds(0, 0, 80*32, 20*32);
-        //this.viewport.setBounds(0, 0, 80*32, 30*32);
+        this.viewport.setBounds(0, 0, 64*32, 20*32);
+        // this.viewport.setBounds(0, 0, 80*32, 30*32);
 
         //this.playerSpawn = new Vec2(5*32, 14*32);
         this.playerSpawn = new Vec2(5*32, 15*32);
 
         // Set the total number customers in the level
-        this.totalCustomers = 3;
+        this.totalCustomers = 1;
         this.totalCustomersLeft = this.totalCustomers;
         this.totalSpawnsLeft = this.totalCustomers;
 

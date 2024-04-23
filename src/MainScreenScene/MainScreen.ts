@@ -53,8 +53,8 @@ export default class MainScreen extends Scene {
         // Center the viewport
         let size = this.viewport.getHalfSize();
         this.viewport.setFocus(size);
-
         this.viewport.setZoomLevel(1);
+        
         let sceneOptions = {
             physics: {
                 groupNames: ["ground", "player", "customer", "throwable", "station"],
@@ -260,7 +260,7 @@ export default class MainScreen extends Scene {
         movement.borderWidth = 2;
         movement.backgroundColor = new Color(240,240,240, 1);
 
-        const btnESC = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y * 1.2), text: "ESC"});
+        const btnESC = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y * 1.2), text: "BackSpace"});
         btnESC.size.set(80, 80);
         btnESC.borderWidth = 2;
         btnESC.backgroundColor = new Color(120,125,250, 1);
@@ -331,6 +331,8 @@ export default class MainScreen extends Scene {
         text3.backgroundColor = new Color(255,255,255,1);
         const text33 = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.HELP, {position: new Vec2(center.x*.8, center.y* 1.3), text:"the foods or else the hungry customers will get mad!"});
         text33.backgroundColor = new Color(255,255,255,1);
+
+
     }
 
     public override updateScene(deltaT: number): void {
