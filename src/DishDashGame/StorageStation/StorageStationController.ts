@@ -22,7 +22,6 @@ export default class StorageStationController extends StateMachineAI {
 		this.owner = owner;
 
 		this.receiver.subscribe(WorldStatus.PLAYER_MOVE);
-		this.receiver.subscribe(WorldStatus.PLAYER_SERVE);
 
 		let storage = new StorageStationState(this, owner);
 		this.addState(CookingStationStates.IDLE, storage);
@@ -32,7 +31,6 @@ export default class StorageStationController extends StateMachineAI {
         this.ingredients = options.ingredient;
 		this.ingredientIndicatorSprite = options.ingredientIndicatorSprite;
 		this.ingredientIndicatorSprite.animation.play(this.ingredients, true);
-		// console.log("Indicator: " + this.ingredients);
 	}
 
 	changeState(stateName: string): void {

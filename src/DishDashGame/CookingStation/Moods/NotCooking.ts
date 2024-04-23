@@ -8,7 +8,6 @@ import CookingState from "./CookingState";
 
 export default class NotCooking extends CookingStationState {
 	onEnter(): void {
-		console.log("Food: " + this.parent.foodTheStationProduce);
 		for (let ing of this.parent.IngredientList) { this.parent.IngredientsNeeded.push(ing); }
 		this.parent.cookingState = CookingStationStates.NOTCOOKING; 
 		(<AnimatedSprite>this.owner).animation.play("notCooking", true);

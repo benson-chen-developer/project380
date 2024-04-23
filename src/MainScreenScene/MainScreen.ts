@@ -8,6 +8,11 @@ import GameEvent from "../Wolfie2D/Events/GameEvent";
 import Scene from "../Wolfie2D/Scene/Scene";
 import Color from "../Wolfie2D/Utils/Color";
 import Level1 from "../DishDashGame/Scenes/Level1";
+import Level2 from "../DishDashGame/Scenes/Level2";
+import Level3 from "../DishDashGame/Scenes/Level3";
+import Level6 from "../DishDashGame/Scenes/Level6";
+import Level5 from "../DishDashGame/Scenes/Level5";
+import Level4 from "../DishDashGame/Scenes/Level4";
 
 const MainScreenLayer = {
     MENU: "MENU",
@@ -52,13 +57,14 @@ export default class MainScreen extends Scene {
         this.viewport.setZoomLevel(1);
         let sceneOptions = {
             physics: {
-                groupNames: ["ground", "player", "customer", "flyingDish"],
+                groupNames: ["ground", "player", "customer", "throwable", "station"],
                 collisions:
                 [
-                    [0, 1, 1, 1],
-                    [1, 0, 0, 0],
-                    [1, 0, 0, 0],
-                    [1, 1, 0, 0]
+                    [0, 1, 1, 1, 1],
+                    [1, 0, 0, 0, 0],
+                    [1, 0, 0, 0, 0],
+                    [1, 0, 0, 0, 0],
+                    [1, 0, 0, 0, 0],
                 ]
             }
         }
@@ -146,47 +152,59 @@ export default class MainScreen extends Scene {
         title.borderWidth = 2;
         title.backgroundColor = new Color(252,182,2, 1);
 
-        // Level Buttons 
+
+        // Level 1 Button
         const Btn1 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * .8, center.y * 1), text: "1"});
         Btn1.size.set(100, 100);
         Btn1.borderWidth = 2;
         Btn1.backgroundColor = new Color(65,77,204, 1);
-
         Btn1.onClick = () => { this.sceneManager.changeToScene(Level1, {}, sceneOptions); }
-
         // Btn1.onClickEventId = MainScreenEvent.MENU;
+
+        // Level 2 Button
         const Btn2 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1, center.y * 1), text: "2"});
         Btn2.size.set(100, 100);
         Btn2.borderWidth = 2;
         // Btn2.backgroundColor = new Color(65,77,204, 1);
         Btn2.backgroundColor = new Color(198,198,198, 1);
         // Btn2.onClickEventId = MainScreenEvent.MENU;
+        Btn2.onClick = () => { this.sceneManager.changeToScene(Level2, {}, sceneOptions); }
 
+        // Level 3 Button
         const Btn3 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1.2, center.y * 1), text: "3"});
         Btn3.size.set(100, 100);
         Btn3.borderWidth = 2;
         // Btn3.backgroundColor = new Color(65,205,98, 1);
         Btn3.backgroundColor = new Color(198,198,198, 1);
         // Btn3.onClickEventId = MainScreenEvent.MENU;
+        Btn3.onClick = () => { this.sceneManager.changeToScene(Level3, {}, sceneOptions); }
+
+        // Level 4 Button
         const Btn4 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * .8, center.y * 1.5), text: "4"});
         Btn4.size.set(100, 100);
         Btn4.borderWidth = 2;
         // Btn4.backgroundColor = new Color(65,205,98, 1);
         Btn4.backgroundColor = new Color(198,198,198, 1);
         // Btn4.onClickEventId = MainScreenEvent.MENU;
+        Btn4.onClick = () => { this.sceneManager.changeToScene(Level4, {}, sceneOptions); }
 
+        // Level 5 Button
         const Btn5= this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1, center.y * 1.5), text: "5"});
         Btn5.size.set(100, 100);
         Btn5.borderWidth = 2;
         // Btn5.backgroundColor = new Color(250,78,0, 1);
         Btn5.backgroundColor = new Color(198,198,198, 1);
         // Btn5.onClickEventId = MainScreenEvent.MENU;
+        Btn5.onClick = () => { this.sceneManager.changeToScene(Level5, {}, sceneOptions); }
+
+        // Level 6 Button
         const Btn6 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1.2, center.y * 1.5), text: "6"});
         Btn6.size.set(100, 100);
         Btn6.borderWidth = 2;
         // Btn6.backgroundColor = new Color(250,78,0, 1);
         Btn6.backgroundColor = new Color(198,198,198, 1);
         // Btn6.onClickEventId = MainScreenEvent.MENU;
+        Btn6.onClick = () => { this.sceneManager.changeToScene(Level6, {}, sceneOptions); }
 
         //Controls Screen
         this.logo = this.add.sprite("Dish", MainScreenLayer.CONTROLS)
@@ -251,11 +269,20 @@ export default class MainScreen extends Scene {
         esc.borderWidth = 2;
         esc.backgroundColor = new Color(240,240,240, 1);
 
-        const btnEnter = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.6), text: "Enter"});
+        const btnEnter = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.5), text: "Enter"});
         btnEnter.size.set(80, 80);
         btnEnter.borderWidth = 2;
         btnEnter.backgroundColor = new Color(120,125,250, 1);
-        const ineteract = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.6), text: "Interact"});
+        const throwThing = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.5), text: "Throw"});
+        throwThing.size.set(150, 80);
+        throwThing.borderWidth = 2;
+        throwThing.backgroundColor = new Color(240,240,240, 1);
+
+        const btnE = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.8), text: "E"});
+        btnE.size.set(80, 80);
+        btnE.borderWidth = 2;
+        btnE.backgroundColor = new Color(120,125,250, 1);
+        const ineteract = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.8 ), text: "Interact"});
         ineteract.size.set(150, 80);
         ineteract.borderWidth = 2;
         ineteract.backgroundColor = new Color(240,240,240, 1);

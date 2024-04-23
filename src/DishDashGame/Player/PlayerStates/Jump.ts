@@ -24,6 +24,7 @@ export default class Jump extends InAir {
 	}
 
 	update(deltaT: number): void {
+		if (this.parent.freeze) return;
 		super.update(deltaT);
 
 		if(this.owner.onCeiling){

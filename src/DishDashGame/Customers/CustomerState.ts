@@ -27,14 +27,21 @@ export default abstract class CustomerState extends State {
 	}
 
 	handleInput(event: GameEvent): void {
-
+		if (event.type == WorldStatus.PAUSE_TIME) {
+			if (this.waitTimer.hasRun() && !this.waitTimer.isStopped()) this.waitTimer.isPaused();
+			if (this.deleteTimer.hasRun() && !this.deleteTimer.isStopped()) this.deleteTimer.isPaused();
+			(<AnimatedSprite>this.owner).animation.pause();
+		}
+		else if (event.type == WorldStatus.RESUME_TIME) {
+			if (this.waitTimer.hasRun() && !this.waitTimer.isPaused()) this.waitTimer.start();
+			if (this.deleteTimer.hasRun() && !this.deleteTimer.isPaused()) this.deleteTimer.start();
+			(<AnimatedSprite>this.owner).animation.resume();
+		}
 	}
 
 	update(deltaT: number): void {
-		// console.log("Expression " + this.expression + "\tLeaving: " + this.leaving);
 		if (this.leaving) {
 			if (this.deleteTimer.isStopped()) {
-				// console.log("Delete State: " + this.expression);
 				this.emitter.fireEvent(WorldStatus.CUSTOMER_DELETE, {owner: this.owner.id});
 			} 
 		} else {

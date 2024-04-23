@@ -36,25 +36,18 @@ export default class PlayerController extends StateMachineAI {
 	MIN_SPEED: number = 200;
     MAX_SPEED: number = 300;
     tilemap: OrthogonalTilemap;
+    
     hotbar: any = null;
-    // suitColor: HW5_Color;
+    freeze: boolean = false;
 
-    // HOMEWORK 5 - TODO
-    /**
-     * Implement a death animation for the player using tweens. The animation rotate the player around itself multiple times
-     * over the tween duration, as well as fading out the alpha value of the player. The tween should also make use of the
-     * onEnd field to send out a PLAYER_KILLED event.
-     * 
-     * Tweens MUST be used to create this new animation, although you can add to the spritesheet if you want to add some more detail.
-     * 
-     * Look at incPlayerLife() in GameLevel to see where this animation would be called.
-     */
     initializeAI(owner: GameNode, options: Record<string, any>){
         this.owner = owner;
         this.initializePlatformer();
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
-        // this.hotbar = Foods.FRIES;
-        this.hotbar = Ingredients.POTATOS;
+        this.hotbar = null;
+        
+        this.receiver.subscribe(WorldStatus.PAUSE_TIME);
+		this.receiver.subscribe(WorldStatus.RESUME_TIME);
 
         owner.tweens.add("flip", {
             startDelay: 0,
@@ -97,32 +90,10 @@ export default class PlayerController extends StateMachineAI {
         super.changeState(stateName);
     }
 
-    // HOMEWORK 5 - TODO
-    /**
-     * We want to detect when our player is moving over one of the switches in the world, and along with the sound
-     * and label changes, we also visually want to change the tile.
-     * 
-     * You'll have to figure out when the player is over a tile, and then change that tile to the ON tile that you see in
-     * tileset.png in tilemaps. You also need to send the PLAYER_HIT_SWITCH event so elements can be handled in GameLevel.ts
-     * 
-     * Make use of the tilemap field in the PlayerController and the methods at it's disposal.
-     * 
-     */
     update(deltaT: number): void {
 		super.update(deltaT);
         if (this.velocity.x != 0) {
             this.directPostiveX = this.velocity.x > 0 ? true : false;
-        }
-		if (this.currentState instanceof Jump){
-			Debug.log("playerstate", "Player State: Jump");
-		} else if (this.currentState instanceof Walk){
-			Debug.log("playerstate", "Player State: Walk");
-		} else if (this.currentState instanceof Run){
-			Debug.log("playerstate", "Player State: Run");
-		} else if (this.currentState instanceof Idle){
-			Debug.log("playerstate", "Player State: Idle");
-		} else if(this.currentState instanceof Fall){
-            Debug.log("playerstate", "Player State: Fall");
         }
 	}
 }

@@ -1,33 +1,15 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { Foods, Ingredients, getRandomFood } from "../WorldEnums/Foods";
 import GameLevel from "./GameLevel";
+import Level3 from "./Level3";
 
 export default class Level2 extends GameLevel {
-    // HOMEWORK 5 - TODO
-    /**
-     * Decide which resource to keep and which to cull.
-     * 
-     * Not all of these loads are needed. Decide which to remove and handle keeping resources in Level1
-     */
+    
     loadScene(): void {
-        // Load resources
-        this.load.tilemap("level1", "game_assets/tilemaps/level2.json");
-        
-        this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
-        this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
-        this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
-        this.load.spritesheet("fridge", "game_assets/spritesheets/fridge.json");
-        this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
-        this.load.spritesheet("flyingDish", "game_assets/spritesheets/flyingDish.json");
-        
-        this.load.audio("jump", "game_assets/sounds/jump.wav");
-        this.load.audio("switch", "game_assets/sounds/switch.wav");
-        this.load.audio("player_death", "game_assets/sounds/player_death.wav");
-        this.load.audio("pop", "game_assets/sounds/pop.wav");
-        this.load.audio("level_music", "game_assets/music/level_music.mp3");
+        super.loadScene();
+        this.load.tilemap("level2", "game_assets/tilemaps/level1.json");
     }
 
     startScene(): void {
@@ -38,14 +20,14 @@ export default class Level2 extends GameLevel {
         this.playerSpawn = new Vec2(5*32, 14*32);
 
         // Set the total switches and balloons in the level
-        this.totalCustomers = 1;
+        this.totalCustomers = 4;
         this.totalCustomersLeft = this.totalCustomers;
         this.totalSpawnsLeft = this.totalCustomers;
 
         // Do generic setup for a GameLevel
         super.startScene();
 
-        //this.nextLevel = Level2;
+        this.nextLevel = Level3;
 
         // Customer Spawning Initialization
         let spawnCustomer = (pos: Vec2) => {
@@ -65,6 +47,7 @@ export default class Level2 extends GameLevel {
         this.addStorage('fridge', new Vec2(36,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.BUNS});
         this.addStorage('fridge', new Vec2(40,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.LETTUCES});
         this.addStorage('fridge', new Vec2(44,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.POTATOS});
+
 
         // this.spawnDelay.start();
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});

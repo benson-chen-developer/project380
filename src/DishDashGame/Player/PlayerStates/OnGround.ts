@@ -8,6 +8,7 @@ export default class OnGround extends PlayerState {
 	onEnter(options: Record<string, any>): void {}
 
 	update(deltaT: number): void {
+		if (this.parent.freeze) return;
 		if(this.parent.velocity.y > 0){
 			this.parent.velocity.y = 0;
 		}

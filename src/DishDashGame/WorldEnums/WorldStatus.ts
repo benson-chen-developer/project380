@@ -10,8 +10,10 @@ export enum WorldStatus {
     PLAYER_AT_CUSTOMER = "PlayerAtCustomer",
     PLAYER_AT_STATION = "PlayerAtStation",
     PLAYER_AT_STORAGE = "PlayerAtStorage",
-    DISH_HIT_CUSTOMER = "DishHitCustomer",
-    
+
+    ITEM_HIT_CUSTOMER = "ItemHitCustomer",
+    ITEM_HIT_STATION = "ItemHitStation",
+
     CUSTOMER_SPAWN = "CustomerSpawn",
     CUSTOMER_DELETE = "CustomerDelete",
     CUSTOMER_LEAVING = "CustomerLeaving",
@@ -19,4 +21,6 @@ export enum WorldStatus {
     PLAYER_ENTERED_LEVEL_END = "PlayerEnteredLevelEnd",
     LEVEL_START = "LevelStart",
     LEVEL_END = "LevelEnd",
+    PAUSE_TIME = "PauseTime",
+    RESUME_TIME = "ResumeTime",
 }
