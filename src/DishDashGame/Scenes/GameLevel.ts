@@ -467,7 +467,7 @@ export default class GameLevel extends Scene {
     protected addStation(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let station = this.add.animatedSprite(spriteKey, "secondary");
         station.position.set(tilePos.x*32, tilePos.y*32);
-        station.scale.set(.2, .2);
+        station.scale.set(2, 2);
         station.addPhysics();
 
         station.setTrigger("player", WorldStatus.PLAYER_AT_STATION, null);
@@ -600,9 +600,11 @@ export default class GameLevel extends Scene {
         && dish.collisionShape.overlaps(station.collisionShape)) {
             let stationAI = (<CookingStationController>station._ai);
             const index = stationAI.IngredientsNeeded.findIndex(item => item === (<ThrowableController>dish._ai).item);
-            if (index != -1) { stationAI.IngredientsNeeded.splice(index, 1); }
+            if (index != -1) { 
+                stationAI.IngredientsNeeded.splice(index, 1); 
+                dish.destroy();
+            }
             // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
-            dish.destroy();
         }
     }
 

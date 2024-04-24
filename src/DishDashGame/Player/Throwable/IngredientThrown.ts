@@ -7,7 +7,7 @@ export default class IngredientThrown extends ThrowableState {
 	onEnter(): void {
 		(<AnimatedSprite>this.owner).animation.play(this.parent.item, true);
         this.owner.tweens.play("spin");
-        this.parent.velocity.y = -400;
+        this.parent.velocity.y = -50;
 	}
 
 	update(deltaT: number): void {
