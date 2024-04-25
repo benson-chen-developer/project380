@@ -360,7 +360,7 @@ export default class GameLevel extends Scene {
         this.customersSatisfiedLabel.setHAlign(HAlign.LEFT);
         // this.customersSatisfiedLabel.font = "PixelNew";
 
-        this.interactiveLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(20, 330), text: ""});
+        this.interactiveLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(20, 370), text: ""});
         this.interactiveLabel.textColor = new Color(148, 7, 0);
         this.interactiveLabel.setHAlign(HAlign.LEFT);
         // this.interactiveLabel.font = "PixelNew";

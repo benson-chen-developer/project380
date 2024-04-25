@@ -37,12 +37,12 @@ export default class Level2 extends GameLevel {
             { position: new Vec2(4, 27), spaceOccupied: false, spawnTimer: new Timer(12000, spawnCustomer(new Vec2(4, 27))) },
         ];
 
-        // Station and Storage Initialization
+        // Storage and Station Initialization - 1st Floor
         this.addStation('oven', new Vec2(28.5,27.5), {indicatorKey: "foodIndicator", foodToCook: Foods.CHICKEN_NUGGETS});
         this.addStation('oven', new Vec2(30,27.5), {indicatorKey: "foodIndicator", foodToCook: Foods.FRIES});
         this.addStorage('fridge', new Vec2(31.3,27), {indicatorKey: "foodIndicator", ingredient: Ingredients.POTATOS});
 
-        this.addStorage('fridge', new Vec2(35,27), {indicatorKey: "foodIndicator", ingredient: Ingredients.RAW_NUGGET});
+        this.addStorage('fridge', new Vec2(36,27), {indicatorKey: "foodIndicator", ingredient: Ingredients.RAW_NUGGET});
         
         this.addStation('oven', new Vec2(41,27.5), {indicatorKey: "foodIndicator", foodToCook: Foods.BURGER});
         this.addStorage('fridge', new Vec2(42.2,27), {indicatorKey: "foodIndicator", ingredient: Ingredients.PATTY});
