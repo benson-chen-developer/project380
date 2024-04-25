@@ -18,7 +18,6 @@ import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import CustomerController from "../Customers/CustomerController";
 import { WorldStatus } from "../WorldEnums/WorldStatus";
 
-import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainScreen from "../../MainScreenScene/MainScreen";
 import ThrowableController from "../Player/Throwable/ThrowableController";
@@ -28,12 +27,6 @@ import { getRandomFood } from "../WorldEnums/Foods";
 import SplashScreen from "../../MainScreenScene/SplashScreen";
 import StorageStationController from "../StorageStation/StorageStationController";
 import CustomerAngryController from "../CustomerAngry/CustomerAngryController";
-import Level1 from "./Level1";
-import Level2 from "./Level2";
-import Level3 from "./Level3";
-import Level4 from "./Level4";
-import Level5 from "./Level5";
-import Level6 from "./Level6";
 
 export default class GameLevel extends Scene {
     // Every level will have a player, which will be an animated sprite
