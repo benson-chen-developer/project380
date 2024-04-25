@@ -14,7 +14,7 @@ export default abstract class CustomerState extends State {
 	parent: CustomerController;
 	
 	// enterTimer: Timer = new Timer(2000);	// 3 Seconds long
-	waitTimer: Timer = new Timer(10000); 	// 10 Seconds long
+	waitTimer: Timer = new Timer(60000); 	// 1 min long
 	deleteTimer: Timer = new Timer(3000); 	// 3 Seconds long
 
 	// entered: boolean = false;

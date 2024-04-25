@@ -1,10 +1,10 @@
 {
     "name": "oven",
     "spriteSheetImage": "oven.png",
-    "spriteWidth": 368,
-    "spriteHeight": 368,
+    "spriteWidth": 16,
+    "spriteHeight": 16,
     "columns": 2,
-    "rows": 3,
+    "rows": 2,
     "durationType": "time",
     "animations": [
         { 

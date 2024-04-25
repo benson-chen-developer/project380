@@ -12,7 +12,7 @@ import CookingStationController, { CookingStationStates } from "./CookingStation
 export default abstract class CookingStationState extends State {
 	owner: GameNode;
 	parent: CookingStationController;
-	waitTimer: Timer = new Timer(3000); // 3 seconds long
+	waitTimer: Timer = new Timer(2000); // 3 seconds long
 
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);

@@ -60,7 +60,7 @@ export default class MainScreen extends Scene {
                 groupNames: ["ground", "player", "customer", "throwable", "station"],
                 collisions:
                 [
-                    [0, 1, 1, 1, 1],
+                    [0, 0, 1, 1, 1],
                     [1, 0, 0, 0, 0],
                     [1, 0, 0, 0, 0],
                     [1, 0, 0, 0, 0],

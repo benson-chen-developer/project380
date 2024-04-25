@@ -12,6 +12,7 @@ export default class CookedState extends CookingStationState {
 		this.parent.foodInOven = this.parent.foodTheStationProduce;
         this.parent.cookingState = CookingStationStates.COOKED; 
 		(<AnimatedSprite>this.owner).animation.play("cooked", true);
+		this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "frying"});
 		this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "ding", loop: false, holdReference: true});
 		// this.waitTimer.start();
 	}

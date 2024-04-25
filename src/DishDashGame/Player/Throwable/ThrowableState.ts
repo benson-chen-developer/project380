@@ -10,7 +10,7 @@ import ThrowableController, { ThrowableStates } from "./ThrowableController";
 
 export default abstract class ThrowableState extends State {
 	owner: GameNode;
-	gravity: number = 800;
+	gravity: number = 200;
 	parent: ThrowableController;
 
 	constructor(parent: StateMachine, owner: GameNode) {
@@ -34,7 +34,7 @@ export default abstract class ThrowableState extends State {
 
 	update(deltaT: number): void {
 		if (this.parent.freeze) return;
-        if (this.owner.onWall || this.owner.onGround || this.owner.onCeiling) {
+        if (this.owner.onWall || this.owner.onGround) {
 			this.owner.destroy();
 		}
 	}
