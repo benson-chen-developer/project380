@@ -1,8 +1,15 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import Input from "../../Wolfie2D/Input/Input";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { Foods, Ingredients, getRandomFood } from "../WorldEnums/Foods";
+import { WorldStatus } from "../WorldEnums/WorldStatus";
 import GameLevel from "./GameLevel";
+import Level1 from "./Level1";
+import Level2 from "./Level2";
+import Level3 from "./Level3";
+import Level4 from "./Level4";
+import Level5 from "./Level5";
 
 export default class Level6 extends GameLevel {
     loadScene(): void {
@@ -87,5 +94,38 @@ export default class Level6 extends GameLevel {
 
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
+
+        if (this.cheatTimer.isStopped()) {
+            if (Input.isKeyPressed("1")) {
+                this.nextLevel = Level1;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("2")) {
+                this.nextLevel = Level2;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("3")) {
+                this.nextLevel = Level3;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("4")) {
+                this.nextLevel = Level4;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("5")) {
+                this.nextLevel = Level5;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("6")) {
+                this.nextLevel = Level6;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+        }
     }
 }

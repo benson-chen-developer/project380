@@ -27,12 +27,19 @@ import { Foods, Ingredients, isFoodsEnum, isIngredientsEnum } from "../WorldEnum
 import { getRandomFood } from "../WorldEnums/Foods";
 import SplashScreen from "../../MainScreenScene/SplashScreen";
 import StorageStationController from "../StorageStation/StorageStationController";
+import Level1 from "./Level1";
+import Level2 from "./Level2";
+import Level3 from "./Level3";
+import Level4 from "./Level4";
+import Level5 from "./Level5";
+import Level6 from "./Level6";
 
 export default class GameLevel extends Scene {
     // Every level will have a player, which will be an animated sprite
     protected playerSpawn: Vec2;
     protected player: AnimatedSprite;
     protected respawnTimer: Timer;
+    protected cheatTimer: Timer = new Timer(5000);
 
     protected gracePeriod: Timer = new Timer(5000);
     protected timePaused: boolean = false;
@@ -311,7 +318,7 @@ export default class GameLevel extends Scene {
             this.totalCustomersLeft--; // Puts totalCustomersLeft in the negatives so it doesn't fire this event again
         }
     }
-
+    
     /**
      * Initialzes the layers
      */
@@ -355,7 +362,7 @@ export default class GameLevel extends Scene {
      */
     protected addUI(){
         // In-game labels
-        this.customersSatisfiedLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(100, 30), text: "Customer Satisfied: " + (this.customersSatisfied)});
+        this.customersSatisfiedLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(100, 30), text: "Customer Satisfied: " + (this.customersSatisfied) + "/" + this.totalCustomers});
         this.customersSatisfiedLabel.textColor = new Color(148, 7, 0);
         this.customersSatisfiedLabel.setHAlign(HAlign.LEFT);
         // this.customersSatisfiedLabel.font = "PixelNew";
@@ -544,7 +551,7 @@ export default class GameLevel extends Scene {
                 (<PlayerController>player._ai).hotbar = null;
                 
                 this.customersSatisfied++;
-                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
+                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied) + "/" + this.totalCustomers;
 
                 (<CustomerController>customer._ai).changeState("happy");
                 // this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
@@ -569,7 +576,7 @@ export default class GameLevel extends Scene {
                         (<PlayerController>player._ai).hotbar = null;
                     }
                 } else {
-                    if (stationAI.cookingState == CookingStationStates.COOKED) {
+                    if (stationAI.cookingState == CookingStationStates.COOKED && (<PlayerController>player._ai).hotbar == null) {
                         (<PlayerController>player._ai).hotbar =stationAI.foodInOven;
                         stationAI.foodInOven = null;
                     }
@@ -598,7 +605,7 @@ export default class GameLevel extends Scene {
             && (<CustomerController>customer._ai).foodWanted != null) {
                 
                 this.customersSatisfied++;
-                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied);
+                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied) + "/" + this.totalCustomers;
 
                 (<CustomerController>customer._ai).changeState("happy");
                 // this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
