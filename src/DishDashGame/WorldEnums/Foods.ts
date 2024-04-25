@@ -1,26 +1,26 @@
 // Output for Cooking Stations
 export enum Foods {
-    BURGER = "Burger",
-    FRIES = "Fries",
-    CHICKEN_NUGGETS = "Chicken Nuggets",
-    FISH_AND_CHIPS = "Fish and Chips",
-    SCRAMBLE_EGGS = "Scramble Eggs",
-    APPLE_PIE = "Apple Pie",
-    PANCAKES = "Pancakes",
+    BURGER = " Burger",
+    FRIES = " Fries",
+    CHICKEN_NUGGETS = " Chicken Nuggets",
+    FISH_AND_CHIPS = " Fish and Chips",
+    SCRAMBLE_EGGS = " Scramble Eggs",
+    APPLE_PIE = " Apple Pie",
+    PANCAKES = " Pancakes",
 }
 
 // Inputs for Cooking Stations
 export enum Ingredients { 
-    PATTY = "Raw Patty",
-    LETTUCES = "Lettuces",
-    BUNS = "Buns",
-    POTATOS = "Potatos",
-    RAW_NUGGET = "Raw Chicken Nuggets",
-    EGGS = "Eggs",
-    FISH = "Fish",
-    APPLE = "Apple",
-    FLOUR_MIX = "Flour Mix",
-    SYRUP = "Maple Syrup"
+    PATTY = " Raw Patty",
+    LETTUCES = " Lettuces",
+    BUNS = " Buns",
+    POTATOS = " Potatos",
+    RAW_NUGGET = " Raw Chicken Nuggets",
+    EGGS = " Eggs",
+    FISH = " Fish",
+    APPLE = " Apple",
+    FLOUR_MIX = " Flour Mix",
+    SYRUP = " Maple Syrup"
 }
 
 export const foodIngredients: {[key in Foods]: Ingredients[]} = {
@@ -42,7 +42,7 @@ export const foodIngredients: {[key in Foods]: Ingredients[]} = {
 export function getRandomFood(diffculty: number): Foods {
     const randomIndex = Math.random();
     if (diffculty == 1) {
-        if (randomIndex < 0.9) {
+        if (randomIndex < 0.4) {
             return Foods.BURGER;
         } else {
             return Foods.FRIES;

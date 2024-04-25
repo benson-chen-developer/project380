@@ -8,72 +8,72 @@
     "durationType": "time",
     "animations": [
         {
-            "name": "Burger",
+            "name": " Burger",
             "frames": [ {"index": 0, "duration": 10000} ]
         },
         { 
-            "name": "Fries",
+            "name": " Fries",
             "frames": [ {"index": 1, "duration": 10000} ]
         },
         {
-            "name": "Chicken Nuggets",
+            "name": " Chicken Nuggets",
             "frames": [ {"index": 2, "duration": 10000} ]
         },
         { 
-            "name": "Fish and Chips",
+            "name": " Fish and Chips",
             "frames": [ {"index": 3, "duration": 10000} ]
         },
         {
-            "name": "Scramble Eggs",
+            "name": " Scramble Eggs",
             "frames": [ {"index": 4, "duration": 10000} ]
         },
         {
-            "name": "Apple Pie",
+            "name": " Apple Pie",
             "frames": [ {"index": 5, "duration": 10000} ]
         },
         { 
-            "name": "Pancakes",
+            "name": " Pancakes",
             "frames": [ {"index": 6, "duration": 10000} ]
         },
 
         {
-            "name": "Raw Patty",
+            "name": " Raw Patty",
             "frames": [ {"index": 10, "duration": 10000} ]
         },
         {
-            "name": "Lettuces",
+            "name": " Lettuces",
             "frames": [ {"index": 11, "duration": 10000} ]
         },
         { 
-            "name": "Buns",
+            "name": " Buns",
             "frames": [ {"index": 12, "duration": 10000} ]
         },
         {
-            "name": "Potatos",
+            "name": " Potatos",
             "frames": [ {"index": 13, "duration": 10000} ]
         },
         {
-            "name": "Raw Chicken Nuggets",
+            "name": " Raw Chicken Nuggets",
             "frames": [ {"index": 14, "duration": 10000} ]
         },
         { 
-            "name": "Eggs",
+            "name": " Eggs",
             "frames": [ {"index": 15, "duration": 10000} ]
         },
         {
-            "name": "Fish",
+            "name": " Fish",
             "frames": [ {"index": 16, "duration": 10000} ]
         },
         {
-            "name": "Apple",
+            "name": " Apple",
             "frames": [ {"index": 17, "duration": 10000} ]
         },
         { 
-            "name": "Flour Mix",
+            "name": " Flour Mix",
             "frames": [ {"index": 18, "duration": 10000} ]
         },
         { 
-            "name": "Maple Syrup",
+            "name": " Maple Syrup",
             "frames": [ {"index": 19, "duration": 10000} ]
         }
     ]

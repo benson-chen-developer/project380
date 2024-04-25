@@ -24,7 +24,7 @@ export default class Level1 extends GameLevel {
         this.playerSpawn = new Vec2(30*32, 26*32);
 
         // Set the total number customers in the level
-        this.totalCustomers = 1;
+        this.totalCustomers = 5;
         this.totalCustomersLeft = this.totalCustomers;
         this.totalSpawnsLeft = this.totalCustomers;
 
@@ -41,8 +41,9 @@ export default class Level1 extends GameLevel {
             }
         };
         this.customerSpawnPoints = [
-            { position: new Vec2(5, 27), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(5, 27))) },
-            { position: new Vec2(10, 27), spaceOccupied: false, spawnTimer: new Timer(3000, spawnCustomer(new Vec2(10, 27))) },
+            { position: new Vec2(12, 27), spaceOccupied: false, spawnTimer: new Timer(5000, spawnCustomer(new Vec2(12, 27))) },
+            { position: new Vec2(8, 27), spaceOccupied: false, spawnTimer: new Timer(9000, spawnCustomer(new Vec2(8, 27))) },
+            { position: new Vec2(4, 27), spaceOccupied: false, spawnTimer: new Timer(12000, spawnCustomer(new Vec2(4, 27))) },
         ];
 
         // Station Initialization

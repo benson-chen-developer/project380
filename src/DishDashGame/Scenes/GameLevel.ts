@@ -8,7 +8,7 @@ import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Point from "../../Wolfie2D/Nodes/Graphics/Point";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
+import Label, { HAlign } from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
@@ -33,6 +33,8 @@ export default class GameLevel extends Scene {
     protected playerSpawn: Vec2;
     protected player: AnimatedSprite;
     protected respawnTimer: Timer;
+
+    protected gracePeriod: Timer = new Timer(5000);
     protected timePaused: boolean = false;
     protected timePauseDelay: Timer = new Timer(5000);
 
@@ -52,19 +54,18 @@ export default class GameLevel extends Scene {
     protected totalCustomersLeft: number;
     protected totalSpawnsLeft: number;
     protected customerSpawnPoints: { position: Vec2; spaceOccupied: boolean; spawnTimer: Timer;}[]
-    // protected spawnDelay: Timer = new Timer(2000);
+    
 
     // Global Labels
     protected customersSatisfied: number;
     protected customersSatisfiedLabel: Label;
 
-    protected customersWants: string;
-    protected customersWantsLabel: Label;
-   
+    protected customersWants: string = "";
     protected playersHotbar: string;
-    protected playersHotbarLabel: Label;
+    protected stationNeeds: string = "";
 
-    protected testLabel: Label;
+    protected interactiveLabel: Label;
+    protected playersHotbarLabel: Label;
 
     loadScene(): void {
         // Load resources   
@@ -90,7 +91,6 @@ export default class GameLevel extends Scene {
 
     startScene(): void {
         this.customersSatisfied = 0;
-        this.customersWants = "???";
         this.playersHotbar = "Nothing";
 
         // Do the game level standard initializations
@@ -111,6 +111,8 @@ export default class GameLevel extends Scene {
         // Start the black screen fade out
         this.levelTransitionScreen.tweens.play("fadeOut");
 
+        this.gracePeriod.start();
+        
         // Initially disable player movement
         Input.disableInput();
     }
@@ -221,6 +223,7 @@ export default class GameLevel extends Scene {
                 case WorldStatus.LEVEL_END:
                     {
                         // Go to the next level
+                        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
                         if (this.nextLevel) {
                             let sceneOptions = {
                                 physics: {
@@ -278,7 +281,7 @@ export default class GameLevel extends Scene {
         
         // UI Updates and Control features
         if ((<PlayerController>this.player._ai).hotbar == null) {
-            this.playersHotbar = "Nothing";
+            this.playersHotbar = " Nothing";
         } else {
             this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
             if (Input.isKeyPressed("enter")) {
@@ -289,13 +292,13 @@ export default class GameLevel extends Scene {
 
                 this.addThrowable("throwable", this.player.position.clone(), options);
                 (<PlayerController>this.player._ai).hotbar = null;
-                this.playersHotbar = "Nothing";
+                this.playersHotbar = " Nothing";
             }
         }
-        this.playersHotbarLabel.text = "Waiter's Holding: " + (this.playersHotbar);
+        this.playersHotbarLabel.text = "Holds:" + (this.playersHotbar);
 
         // Customers Spawning Mecahanic
-        if (this.totalCustomersLeft > 0) {
+        if (this.totalCustomersLeft > 0 && this.gracePeriod.isStopped()) {
             for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
                 if (!this.customerSpawnPoints[i]["spaceOccupied"]) {
                     this.customerSpawnPoints[i]["spawnTimer"].start();
@@ -353,26 +356,29 @@ export default class GameLevel extends Scene {
     protected addUI(){
         // In-game labels
         this.customersSatisfiedLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(100, 30), text: "Customer Satisfied: " + (this.customersSatisfied)});
-        this.customersSatisfiedLabel.textColor = Color.BLACK;
-        // this.customersSatisfiedLabel.font = "PixelSimple";
+        this.customersSatisfiedLabel.textColor = new Color(148, 7, 0);
+        this.customersSatisfiedLabel.setHAlign(HAlign.LEFT);
+        // this.customersSatisfiedLabel.font = "PixelNew";
 
-        this.testLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(400, 30), text: "[E] to Interact, [Enter] to Throw"});
-        this.testLabel.textColor = Color.BLACK;
+        this.interactiveLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(20, 330), text: ""});
+        this.interactiveLabel.textColor = new Color(148, 7, 0);
+        this.interactiveLabel.setHAlign(HAlign.LEFT);
+        // this.interactiveLabel.font = "PixelNew";
 
-        this.customersWantsLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(100, 330), text: "Customer Wants: " + (this.customersWants)});
-        this.customersWantsLabel.textColor = Color.WHITE;
+        this.playersHotbarLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(69, 350), text: ""});
+        this.playersHotbarLabel.textColor = new Color(148, 7, 0);
+        this.playersHotbarLabel.setHAlign(HAlign.LEFT);
+        // this.playersHotbarLabel.font = "PixelNew";
         
-        this.playersHotbarLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(300, 330), text: "Waiter's Holding: " + (this.playersHotbar)});
-        this.playersHotbarLabel.textColor = Color.WHITE;
-        
+
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Passed"});
-        this.levelEndLabel.size.set(1200, 60);
+        this.levelEndLabel.size.set(1200, 80);
         this.levelEndLabel.borderRadius = 0;
         this.levelEndLabel.backgroundColor = new Color(34, 32, 52);
         this.levelEndLabel.textColor = Color.WHITE;
         this.levelEndLabel.fontSize = 48;
-        this.levelEndLabel.font = "PixelSimple";
+        // this.levelEndLabel.font = "PixelNew";
 
         // Add a tween to move the label on screen
         this.levelEndLabel.tweens.add("slideIn", {
@@ -389,12 +395,12 @@ export default class GameLevel extends Scene {
         });
 
         this.levelFailLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Failed"});
-        this.levelFailLabel.size.set(1200, 60);
+        this.levelFailLabel.size.set(1200, 80);
         this.levelFailLabel.borderRadius = 0;
         this.levelFailLabel.backgroundColor = new Color(34, 32, 52);
         this.levelFailLabel.textColor = Color.RED;
         this.levelFailLabel.fontSize = 48;
-        this.levelFailLabel.font = "PixelSimple";
+        // this.levelFailLabel.font = "PixelNew";
 
 
         this.levelFailLabel.tweens.add("slideIn", {
@@ -531,6 +537,7 @@ export default class GameLevel extends Scene {
     protected handlePlayerCustomerInteraction(player: AnimatedSprite, customer: AnimatedSprite) {
         if (customer != null && player.collisionShape.overlaps(customer.collisionShape)) {
             this.customersWants = (<CustomerController>customer._ai).foodWanted;
+            this.interactiveLabel.text = "Wants:" + (this.customersWants);
 
             if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted 
             && (<CustomerController>customer._ai).foodWanted != null) {
@@ -544,14 +551,16 @@ export default class GameLevel extends Scene {
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
             }
         } else {
-            this.customersWants = "???";
+            this.interactiveLabel.text = "";
         }
-        this.customersWantsLabel.text = "Customer Wants: " + (this.customersWants);
+        
     }
 
     protected handlePlayerStationInteraction(player: AnimatedSprite, station: AnimatedSprite){
         if (station !== null && player.collisionShape.overlaps(station.collisionShape)) {
             let stationAI = (<CookingStationController>station._ai);
+            this.stationNeeds = String(stationAI.IngredientsNeeded);
+            this.interactiveLabel.text = "Needs:" + this.stationNeeds;
             if (Input.isPressed("interact") && stationAI.cookingState !== CookingStationStates.COOKING) {
                 if ((<PlayerController>player._ai).hotbar && stationAI.cookingState == CookingStationStates.NOTCOOKING) {
                     const index = stationAI.IngredientsNeeded.findIndex(item => item === (<PlayerController>player._ai).hotbar);
@@ -565,15 +574,21 @@ export default class GameLevel extends Scene {
                         stationAI.foodInOven = null;
                     }
                 }
-            }
+            } 
+        } else {
+            this.interactiveLabel.text = "";
         }
     }
 
     protected handlePlayerStorageInteraction(player: AnimatedSprite, storage: AnimatedSprite){
-        if (storage !== null && player.collisionShape.overlaps(storage.collisionShape) 
-        && Input.isPressed("interact") && (<PlayerController>player._ai).hotbar == null) {
-            (<PlayerController>player._ai).hotbar = (<StorageStationController>storage._ai).ingredients;
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "fridgeOpen", loop: false, holdReference: false});
+        if (storage !== null && player.collisionShape.overlaps(storage.collisionShape)) {
+            this.interactiveLabel.text = "Has:" + (<StorageStationController>storage._ai).ingredients;
+            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar == null) {
+                (<PlayerController>player._ai).hotbar = (<StorageStationController>storage._ai).ingredients;
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "fridgeOpen", loop: false, holdReference: false});
+            }
+        } else {
+            this.interactiveLabel.text = "";
         }
     }
 
