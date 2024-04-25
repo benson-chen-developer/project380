@@ -62,7 +62,12 @@ export default class Level1 extends GameLevel {
         this.addStorage('fridge', new Vec2(44.4,27), {indicatorKey: "foodIndicator", ingredient: Ingredients.LETTUCES});
         
         // Storage Initialization
-        
+        this.addStorage('fridge', new Vec2(32,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.PATTY});
+        this.addStorage('fridge', new Vec2(34,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.BUNS});
+        this.addStorage('fridge', new Vec2(36,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.LETTUCES});
+        this.addStorage('fridge', new Vec2(38,15), {indicatorKey: "foodIndicator", ingredient: Ingredients.POTATOS});
+
+        this.addAngryCustomer('angryCustomer', new Vec2(60, 15), {leftVec: new Vec2(50, 15), rightVec: new Vec2(70, 15)})
         // this.spawnDelay.start();
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }

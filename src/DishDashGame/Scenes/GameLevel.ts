@@ -27,6 +27,7 @@ import { Foods, Ingredients, isFoodsEnum, isIngredientsEnum } from "../WorldEnum
 import { getRandomFood } from "../WorldEnums/Foods";
 import SplashScreen from "../../MainScreenScene/SplashScreen";
 import StorageStationController from "../StorageStation/StorageStationController";
+import CustomerAngryController from "../CustomerAngry/CustomerAngryController";
 import Level1 from "./Level1";
 import Level2 from "./Level2";
 import Level3 from "./Level3";
@@ -80,6 +81,7 @@ export default class GameLevel extends Scene {
         this.load.spritesheet("customer", "game_assets/spritesheets/customer.json");
         this.load.spritesheet("oven", "game_assets/spritesheets/oven.json");
         this.load.spritesheet("fridge", "game_assets/spritesheets/fridge.json");
+        this.load.spritesheet("angryCustomer", "game_assets/spritesheets/angryCustomer.json");
         this.load.spritesheet("foodIndicator", "game_assets/spritesheets/foodIndicator.json");
         this.load.spritesheet("throwable", "game_assets/spritesheets/throwables.json");
         
@@ -475,6 +477,16 @@ export default class GameLevel extends Scene {
         this.player.setGroup("player");
 
         this.viewport.follow(this.player);
+    }
+
+    protected addAngryCustomer(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let angryCustomer = this.add.animatedSprite(spriteKey, "secondary");
+        angryCustomer.position.set(tilePos.x*32, tilePos.y*32);
+        angryCustomer.scale.set(.5, .5);
+        angryCustomer.addPhysics();
+
+        // angryCustomer.setTrigger("player", WorldStatus.PLAYER_AT_STATION, null);
+        angryCustomer.addAI(CustomerAngryController, aiOptions);
     }
 
     protected addStation(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
