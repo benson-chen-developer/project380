@@ -68,6 +68,8 @@ export default class GameLevel extends Scene {
     protected interactiveLabel: Label;
     protected playersHotbarLabel: Label;
 
+    protected inventoryIsMove: boolean;
+
     loadScene(): void {
         // Load resources   
         this.load.spritesheet("player", "game_assets/spritesheets/waiter.json");
@@ -94,6 +96,7 @@ export default class GameLevel extends Scene {
     startScene(): void {
         this.customersSatisfied = 0;
         this.playersHotbar = "Nothing";
+        this.inventoryIsMove = true;
 
         // Do the game level standard initializations
         this.initLayers();
@@ -297,30 +300,44 @@ export default class GameLevel extends Scene {
             
             (<PlayerController>this.player._ai).hotbar.forEach((item: any, index: number) => {
                 if(index === (<PlayerController>this.player._ai).hotbarIndex)
-                    newPlayerHotbar += ` [ ${index+1}: ${item} ] `;
+                    newPlayerHotbar += ` [ ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P" : ""}: ${item} ] `;
                 else 
-                    newPlayerHotbar += ` ${index+1}: ${item} `;
+                    newPlayerHotbar += ` ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P":""}: ${item} `;
             })
             this.playersHotbarLabel.text = newPlayerHotbar;
         } else {
             (<PlayerController>this.player._ai).hotbar.forEach((item: any, index: number) => {
                 if(index === (<PlayerController>this.player._ai).hotbarIndex)
-                    newPlayerHotbar += ` [ ${index+1}: ${item} ] `;
+                    newPlayerHotbar += ` [ ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P":""}: ${item} ] `;
                 else 
-                    newPlayerHotbar += ` ${index+1}: ${item} `;
+                    newPlayerHotbar += ` ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P":""}: ${item} `;
             })
             this.playersHotbarLabel.text = newPlayerHotbar;
         }
 
-        if (Input.isKeyPressed("1")) {
-            (<PlayerController>this.player._ai).hotbarIndex = 0;
-        }
-        if (Input.isKeyPressed("2")) {
-            (<PlayerController>this.player._ai).hotbarIndex = 1;
-        }
-        if (Input.isKeyPressed("3")) {
-            (<PlayerController>this.player._ai).hotbarIndex = 2;
-        }
+        // if (Input.isKeyPressed("o")) {
+        //     if((<PlayerController>this.player._ai).hotbarIndex > 0){
+        //         (<PlayerController>this.player._ai).hotbarIndex--;
+
+                
+        //         this.inventoryIsMove = true;
+        //     }
+        //     else {
+        //         (<PlayerController>this.player._ai).hotbarIndex = 2;
+        //         this.inventoryIsMove = true;
+        //     }
+        // }
+        // if (Input.isKeyPressed("p")) {
+        //     if((<PlayerController>this.player._ai).hotbarIndex < 2){
+        //         (<PlayerController>this.player._ai).hotbarIndex++;
+        //     }
+        //     else {
+        //         (<PlayerController>this.player._ai).hotbarIndex = 0;
+        //     }
+        // }
+        if(Input.isKeyPressed("i")) (<PlayerController>this.player._ai).hotbarIndex = 0;
+        if(Input.isKeyPressed("o")) (<PlayerController>this.player._ai).hotbarIndex = 1;
+        if(Input.isKeyPressed("p")) (<PlayerController>this.player._ai).hotbarIndex = 2;
 
         // Customers Spawning Mecahanic
         if (this.totalCustomersLeft > 0 && this.gracePeriod.isStopped()) {

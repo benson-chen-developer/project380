@@ -287,6 +287,24 @@ export default class MainScreen extends Scene {
         ineteract.borderWidth = 2;
         ineteract.backgroundColor = new Color(240,240,240, 1);
 
+        // const btnO = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *2), text: "O"});
+        // btnO.size.set(80, 80);
+        // btnO.borderWidth = 2;
+        // btnO.backgroundColor = new Color(120,125,250, 1);
+        // const btnOT = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 2 ), text: "Inventory Left"});
+        // btnOT.size.set(150, 80);
+        // btnOT.borderWidth = 2;
+        // btnOT.backgroundColor = new Color(240,240,240, 1);
+
+        // const btnP = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.8), text: "P"});
+        // btnP.size.set(80, 80);
+        // btnP.borderWidth = 2;
+        // btnP.backgroundColor = new Color(120,125,250, 1);
+        // const btnPT = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 2 ), text: "Inventory Right"});
+        // btnPT.size.set(150, 80);
+        // btnPT.borderWidth = 2;
+        // btnPT.backgroundColor = new Color(240,240,240, 1);
+
         //Help Screen
         this.logo = this.add.sprite("Dish", MainScreenLayer.HELP)
         this.logo.position = new Vec2(center.x*.75, center.y*.5)

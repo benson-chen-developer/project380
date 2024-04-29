@@ -65,37 +65,37 @@ export default class Level2 extends GameLevel {
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
 
-        // if (this.cheatTimer.isStopped()) {
-        //     if (Input.isKeyPressed("1")) {
-        //         this.nextLevel = Level1;
-        //         this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-        //         this.cheatTimer.start();
-        //     }
-        //     if (Input.isKeyPressed("2")) {
-        //         this.nextLevel = Level2;
-        //         this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-        //         this.cheatTimer.start();
-        //     }
-        //     if (Input.isKeyPressed("3")) {
-        //         this.nextLevel = Level3;
-        //         this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-        //         this.cheatTimer.start();
-        //     }
-        //     if (Input.isKeyPressed("4")) {
-        //         this.nextLevel = Level4;
-        //         this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-        //         this.cheatTimer.start();
-        //     }
-        //     if (Input.isKeyPressed("5")) {
-        //         this.nextLevel = Level5;
-        //         this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-        //         this.cheatTimer.start();
-        //     }
-        //     if (Input.isKeyPressed("6")) {
-        //         this.nextLevel = Level6;
-        //         this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-        //         this.cheatTimer.start();
-        //     }
-        // }
+        if (this.cheatTimer.isStopped()) {
+            if (Input.isKeyPressed("1")) {
+                this.nextLevel = Level1;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("2")) {
+                this.nextLevel = Level2;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("3")) {
+                this.nextLevel = Level3;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("4")) {
+                this.nextLevel = Level4;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("5")) {
+                this.nextLevel = Level5;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+            if (Input.isKeyPressed("6")) {
+                this.nextLevel = Level6;
+                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
+                this.cheatTimer.start();
+            }
+        }
     }
 }
