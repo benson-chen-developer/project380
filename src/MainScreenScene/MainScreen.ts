@@ -165,8 +165,8 @@ export default class MainScreen extends Scene {
         const Btn2 = this.add.uiElement(UIElementType.BUTTON, MainScreenLayer.LEVELS, {position: new Vec2(center.x * 1, center.y * 1), text: "2"});
         Btn2.size.set(100, 100);
         Btn2.borderWidth = 2;
-        // Btn2.backgroundColor = new Color(65,77,204, 1);
-        Btn2.backgroundColor = new Color(198,198,198, 1);
+        Btn2.backgroundColor = new Color(65,77,204, 1);
+        // Btn2.backgroundColor = new Color(198,198,198, 1);
         // Btn2.onClickEventId = MainScreenEvent.MENU;
         Btn2.onClick = () => { this.sceneManager.changeToScene(Level2, {}, sceneOptions); }
 
@@ -175,7 +175,8 @@ export default class MainScreen extends Scene {
         Btn3.size.set(100, 100);
         Btn3.borderWidth = 2;
         // Btn3.backgroundColor = new Color(65,205,98, 1);
-        Btn3.backgroundColor = new Color(198,198,198, 1);
+        Btn3.backgroundColor = new Color(65,77,204, 1);
+        // Btn3.backgroundColor = new Color(198,198,198, 1);
         // Btn3.onClickEventId = MainScreenEvent.MENU;
         Btn3.onClick = () => { this.sceneManager.changeToScene(Level3, {}, sceneOptions); }
 
@@ -184,7 +185,8 @@ export default class MainScreen extends Scene {
         Btn4.size.set(100, 100);
         Btn4.borderWidth = 2;
         // Btn4.backgroundColor = new Color(65,205,98, 1);
-        Btn4.backgroundColor = new Color(198,198,198, 1);
+        Btn4.backgroundColor = new Color(65,77,204, 1);
+        // Btn4.backgroundColor = new Color(198,198,198, 1);
         // Btn4.onClickEventId = MainScreenEvent.MENU;
         Btn4.onClick = () => { this.sceneManager.changeToScene(Level4, {}, sceneOptions); }
 
@@ -193,7 +195,8 @@ export default class MainScreen extends Scene {
         Btn5.size.set(100, 100);
         Btn5.borderWidth = 2;
         // Btn5.backgroundColor = new Color(250,78,0, 1);
-        Btn5.backgroundColor = new Color(198,198,198, 1);
+        // Btn5.backgroundColor = new Color(198,198,198, 1);
+        Btn5.backgroundColor = new Color(65,77,204, 1);
         // Btn5.onClickEventId = MainScreenEvent.MENU;
         Btn5.onClick = () => { this.sceneManager.changeToScene(Level5, {}, sceneOptions); }
 
@@ -202,7 +205,8 @@ export default class MainScreen extends Scene {
         Btn6.size.set(100, 100);
         Btn6.borderWidth = 2;
         // Btn6.backgroundColor = new Color(250,78,0, 1);
-        Btn6.backgroundColor = new Color(198,198,198, 1);
+        // Btn6.backgroundColor = new Color(198,198,198, 1);
+        Btn6.backgroundColor = new Color(65,77,204, 1);
         // Btn6.onClickEventId = MainScreenEvent.MENU;
         Btn6.onClick = () => { this.sceneManager.changeToScene(Level6, {}, sceneOptions); }
 
