@@ -37,14 +37,16 @@ export default class PlayerController extends StateMachineAI {
     MAX_SPEED: number = 300;
     tilemap: OrthogonalTilemap;
     
-    hotbar: any = null;
+    hotbar: any = [];
+    hotbarIndex : number;
     freeze: boolean = false;
 
     initializeAI(owner: GameNode, options: Record<string, any>){
         this.owner = owner;
         this.initializePlatformer();
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
-        this.hotbar = null;
+        this.hotbar = ["Empty", "Empty", "Empty"];
+        this.hotbarIndex = 0;
         
         this.receiver.subscribe(WorldStatus.PAUSE_TIME);
 		this.receiver.subscribe(WorldStatus.RESUME_TIME);

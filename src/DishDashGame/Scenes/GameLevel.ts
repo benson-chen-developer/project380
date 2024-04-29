@@ -282,22 +282,45 @@ export default class GameLevel extends Scene {
         if (this.timePaused) return;
         
         // UI Updates and Control features
-        if ((<PlayerController>this.player._ai).hotbar == null) {
-            this.playersHotbar = " Nothing";
-        } else {
-            this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
-            if (Input.isKeyPressed("enter")) {
-                let options: Record<string, any> = {
-                    "postiveXDirection" : (<PlayerController>this.player._ai).directPostiveX,
-                    "itemThrown" : (<PlayerController>this.player._ai).hotbar
-                };
+        this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
+        let newPlayerHotbar = "Player is Holding ";
+        if (Input.isKeyPressed("enter")) {
+            let options: Record<string, any> = {
+                "postiveXDirection" : (<PlayerController>this.player._ai).directPostiveX,
+                "itemThrown" : (<PlayerController>this.player._ai).hotbar[(<PlayerController>this.player._ai).hotbarIndex]
+            };
 
+            if((<PlayerController>this.player._ai).hotbar[(<PlayerController>this.player._ai).hotbarIndex] !== "Empty"){
                 this.addThrowable("throwable", this.player.position.clone(), options);
-                (<PlayerController>this.player._ai).hotbar = null;
-                this.playersHotbar = " Nothing";
+                (<PlayerController>this.player._ai).hotbar[(<PlayerController>this.player._ai).hotbarIndex] = "Empty";
             }
+            
+            (<PlayerController>this.player._ai).hotbar.forEach((item: any, index: number) => {
+                if(index === (<PlayerController>this.player._ai).hotbarIndex)
+                    newPlayerHotbar += ` [ ${index+1}: ${item} ] `;
+                else 
+                    newPlayerHotbar += ` ${index+1}: ${item} `;
+            })
+            this.playersHotbarLabel.text = newPlayerHotbar;
+        } else {
+            (<PlayerController>this.player._ai).hotbar.forEach((item: any, index: number) => {
+                if(index === (<PlayerController>this.player._ai).hotbarIndex)
+                    newPlayerHotbar += ` [ ${index+1}: ${item} ] `;
+                else 
+                    newPlayerHotbar += ` ${index+1}: ${item} `;
+            })
+            this.playersHotbarLabel.text = newPlayerHotbar;
         }
-        this.playersHotbarLabel.text = "Holds:" + (this.playersHotbar);
+
+        if (Input.isKeyPressed("1")) {
+            (<PlayerController>this.player._ai).hotbarIndex = 0;
+        }
+        if (Input.isKeyPressed("2")) {
+            (<PlayerController>this.player._ai).hotbarIndex = 1;
+        }
+        if (Input.isKeyPressed("3")) {
+            (<PlayerController>this.player._ai).hotbarIndex = 2;
+        }
 
         // Customers Spawning Mecahanic
         if (this.totalCustomersLeft > 0 && this.gracePeriod.isStopped()) {
@@ -363,12 +386,12 @@ export default class GameLevel extends Scene {
         // this.customersSatisfiedLabel.font = "PixelNew";
 
         this.interactiveLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(20, 370), text: ""});
-        this.interactiveLabel.textColor = new Color(148, 7, 0);
+        this.interactiveLabel.textColor = new Color (255, 0, 149);
         this.interactiveLabel.setHAlign(HAlign.LEFT);
         // this.interactiveLabel.font = "PixelNew";
 
-        this.playersHotbarLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(69, 350), text: ""});
-        this.playersHotbarLabel.textColor = new Color(148, 7, 0);
+        this.playersHotbarLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(190, 350), text: ""});
+        this.playersHotbarLabel.textColor = new Color(1, 255, 0);
         this.playersHotbarLabel.setHAlign(HAlign.LEFT);
         // this.playersHotbarLabel.font = "PixelNew";
         
@@ -551,9 +574,9 @@ export default class GameLevel extends Scene {
             this.customersWants = (<CustomerController>customer._ai).foodWanted;
             this.interactiveLabel.text = "Wants:" + (this.customersWants);
 
-            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar === (<CustomerController>customer._ai).foodWanted 
+            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] === (<CustomerController>customer._ai).foodWanted 
             && (<CustomerController>customer._ai).foodWanted != null) {
-                (<PlayerController>player._ai).hotbar = null;
+                (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] = "Empty";
                 
                 this.customersSatisfied++;
                 this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied) + "/" + this.totalCustomers;
@@ -574,15 +597,15 @@ export default class GameLevel extends Scene {
             this.stationNeeds = String(stationAI.IngredientsNeeded);
             this.interactiveLabel.text = "Needs:" + this.stationNeeds;
             if (Input.isPressed("interact") && stationAI.cookingState !== CookingStationStates.COOKING) {
-                if ((<PlayerController>player._ai).hotbar && stationAI.cookingState == CookingStationStates.NOTCOOKING) {
-                    const index = stationAI.IngredientsNeeded.findIndex(item => item === (<PlayerController>player._ai).hotbar);
+                if ((<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] !== "Empty" && stationAI.cookingState == CookingStationStates.NOTCOOKING) {
+                    const index = stationAI.IngredientsNeeded.findIndex(item => item === (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex]);
                     if (index != -1) {          
                         stationAI.IngredientsNeeded.splice(index, 1);
-                        (<PlayerController>player._ai).hotbar = null;
+                        (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] = "Empty";
                     }
                 } else {
-                    if (stationAI.cookingState == CookingStationStates.COOKED && (<PlayerController>player._ai).hotbar == null) {
-                        (<PlayerController>player._ai).hotbar =stationAI.foodInOven;
+                    if (stationAI.cookingState == CookingStationStates.COOKED && (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] === "Empty") {
+                        (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] =stationAI.foodInOven;
                         stationAI.foodInOven = null;
                     }
                 }
@@ -592,11 +615,17 @@ export default class GameLevel extends Scene {
         }
     }
 
+    protected addToInventory(StorageArr: any [], newItem: any, hotbarIndex: number): any[]{
+        let ret = [...StorageArr];
+        ret[hotbarIndex] = newItem;
+        return ret;
+    }
+
     protected handlePlayerStorageInteraction(player: AnimatedSprite, storage: AnimatedSprite){
         if (storage !== null && player.collisionShape.overlaps(storage.collisionShape)) {
             this.interactiveLabel.text = "Has:" + (<StorageStationController>storage._ai).ingredients;
-            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar == null) {
-                (<PlayerController>player._ai).hotbar = (<StorageStationController>storage._ai).ingredients;
+            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] == "Empty") {
+                (<PlayerController>player._ai).hotbar = this.addToInventory((<PlayerController>player._ai).hotbar, (<StorageStationController>storage._ai).ingredients, (<PlayerController>player._ai).hotbarIndex)
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "fridgeOpen", loop: false, holdReference: false});
             }
         } else {
