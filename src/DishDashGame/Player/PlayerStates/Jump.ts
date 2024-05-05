@@ -1,9 +1,13 @@
+import AABB from "../../../Wolfie2D/DataTypes/Shapes/AABB";
+import Shape from "../../../Wolfie2D/DataTypes/Shapes/Shape";
+import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import AnimatedSprite from "../../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import OrthogonalTilemap from "../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import { EaseFunctionType } from "../../../Wolfie2D/Utils/EaseFunctions";
 import { isIngredientsEnum, isFoodsEnum } from "../../WorldEnums/Foods";
-import { PlayerStates } from "../PlayerController";
+import PlayerController, { PlayerStates } from "../PlayerController";
 import InAir from "./InAir";
 
 export default class Jump extends InAir {
@@ -26,8 +30,8 @@ export default class Jump extends InAir {
 	update(deltaT: number): void {
 		if (this.parent.freeze) return;
 		super.update(deltaT);
-
-		if(this.owner.onCeiling){
+		
+		if (this.owner.onCeiling){
 			this.parent.velocity.y = 0;
 		}
 

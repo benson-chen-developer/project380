@@ -9,7 +9,6 @@ export default abstract class InAir extends PlayerState {
     update(deltaT: number): void {
         if (this.parent.freeze) return;
         super.update(deltaT);
-
         let dir = this.getInputDirection();
 
 		this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.3*this.parent.velocity.x;

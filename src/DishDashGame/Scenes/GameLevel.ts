@@ -38,6 +38,7 @@ export default class GameLevel extends Scene {
     protected gracePeriod: Timer = new Timer(5000);
     protected timePaused: boolean = false;
     protected timePauseDelay: Timer = new Timer(5000);
+    protected fridgeGrabDelay: Timer = new Timer(300);
 
     // Stuff to end the level and go to the next level
     protected nextLevel: new (...args: any) => GameLevel;
@@ -59,6 +60,7 @@ export default class GameLevel extends Scene {
 
     // Global Labels
     protected customersSatisfied: number;
+    protected customersSatisfiedLeft: number;
     protected customersSatisfiedLabel: Label;
 
     protected customersWants: string = "";
@@ -67,6 +69,8 @@ export default class GameLevel extends Scene {
 
     protected interactiveLabel: Label;
     protected playersHotbarLabel: Label;
+    protected mouseControlALabels: Label;
+    protected mouseControlBLabels: Label;
 
     protected inventoryIsMove: boolean;
 
@@ -213,11 +217,10 @@ export default class GameLevel extends Scene {
                    
                 case WorldStatus.PLAYER_ENTERED_LEVEL_END:
                     {
-                        if (this.customersSatisfied / this.totalCustomers > 0.5) {
-                            if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
+                        if (this.customersSatisfied >= this.customersSatisfiedLeft) {
+                            if (!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
                                 // The player has reached the end of the level
                                 this.levelEndTimer.start();
-                                
                             }
                         } else {
                             this.levelFailTimer.start();
@@ -257,37 +260,37 @@ export default class GameLevel extends Scene {
         }
 
         // Pausing Feature
-        if (Input.isPressed("pause") && this.timePauseDelay.isStopped) {
-            console.log("PAUSED");
-            if (!this.timePaused) {
-                this.emitter.fireEvent(WorldStatus.PAUSE_TIME);
-                this.timePaused = true;
-                this.timePauseDelay.start();
+        // if (Input.isPressed("pause") && this.timePauseDelay.isStopped) {
+        //     console.log("PAUSED");
+        //     if (!this.timePaused) {
+        //         this.emitter.fireEvent(WorldStatus.PAUSE_TIME);
+        //         this.timePaused = true;
+        //         this.timePauseDelay.start();
 
-                for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
-                    if (!this.customerSpawnPoints[i]["spawnTimer"].isStopped()) {
-                        this.customerSpawnPoints[i]["spawnTimer"].pause();
-                    }
-                }
+        //         for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
+        //             if (!this.customerSpawnPoints[i]["spawnTimer"].isStopped()) {
+        //                 this.customerSpawnPoints[i]["spawnTimer"].pause();
+        //             }
+        //         }
 
-            } else {
-                this.emitter.fireEvent(WorldStatus.RESUME_TIME);
-                this.timePaused = false;
-                this.timePauseDelay.start();
+        //     } else {
+        //         this.emitter.fireEvent(WorldStatus.RESUME_TIME);
+        //         this.timePaused = false;
+        //         this.timePauseDelay.start();
 
-                for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
-                    if (this.customerSpawnPoints[i]["spawnTimer"].isPaused()) {
-                        this.customerSpawnPoints[i]["spawnTimer"].start();
-                    }
-                }
-            }
-        }
-        if (this.timePaused) return;
+        //         for (let i = 0; i < this.customerSpawnPoints.length && this.totalSpawnsLeft > 0; i++) {
+        //             if (this.customerSpawnPoints[i]["spawnTimer"].isPaused()) {
+        //                 this.customerSpawnPoints[i]["spawnTimer"].start();
+        //             }
+        //         }
+        //     }
+        // }
+        // if (this.timePaused) return;
         
         // UI Updates and Control features
         this.playersHotbar = (<PlayerController>this.player._ai).hotbar;
         let newPlayerHotbar = "Player is Holding ";
-        if (Input.isKeyPressed("enter")) {
+        if (Input.isMousePressed(2)) {
             let options: Record<string, any> = {
                 "postiveXDirection" : (<PlayerController>this.player._ai).directPostiveX,
                 "itemThrown" : (<PlayerController>this.player._ai).hotbar[(<PlayerController>this.player._ai).hotbarIndex]
@@ -300,44 +303,29 @@ export default class GameLevel extends Scene {
             
             (<PlayerController>this.player._ai).hotbar.forEach((item: any, index: number) => {
                 if(index === (<PlayerController>this.player._ai).hotbarIndex)
-                    newPlayerHotbar += ` [ ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P" : ""}: ${item} ] `;
+                    newPlayerHotbar += ` [ ${index === 0 ? "1" : ""}${index === 1 ? "2" : ""}${index === 2 ? "3" : ""}: ${item} ] `;
                 else 
-                    newPlayerHotbar += ` ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P":""}: ${item} `;
+                    newPlayerHotbar += ` ${index === 0 ? "1" : ""}${index === 1 ? "2" : ""}${index === 2 ? "3":""}: ${item} `;
             })
             this.playersHotbarLabel.text = newPlayerHotbar;
         } else {
             (<PlayerController>this.player._ai).hotbar.forEach((item: any, index: number) => {
                 if(index === (<PlayerController>this.player._ai).hotbarIndex)
-                    newPlayerHotbar += ` [ ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P":""}: ${item} ] `;
+                    newPlayerHotbar += ` [ ${index === 0 ? "1" : ""}${index === 1 ? "2" : ""}${index === 2 ? "3":""}: ${item} ] `;
                 else 
-                    newPlayerHotbar += ` ${index === 0 ? "I" : ""}${index === 1 ? "O" : ""}${index === 2 ? "P":""}: ${item} `;
+                    newPlayerHotbar += ` ${index === 0 ? "1" : ""}${index === 1 ? "2" : ""}${index === 2 ? "3":""}: ${item} `;
             })
             this.playersHotbarLabel.text = newPlayerHotbar;
         }
 
-        // if (Input.isKeyPressed("o")) {
-        //     if((<PlayerController>this.player._ai).hotbarIndex > 0){
-        //         (<PlayerController>this.player._ai).hotbarIndex--;
+        if(Input.isKeyPressed("1")) (<PlayerController>this.player._ai).hotbarIndex = 0;
+        if(Input.isKeyPressed("2")) (<PlayerController>this.player._ai).hotbarIndex = 1;
+        if(Input.isKeyPressed("3")) (<PlayerController>this.player._ai).hotbarIndex = 2;
 
-                
-        //         this.inventoryIsMove = true;
-        //     }
-        //     else {
-        //         (<PlayerController>this.player._ai).hotbarIndex = 2;
-        //         this.inventoryIsMove = true;
-        //     }
-        // }
-        // if (Input.isKeyPressed("p")) {
-        //     if((<PlayerController>this.player._ai).hotbarIndex < 2){
-        //         (<PlayerController>this.player._ai).hotbarIndex++;
-        //     }
-        //     else {
-        //         (<PlayerController>this.player._ai).hotbarIndex = 0;
-        //     }
-        // }
-        if(Input.isKeyPressed("i")) (<PlayerController>this.player._ai).hotbarIndex = 0;
-        if(Input.isKeyPressed("o")) (<PlayerController>this.player._ai).hotbarIndex = 1;
-        if(Input.isKeyPressed("p")) (<PlayerController>this.player._ai).hotbarIndex = 2;
+        (<PlayerController>this.player._ai).hotbarIndex = ((<PlayerController>this.player._ai).hotbarIndex - Input.getScrollDirection()) % 3;
+        if ((<PlayerController>this.player._ai).hotbarIndex < 0) {
+            (<PlayerController>this.player._ai).hotbarIndex = 2
+        }
 
         // Customers Spawning Mecahanic
         if (this.totalCustomersLeft > 0 && this.gracePeriod.isStopped()) {
@@ -397,17 +385,32 @@ export default class GameLevel extends Scene {
      */
     protected addUI(){
         // In-game labels
-        this.customersSatisfiedLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(100, 30), text: "Customer Satisfied: " + (this.customersSatisfied) + "/" + this.totalCustomers});
+        this.customersSatisfiedLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(100, 30), text: "Customer Satisfied: " + (this.customersSatisfied) + "/" + this.customersSatisfiedLeft});
         this.customersSatisfiedLabel.textColor = new Color(148, 7, 0);
-        this.customersSatisfiedLabel.setHAlign(HAlign.LEFT);
-        // this.customersSatisfiedLabel.font = "PixelNew";
+        this.customersSatisfiedLabel.size.set(350, 50);
+        this.customersSatisfiedLabel.borderRadius = 0;
+        this.customersSatisfiedLabel.backgroundColor = new Color(50, 50, 50, 0.7);
+        this.customersSatisfiedLabel.setHAlign(HAlign.CENTER);
 
-        this.interactiveLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(20, 370), text: ""});
+        this.mouseControlALabels = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(520, 30), text: "Interact : [LMB]"});
+        this.mouseControlALabels.textColor = new Color(148, 7, 0);
+        this.mouseControlALabels.size.set(250, 50);
+        this.mouseControlALabels.borderRadius = 0;
+        this.mouseControlALabels.backgroundColor = new Color(50, 50, 50, 0.8);
+        this.mouseControlALabels.setHAlign(HAlign.CENTER);
+
+        this.mouseControlBLabels = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(520, 55), text: "Enter : [RMB]"});
+        this.mouseControlBLabels.textColor = new Color(148, 7, 0);
+        this.mouseControlBLabels.size.set(250, 50);
+        this.mouseControlBLabels.borderRadius = 0;
+        this.mouseControlBLabels.backgroundColor = new Color(50, 50, 50, 0.8);
+
+        this.interactiveLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(22, 350), text: ""});
         this.interactiveLabel.textColor = new Color (255, 0, 149);
         this.interactiveLabel.setHAlign(HAlign.LEFT);
         // this.interactiveLabel.font = "PixelNew";
 
-        this.playersHotbarLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(190, 350), text: ""});
+        this.playersHotbarLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(190, 370), text: ""});
         this.playersHotbarLabel.textColor = new Color(1, 255, 0);
         this.playersHotbarLabel.setHAlign(HAlign.LEFT);
         // this.playersHotbarLabel.font = "PixelNew";
@@ -591,12 +594,12 @@ export default class GameLevel extends Scene {
             this.customersWants = (<CustomerController>customer._ai).foodWanted;
             this.interactiveLabel.text = "Wants:" + (this.customersWants);
 
-            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] === (<CustomerController>customer._ai).foodWanted 
+            if (Input.isMousePressed(0) && (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] === (<CustomerController>customer._ai).foodWanted 
             && (<CustomerController>customer._ai).foodWanted != null) {
                 (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] = "Empty";
                 
                 this.customersSatisfied++;
-                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied) + "/" + this.totalCustomers;
+                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied) + "/" + this.customersSatisfiedLeft;
 
                 (<CustomerController>customer._ai).changeState("happy");
                 // this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
@@ -613,7 +616,7 @@ export default class GameLevel extends Scene {
             let stationAI = (<CookingStationController>station._ai);
             this.stationNeeds = String(stationAI.IngredientsNeeded);
             this.interactiveLabel.text = "Needs:" + this.stationNeeds;
-            if (Input.isPressed("interact") && stationAI.cookingState !== CookingStationStates.COOKING) {
+            if (Input.isMousePressed(0) && stationAI.cookingState !== CookingStationStates.COOKING) {
                 if ((<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] !== "Empty" && stationAI.cookingState == CookingStationStates.NOTCOOKING) {
                     const index = stationAI.IngredientsNeeded.findIndex(item => item === (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex]);
                     if (index != -1) {          
@@ -641,9 +644,10 @@ export default class GameLevel extends Scene {
     protected handlePlayerStorageInteraction(player: AnimatedSprite, storage: AnimatedSprite){
         if (storage !== null && player.collisionShape.overlaps(storage.collisionShape)) {
             this.interactiveLabel.text = "Has:" + (<StorageStationController>storage._ai).ingredients;
-            if (Input.isPressed("interact") && (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] == "Empty") {
+            if (Input.isMousePressed(0) && this.fridgeGrabDelay.isStopped() && (<PlayerController>player._ai).hotbar[(<PlayerController>player._ai).hotbarIndex] == "Empty") {
                 (<PlayerController>player._ai).hotbar = this.addToInventory((<PlayerController>player._ai).hotbar, (<StorageStationController>storage._ai).ingredients, (<PlayerController>player._ai).hotbarIndex)
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "fridgeOpen", loop: false, holdReference: false});
+                this.fridgeGrabDelay.start();
             }
         } else {
             this.interactiveLabel.text = "";
@@ -654,17 +658,16 @@ export default class GameLevel extends Scene {
         if (customer != null && dish.collisionShape.overlaps(customer.collisionShape)) {
             if ((<ThrowableController>dish._ai).item === (<CustomerController>customer._ai).foodWanted 
             && (<CustomerController>customer._ai).foodWanted != null) {
-                
                 this.customersSatisfied++;
-                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied) + "/" + this.totalCustomers;
+                this.customersSatisfiedLabel.text = "Customers Satisfied: " + (this.customersSatisfied) + "/" + this.customersSatisfiedLeft;
 
                 (<CustomerController>customer._ai).changeState("happy");
-                // this.emitter.fireEvent(WorldStatus.PLAYER_SERVE, {owner: customer.id});
+                dish.destroy();
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pop", loop: false, holdReference: false});
-            } else {
+            } else if ((<CustomerController>customer._ai).foodWanted != null) {
                 (<CustomerController>customer._ai).changeState("angry");
+                dish.destroy();
             }
-            dish.destroy();
         }
     }
 

@@ -28,6 +28,7 @@ export default class Level2 extends GameLevel {
         this.totalCustomers = 10;
         this.totalCustomersLeft = this.totalCustomers;
         this.totalSpawnsLeft = this.totalCustomers;
+        this.customersSatisfiedLeft = Math.floor(this.totalCustomers * 0.6);
 
         // Do generic setup for a GameLevel
         super.startScene();
@@ -66,33 +67,12 @@ export default class Level2 extends GameLevel {
         super.updateScene(deltaT);
 
         if (this.cheatTimer.isStopped()) {
-            if (Input.isKeyPressed("1")) {
+            if (Input.isKeyPressed("o")) {
                 this.nextLevel = Level1;
                 this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
                 this.cheatTimer.start();
             }
-            if (Input.isKeyPressed("2")) {
-                this.nextLevel = Level2;
-                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-                this.cheatTimer.start();
-            }
-            if (Input.isKeyPressed("3")) {
-                this.nextLevel = Level3;
-                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-                this.cheatTimer.start();
-            }
-            if (Input.isKeyPressed("4")) {
-                this.nextLevel = Level4;
-                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-                this.cheatTimer.start();
-            }
-            if (Input.isKeyPressed("5")) {
-                this.nextLevel = Level5;
-                this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
-                this.cheatTimer.start();
-            }
-            if (Input.isKeyPressed("6")) {
-                this.nextLevel = Level6;
+            if (Input.isKeyPressed("p")) {
                 this.emitter.fireEvent(WorldStatus.LEVEL_END, {});
                 this.cheatTimer.start();
             }

@@ -264,16 +264,16 @@ export default class MainScreen extends Scene {
         movement.borderWidth = 2;
         movement.backgroundColor = new Color(240,240,240, 1);
 
-        const btnESC = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y * 1.2), text: "BackSpace"});
-        btnESC.size.set(150, 80);
-        btnESC.borderWidth = 2;
-        btnESC.backgroundColor = new Color(120,125,250, 1);
-        const esc = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.2), text: "Pause"});
-        esc.size.set(150, 80);
-        esc.borderWidth = 2;
-        esc.backgroundColor = new Color(240,240,240, 1);
+        // const btnESC = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y * 1.2), text: "BackSpace"});
+        // btnESC.size.set(150, 80);
+        // btnESC.borderWidth = 2;
+        // btnESC.backgroundColor = new Color(120,125,250, 1);
+        // const esc = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * 1.5, center.y * 1.2), text: "Pause"});
+        // esc.size.set(150, 80);
+        // esc.borderWidth = 2;
+        // esc.backgroundColor = new Color(240,240,240, 1);
 
-        const btnEnter = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.5), text: "Enter"});
+        const btnEnter = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.5), text: "RMB"});
         btnEnter.size.set(80, 80);
         btnEnter.borderWidth = 2;
         btnEnter.backgroundColor = new Color(120,125,250, 1);
@@ -282,7 +282,7 @@ export default class MainScreen extends Scene {
         throwThing.borderWidth = 2;
         throwThing.backgroundColor = new Color(240,240,240, 1);
 
-        const btnE = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.8), text: "E"});
+        const btnE = this.add.uiElement(UIElementType.LABEL, MainScreenLayer.CONTROLS, {position: new Vec2(center.x * .2, center.y *1.8), text: "LMB"});
         btnE.size.set(80, 80);
         btnE.borderWidth = 2;
         btnE.backgroundColor = new Color(120,125,250, 1);

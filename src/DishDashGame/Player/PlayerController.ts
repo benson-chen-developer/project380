@@ -1,4 +1,6 @@
 import StateMachineAI from "../../Wolfie2D/AI/StateMachineAI";
+import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
+import Shape from "../../Wolfie2D/DataTypes/Shapes/Shape";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import GameNode, { TweenableProperties } from "../../Wolfie2D/Nodes/GameNode";
@@ -39,6 +41,8 @@ export default class PlayerController extends StateMachineAI {
     
     hotbar: any = [];
     hotbarIndex : number;
+    ownerShape: Shape;
+
     freeze: boolean = false;
 
     initializeAI(owner: GameNode, options: Record<string, any>){
@@ -47,7 +51,9 @@ export default class PlayerController extends StateMachineAI {
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
         this.hotbar = ["Empty", "Empty", "Empty"];
         this.hotbarIndex = 0;
-        
+
+        this.ownerShape = this.owner.collisionShape;
+		
         this.receiver.subscribe(WorldStatus.PAUSE_TIME);
 		this.receiver.subscribe(WorldStatus.RESUME_TIME);
 
@@ -94,6 +100,24 @@ export default class PlayerController extends StateMachineAI {
 
     update(deltaT: number): void {
 		super.update(deltaT);
+        let tileIndexA = this.tilemap.getColRowAt(new Vec2(this.owner.position.x-32, this.owner.position.y-64));
+        let tileIndexB = this.tilemap.getColRowAt(new Vec2(this.owner.position.x+32, this.owner.position.y-64));
+        let tileIndexC = this.tilemap.getColRowAt(new Vec2(this.owner.position.x, this.owner.position.y-64));
+
+        let tileDataA = this.tilemap.getTileAtRowCol(tileIndexA);
+        let tileDataB = this.tilemap.getTileAtRowCol(tileIndexB);
+        let tileDataC = this.tilemap.getTileAtRowCol(tileIndexC);
+
+        if (this.currentState === this.stateMap.get(PlayerStates.JUMP)) {
+            if ((tileDataA >= 13 && tileDataA <= 15) || (tileDataB >= 13 && tileDataB <= 15) || (tileDataC >= 13 && tileDataC <= 15)) {
+                this.owner.collisionShape = new AABB(this.ownerShape.center, new Vec2(0,0));
+            }
+        }
+
+        if ((tileDataA < 13 || tileDataA <= 15) && (tileDataB < 13 || tileDataB > 15) && (tileDataC < 13 || tileDataC > 15)) {
+            this.owner.collisionShape = this.ownerShape;
+        }
+
         if (this.velocity.x != 0) {
             this.directPostiveX = this.velocity.x > 0 ? true : false;
         }
